@@ -6251,7 +6251,7 @@ def main():
                 print('You finally become a ghost, and can not be birth forever.')
                 print('')
                 print('Goodbye!')
-                print("=== Death Adventure v1.0 - Official Release ===")
+                print("=== Death Adventure v2.0 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
             menu()
