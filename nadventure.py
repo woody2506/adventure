@@ -118,6 +118,7 @@ import time
 import datetime
 import argparse
 
+# test github
 # start settings
 
 have_list = []
@@ -144,6 +145,7 @@ new_game_plus = False
 ng_amulet = False
 ng_compass = False
 ng_diary = False
+hill_diary_read = False
 current_room = "road"
 torch = False
 no_light_run = False
@@ -179,7 +181,41 @@ swamp_spirit_story = 0
 hut_ghost_story = 0
 death_count = 0
 misty_end = False
+x2 = None
 
+# Military Fort - Random Password System
+military_password = ""
+password_attempts = 0
+fort_password_locked = False
+diary_fragment_1 = False
+diary_fragment_2 = False
+diary_fragment_3 = False
+colonel_diary_collected = 0
+soldier_task_done = False
+lieutenant_task_done = False
+fort_unlocked = False
+has_military_key = False
+
+# Orc Tribe
+orc_friend = False
+orc_totem_found = False
+
+# Elf Grove
+elf_rune_puzzle_solved = False
+elf_blessing = False
+
+# Hobbit Camp
+hobbit_trap_learned = False
+
+# Giant Cliffside
+giant_path_opened = False
+
+# Titan Easter Egg (3rd Playthrough Only)
+titan_meet = False
+
+# Special Item Flags
+has_elf_amulet = False
+has_trap_tool = False
 # Weather
 current_weather = "Clear"
 weather_duration = random.randint(4, 7)
@@ -205,6 +241,10 @@ two_hole_in = False
 three_hole_in = False
 four_hole_in = False
 gnome_hole_in = False
+child_hole_in = False
+
+hunger = 20
+thirst = 15
 
 MSG_FILE = "message_wall.json"
 
@@ -219,6 +259,15 @@ parser = argparse.ArgumentParser(description="Death Adventure")
 parser.add_argument("-g",'-G',"-godmode",'-GODMODE',dest="godmode", action="store_true", help="Enable invincibility and trap protection")
 parser.add_argument("-c",'-C', "-cheat",'-CHEAT',dest="cheat", action="store_true", help="Unlock all key items and max stats")
 args = parser.parse_args()
+
+def init_military_password():
+    global military_password
+    d1 = str(random.randint(0, 9))
+    d2 = str(random.randint(0, 9))
+    d3 = str(random.randint(0, 9))
+    military_password = d1 + d2 + d3
+
+init_military_password()
 
 def load_messages():
     if not os.path.exists(MSG_FILE):
@@ -254,6 +303,31 @@ def show_message_wall():
     for idx, m in enumerate(messages[-20:], 1):
         print(f"{idx:2d}. [{m['name']}] {m['msg']} ({m['time']})")
     print("="*60)
+
+def survival_tick():
+    global hunger, thirst, hp,game_back,game_over
+
+    hunger -= 1
+    thirst -= 1
+    if hunger <= 0:
+        print('You feel very hungry, Hp -1')
+        hp -= 1
+    if thirst <= 0:
+        print('You feel thirsty, Hp -1')
+        hp -= 1
+    if hp <= 0:
+        print('You are too hungry and thirsty, so you died.')
+        game_over = True
+        game_back = True
+    if game_over:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input()
+            if c == "menu":
+                main()
+                return
+        
 
 # Save / Load System
 def save_game():
@@ -291,7 +365,7 @@ def save_game():
         "cleared_ending": cleared_ending,
         "achievements": achievements
     }
-    with open(os.path.join(runtime_dir(), "save.json"), "r") as f:
+    with open("save.json", "w") as f:
         json.dump(data, f)
     print("Game saved!")
 
@@ -304,7 +378,7 @@ def load_game():
     global achievements
 
     try:
-        with open("save.json", "r") as f:   
+        with open("save.json", "r") as f:
             data = json.load(f)
         have_list = data["have_list"]
         hp = data["hp"]
@@ -357,6 +431,14 @@ tasks = {
     "Climb the watchtower": False,
     "Unlock the family truth": False
 }
+
+def can_enter_altar():
+    global soldier_task_done,lieutenant_task_done,old_diary_readed,grave_diary_read,have_list,x2
+
+    if soldier_task_done and lieutenant_task_done and old_diary_readed and grave_diary_read and len(have_list) >= 6:
+        x2 = True
+    else:
+        x2 = False
 
 def unlock_achievement(name):
     if name in achievements and not achievements[name]:
@@ -449,6 +531,162 @@ def print_weather():
     if weather_damage > 0:
         print("The harsh weather hurts you.")
 
+def military_fort():
+    global hp, good, evil, soldier_task_done, lieutenant_task_done
+    global colonel_diary_collected, fort_unlocked, military_password
+    global has_military_key, trap_protect, have_list
+    global password_attempts, fort_password_locked
+    global diary_fragment_1, diary_fragment_2, diary_fragment_3
+    print("\n==================== ABANDONED MILITARY FORT ====================")
+    print("Decades-old outpost built to seal the cursed cave. Rusty weapons and scattered journals lie everywhere.")
+    print("Available locations: east_sentry = 1 | swamp_command = 2| top_headquarters = 3| barracks = 4| armory = 5| back = 6")
+
+    while True:
+        cmd = input("fort> ")
+        if cmd == "back" or cmd == '6':
+            print("You leave the military fort and return to the northern road.")
+            break
+
+        elif cmd == "east_sentry" or cmd == '1':
+            if not soldier_task_done:
+                print("\n[Soldier (Ghost)]")
+                print("I lost my ration pack in the woods. I cannot hold this post without supplies.")
+                sub_cmd = input("choice: help | loot | search_note | leave\n")
+                if sub_cmd == "help":
+                    if "some food" in have_list:
+                        have_list.remove("some food")
+                        soldier_task_done = True
+                        good += 8
+                        has_military_key = True
+                        print("You hand over food. The soldier gives you a bronze key for the armory.")
+                        print("Head to the swamp command post and find the lieutenant for the march password.")
+                    else:
+                        print("You carry no food to offer.")
+                elif sub_cmd == "loot":
+                    evil += 12
+                    hp -= 3
+                    print("You steal supplies and trigger an old trap. The soldier becomes hostile.")
+                elif sub_cmd == "search_note":
+                    if not diary_fragment_1:
+                        diary_fragment_1 = True
+                        print("You find a torn journal page: First digit of the march code is " + military_password[0])
+                    else:
+                        print("You already searched this area.")
+                elif sub_cmd == "leave":
+                    continue
+            else:
+                print("The soldier stands guard quietly.")
+
+        elif cmd == "barracks" or cmd == '4':
+            if not diary_fragment_2:
+                diary_fragment_2 = True
+                print("You rummage through old bunks and find a crumpled note: Second digit of the march code is " + military_password[1])
+            else:
+                print("Empty barracks. Nothing left to find.")
+
+        elif cmd == "armory" or cmd == '5':
+            if not diary_fragment_3:
+                diary_fragment_3 = True
+                print("Beneath a rusted rifle you find a log slip: Third digit of the march code is " + military_password[2])
+            else:
+                print("The armory has been picked clean.")
+
+        elif cmd == "swamp_command" or cmd == '2':
+            if fort_password_locked:
+                print("The command post is permanently sealed. You failed too many times.")
+                continue
+            if not lieutenant_task_done:
+                print("\n[Lieutenant (Ghost)]")
+                print("The march password is split across three journal fragments scattered around the fort.")
+                print("Enter the full 3-digit code to unlock trap immunity and access to archives.")
+                ans = input("input password: ")
+                if ans == military_password:
+                    lieutenant_task_done = True
+                    good += 10
+                    trap_protect = True
+                    print("Password verified. You gain full swamp trap immunity.")
+                else:
+                    password_attempts += 1
+                    hp -= 4
+                    evil += 2
+                    if password_attempts >= 3:
+                        fort_password_locked = True
+                        print("WRONG. Three failed attempts. The system locks permanently.")
+                        print("You will never access the military archives in this run.")
+                    else:
+                        print(f"Wrong code. Poison gas leaks. Attempts left: {3 - password_attempts}")
+            else:
+                print("Deliver all three garrison journals to the colonel at headquarters.")
+
+        elif cmd == "top_headquarters" or cmd == '3':
+            if colonel_diary_collected < 3:
+                print("\n[Colonel (Ghost)]")
+                print("Return when you have collected all three garrison journals.")
+            else:
+                print("You submit all journals. The colonel recounts the full story of your family's cursed guardianship.")
+                good += 15
+                have_list.append("military archive document")
+                print("You obtain classified files that unlock the hidden military ending.")
+
+        else:
+            print("Unknown command.")
+        
+def orc_tribe_dungeon():
+    global hp, good, evil, orc_friend, orc_totem_found, have_list,game_back,game_over
+
+    print("\n==================== ORC TRIBE UNDERGROUND DUNGEON ====================")
+    print("A primitive orc settlement trapped inside the infinite cave cycle. You can choose to negotiate or raid this tribe.")
+    while True:
+        cmd = input("orc> negotiate | raid | search_totem | back: ")
+        if cmd == "back":
+            print("You leave the orc dungeon area.")
+            return
+        elif cmd == "search_totem":
+            if not orc_totem_found:
+                print("You discover the stolen tribal totem hidden behind loose stone blocks.")
+                orc_totem_found = True
+                have_list.append("orc tribal totem")
+            else:
+                print("The tribal totem has already been retrieved.")
+        elif cmd == "negotiate":
+            if orc_totem_found:
+                orc_friend = True
+                good += 18
+                have_list.append("a pickaxe")
+                print("You return the sacred totem. The chieftain gifts you a durable pickaxe and marks all cave traps on your map.")
+                return
+            else:
+                print("The tribe refuses to communicate until their stolen totem is returned.")
+        elif cmd == "raid":
+            evil += 30
+            hp -= 8
+            print("You attack the tribe and seize gold treasures, but gain heavy evil karma.")
+            if hp <= 0:
+                print('You was killed by the dark evil karma.')
+                game_over = True
+                game_back = True
+            return
+        else:
+            print("Unknown command.")
+
+def titan_guardian_easter():
+    global titan_meet, good, evil, hp
+    print("\n==================== TITAN ANCIENT GUARDIAN (3RD RUN SECRET) ====================")
+    print("A primordial titan sleeps deep inside the illusion tunnel, witnessing the birth of the ancient sealing curse.")
+    if not titan_meet:
+        titan_meet = True
+        choice = input("offer_prayer | confess_sins | depart: ")
+        if choice == "offer_prayer":
+            good += 30
+            hp = 99
+            print("The titan grants you full vitality and pure spiritual alignment.")
+        elif choice == "confess_sins":
+            evil = 0
+            print("All your accumulated evil karma is completely cleansed by ancient holy light.")
+        elif choice == "depart":
+            print("You leave the titan's resting place without receiving any blessing.")
+    else:
+        print("The titan remains in eternal slumber and refuses to interact again.")
 
 # Mistery
 def forgotten_archive():
@@ -476,7 +714,11 @@ def forgotten_archive():
         "rope": 3,
         "flint": 1,
         "a pick-axe": 5,
-        "gold coins": 4
+        "gold coins": 4,
+        'a book': 7,
+        'a bottle': 2,
+        'some water in the bottle': 3,
+        'some food': 5
     }
 
     while True:
@@ -870,7 +1112,7 @@ def forgotten_archive():
 
 def child_tomb():
     global hp, have_list, good, evil, faith, game_over, game_back, current_room
-    global has_death_corpse, death_location, death_corpse_item
+    global has_death_corpse, death_location, death_corpse_item,child_hole_in
     current_room = "child_tomb"
 
     print("\n=== CHILDREN'S CHAMBER ===")
@@ -997,6 +1239,7 @@ def child_tomb():
 
         elif question_stage == 4 and cmd == "leave":
             print("You walk out of the small chamber quietly.")
+            child_hole_in = True
             pendulum_mortuary()
             return
 
@@ -1012,6 +1255,7 @@ def child_tomb():
                 game_back = True
                 break
             print("The boy vanishes, crying. You are thrown out of the chamber.")
+            child_hole_in = True
             pendulum_mortuary()
             return
 
@@ -1536,9 +1780,12 @@ def pendulum_mortuary():
             if swing_count >= 3:
                 print("The pendulum slows at the 4th coffin.")
         elif cmd == "open" or cmd == "child coffin" or cmd == 'down':
-            print("The small coffin slides aside, revealing a narrow passage down.")
-            child_tomb()
-            return
+            if child_hole_in == False:
+                print("The small coffin slides aside, revealing a narrow passage down.")
+                child_tomb()
+                return
+            else:
+                print('The door have already closed forever.')
         elif cmd.startswith("examine "):
             try:
                 num = int(cmd.split()[1])
@@ -1706,6 +1953,63 @@ def pendulum_mortuary():
             if c == "menu":
                 main()
                 return
+
+def dwarven_forge_vault():
+    global hp, have_list, orc_friend
+
+    attempts_left = 2
+    correct_recipe = {
+        "iron": 2,
+        "copper": 1,
+        "silver": 1,
+        "temp": "medium",
+        "runes": ["moon", "star", "sun"]
+    }
+
+    print("\n==================== DWARVEN FORGE VAULT ====================")
+    print("A long-lost dwarven forge. You must craft a blessed rune blade.")
+    print("Three tattered notes lie nearby:")
+    print("Note 1: Iron ore must be twice as much as copper ore. Total 4 parts.")
+    print("Note 2: Temperature must not be the hottest nor the coldest.")
+    print("Note 3: Sun rune goes last. Star rune does not go first.")
+
+    while True:
+        print(f"Materials left for {attempts_left} attempts.")
+        cmd = input("forge> craft | back\n")
+        if cmd == "back":
+            break
+        elif cmd == "craft":
+            if attempts_left <= 0:
+                print("All materials are exhausted. No more attempts this run.")
+                break
+
+            try:
+                iron = int(input("Iron parts: ").strip())
+                copper = int(input("Copper parts: ").strip())
+                silver = int(input("Silver parts: ").strip())
+            except ValueError:
+                attempts_left -= 1
+                hp -= 2
+                print(f"Invalid input. The batch is ruined. Attempts left: {attempts_left}")
+                continue
+
+            temp = input("Temperature (low / medium / high): ").strip().lower()
+            rune_input = input("Rune order separated by space: ").strip().lower().split()
+
+            if (iron == correct_recipe["iron"] and
+                copper == correct_recipe["copper"] and
+                silver == correct_recipe["silver"] and
+                temp == correct_recipe["temp"] and
+                rune_input == correct_recipe["runes"]):
+                print("\nFORGE SUCCESS. A blessed rune blade takes shape.")
+                have_list.append("rune forged blade")
+                break
+            else:
+                attempts_left -= 1
+                hp -= 3
+                print(f"Forging failed. The batch is ruined. Attempts left: {attempts_left}")
+        else:
+            print("Unknown command.")
 
 # tomb
 def tomb():
@@ -1944,7 +2248,7 @@ def tomb():
 
 # misty swamp
 def misty_swamp():
-    global game_over, hp, have_list, time_period, good, evil, rune2, game_back, swamp_quest, swamp_visited, lily_count,cleared_ending,swamp_spirit_story,misty_end,has_death_corpse,death_corpse_item,death_location,four_hole_in
+    global game_over, hp, have_list, time_period, good, evil, rune2, game_back, swamp_quest, swamp_visited, lily_count,cleared_ending,swamp_spirit_story,misty_end,has_death_corpse,death_corpse_item,death_location,four_hole_in,night
 
     print("\n=== MISTY SWAMP ===")
     print("Thick fog covers the marsh. Every step is dangerous.")
@@ -2255,7 +2559,7 @@ def watchtower():
                     have_list.append("a bird feather")
                     print("You found a bird feather. Type 'give feather' to hand it over to the ghost below.")
 
-        elif cmd == "ask story" and floor == 3:
+        elif cmd == "ask story" and floor == 4:
             if tower_ghost_story == 0:
                 print("Ghost: I was the wizard's apprentice, long ago.")
                 print("Ghost: I watched him seal the one he loved. I couldn't stop him.\n")
@@ -2273,7 +2577,8 @@ def watchtower():
                 tower_ghost_story = 3
             else:
                 print("The ghost goes back to staring at the horizon.")
-
+        elif cmd == 'fight ghost' and floor == 4 or cmd == 'kill ghost' and floor == 4 or cmd == 'attack ghost' and floor == 4:
+            print('The ghost does not want to fight with you and your hit do not hurt her.')
         elif cmd == "give feather":
             if "a bird feather" in have_list:
                 print("The ghost smiles. It slowly fades away in peace.")
@@ -2300,7 +2605,7 @@ def watchtower():
 
 # ===================== PRINT VERSION - CELESTIAL REALM =====================
 def print_heaven():
-    print("\n" + "="*60)
+    print("="*60)
     print("               CELESTIAL REALM")
     print("="*60)
     print("A blinding light surrounds you. You have ascended to heaven.")
@@ -2319,7 +2624,6 @@ def print_heaven():
         print("3. CREATION TEMPLE")
         print("4. RETURN TO MORTAL WORLD")
         print("5. FINAL JUDGEMENT")
-
         opt = input("> ")
 
         if opt == "1":
@@ -2350,7 +2654,6 @@ def print_heaven():
             print("But you are the first to break it.")
             print("Faith: +20")
             print("You obtained BOOK OF TRUTH!")
-
         elif opt == "3":
             print("\n===== CREATION TEMPLE =====")
             print("The source of all light and life.")
@@ -2473,6 +2776,11 @@ def print_heaven():
             print("=== Death Adventure v1.0 - Official Release ===")
             print("Thank you for playing!")
             exit()
+        elif opt == "6":
+            jump_scare_face('flash')
+            print('Wait, where is the 6? I only have five!')
+            print('However, you find a titan in the secret room.')
+            titan_guardian_easter()
 
 def time_travel_origin():
     global good, evil, hp, game_over, game_back, cleared_ending
@@ -2554,6 +2862,8 @@ def time_travel_origin():
 
 def jump_scare_face(mode="normal"):
     if mode == "flash":
+        for i in range(30):
+            print("\n")
         print("█████████████████████████")
         print("█░░░░░░░░░░░░░░░░░░░░░░░█")
         print("█░░  ◉          ◉    ░░█")
@@ -2564,7 +2874,10 @@ def jump_scare_face(mode="normal"):
         print("█░░                  ░░█")
         print("█░░░░░░░░░░░░░░░░░░░░░░░█")
         print("█████████████████████████")
-        print("... What is it!")
+        for i in range(50):
+            print("\n")
+            time.sleep(0.002)
+        print("... Anything?")
     elif mode == "bloody":
         print("          .---.          ")
         print("         /     \\         ")
@@ -2591,9 +2904,96 @@ def jump_scare_face(mode="normal"):
         print("       \\       /       ")
         print("        `-----'        ")
 
+def hill():
+    global current_room,hp,evil,good,game_back,game_over,cleared_ending,map_unlocked,hill_diary_read,grandmother
+    high = 0
+
+    current_room = 'hill'
+    print('You are now at the bottom of the hill, type climb to climb, look to look around.')
+    while True:
+        cmd = input()
+        if cmd == 'climb':
+            if high == 0:
+                high = 1
+                print('You climb up the mountain, you see a statue of a wizard and still a lot of stairs up the mountain.')
+            elif high == 1:
+                high = 2
+                print('There is still some very old stairs to the top.')
+                print('You climb up the old stairs, you see an arrow shoot at you by it self!')
+                print('It gets you, Hp -5!')
+                hp -= 5
+                if hp <= 0:
+                    print('You was killed by the arrow.')
+                    game_over = True
+                    game_back = True
+                    break
+                if 'a book' not in have_list:
+                    print('You see here a book, so you pick it up. Type read book to read it.')
+                    have_list.append('a book')
+                else:
+                    print('There is nothing, just a lot of mud.')
+            elif high == 2:
+                high == 3
+                print('You are at the top of the hill, the view is amazing here.')
+                print('You unlock the map!')
+                print('There is nothing special expect the brilliant view.')
+                print('You can go down now.')
+                map_unlocked = True
+        elif cmd == 'read book' and 'a book' in have_list or cmd == 'read' and 'a book' in have_list:
+            print('\nYou read the book, it says:')
+            print('Book page 1:')
+            print('Hahaha, man, if you read my book, you must have see my arrow trap!')
+            print('Man, I am the human who killed wizard wife.\n')
+            print('Book page 2:')
+            print('I kill she because her husband -- the wizard is not a good man.')
+            print('Let me tell you about him.\n')
+            print('Book page 3:')
+            print('He is the most powerful wizard in the world, but he did not do a lot of good things.')
+            print('For example, he killed a man who just laughed at his clothes!\n')
+            print('Book page 4:')
+            print('He is so evil, and I am his employee.')
+            print('I was angry with his rude, so I killed his wife.\n')
+            print('The last page of the book:')
+            print('His wife became a succubus, but she did not kill me, the one who killed me is in fact the wizard!')
+            print('Then, he told people to build a statue and the stone in the church just to let people know that he is a good man!\n')
+            print('The end of the book.')
+            if grandmother == True:
+                print('You are extremely confused, which of the note is right!')
+        elif cmd == 'look' and high == 0:
+            print('Just a way back to the campsite.')
+        elif cmd == 'look' and high == 1:
+            print('The statue may have been here for hundreds of years, it have a faint light surround it.')
+        elif cmd == 'look' and high == 2:
+            print('An invisible arrow trap and a lot of mud.')
+        elif cmd == 'look' and high == 3:
+            print('Nothing special, just some butterflies and some mosquite.')
+        elif cmd == 'touch statue':
+            print('The statue is cold.')
+        elif cmd == 'leave' or cmd == 'back' or cmd == 'down' and high == 0:
+            print('You climb down the hill and back to the road.')
+            gamestart()
+            return
+        elif cmd == 'leave' or cmd == 'back' or cmd == 'down' and high == 1:
+            high = 0
+            print('You climb down the mountain, you are at the bottom of the mountain again.')
+        elif cmd == 'leave' or cmd == 'back' or cmd == 'down' and high == 2:
+            high = 1
+            print('You climb down the old stairs, you find an arrow is ready to shoot again!')
+        else:
+            print('Unknown command.')
+    if game_over == True:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input()
+            if c == 'menu':
+                menu()
+                return
+            else:
+                print('Please answer the question.')
 #cave
 def cave():
-    global game_over, hp, have_list, light, p, amulet, map_unlocked, secret_unlocked, diary_read, legacy_unlocked, current_room, torch,rune1,rune2,rune3,rune,grandmother,gate_unlock,old_diary_readed, game_back,play_count,old_note_readed,festival_mode,cleared_ending,force_in_cave,all_collected
+    global game_over, hp, have_list, light, p, amulet, map_unlocked, secret_unlocked, diary_read, legacy_unlocked, current_room, torch,rune1,rune2,rune3,rune,grandmother,gate_unlock,old_diary_readed, game_back,play_count,old_note_readed,festival_mode,cleared_ending,force_in_cave,all_collected,amulet,ng_amulet,has_elf_amulet
     global has_death_corpse, death_location, death_corpse_item
     game_over = False
     jump_scare_face('flash')
@@ -2791,7 +3191,7 @@ def cave():
                                                         while True:
                                                             print('You can see a ghost, but the ghost does not see you!')
                                                             print('You go west, you see here a human corpse, you are shocked! There is still path to west. You see here ' + p)
-                                                            print('Try touch corpse or ask about dev or west.')
+                                                            print('Try touch corpse or ask about dev or west and you see a orc dungeon, type orc to go in.')
                                                             west3 = input()
                                                             if west3 == 'west':
                                                                 while True:
@@ -2858,6 +3258,8 @@ def cave():
                                                                             print(have_list[i])
                                                                     else:
                                                                         print("Invalid command!")
+                                                            elif west3 == "orc":
+                                                                orc_tribe_dungeon()
                                                             elif west3 == "hug ghost":
                                                                 print("You hug the ghost! It panics: 'WHAT ARE YOU DOING?!'")
                                                                 have_list.append("ghost hug")
@@ -3257,10 +3659,13 @@ def cave():
                     print("Ghost smiles: Happy full moon! Here's a gift!")
                     hp += 2
                 else:
-                    print('You do not have a key, you unleashed a ghost, the ghost kill you.')
-                    print('Game over!')
-                    game_over = True
-                    game_back = True
+                    if amulet == True or ng_amulet == True or has_elf_amulet == True:
+                        print('Your amulet protects you from the ghost.')
+                    else:
+                        print('You do not have a key, you unleashed a ghost, the ghost kill you.')
+                        print('Game over!')
+                        game_over = True
+                        game_back = True
             if game_over == True:
                 print("=== END ===")
                 print("Type 'menu' to return main menu")
@@ -3308,7 +3713,7 @@ def cave():
 
 #game
 def gamestart():
-    global have_list, game_over, light, hp, map_unlocked, secret_unlocked, amulet, take, chain1, chain2, current_room, torch,l,k,n,s,f,w,sc,rune1,rune2,rune3,rune,grandmother,diary_read,old_diary_readed,grave_diary_read, game_back,play_count,trap_protect,cleared_ending,force_in_cave
+    global have_list, game_over, light, hp, map_unlocked, secret_unlocked, amulet, take, chain1, chain2, current_room, torch,l,k,n,s,f,w,sc,rune1,rune2,rune3,rune,grandmother,diary_read,old_diary_readed,grave_diary_read, game_back,play_count,trap_protect,cleared_ending,force_in_cave,hill_diary_read
     global step_count
     global time_period
     global festival_mode, festival_steps
@@ -3321,19 +3726,15 @@ def gamestart():
     if game_back == True and cleared_ending == True:
         play_count = 2
         hp = 10
-        amulet = True
         torch = True
         light = True
-        rune1 = True
-        rune2 = True
-        rune3 = True
         print("=== NEW GAME+ ===")
         print("The cave remembers you.\n")
     else:
         play_count = 1
     cleared_ending = False
     print('You are at the end of the road, there is a black house nearby.')
-    print('You see a road lead to south.')
+    print('You see a road lead to south. A pass to north, a forest in east and a hut in west.')
     print('Type ‘help’ for help, ‘in’ to go in the house, ‘journal’ for tasks, ‘moral’ for see if you are evil or good and ‘weather’ for weather.')
     print('Also, ‘statue’ to see statues.')
     print('And save to save, load to load if you have saved.\n')
@@ -3357,6 +3758,7 @@ def gamestart():
                 print("You find yourself deeper in the cave than you remember.")
                 print('You go back to the road.')
                 print('You can control you again.')
+                current_room = 'road'
                 evil += 10
             elif auto_cmd == 'do not leave':
                 print('You stay here forever.')
@@ -3424,6 +3826,7 @@ def gamestart():
                 festival_steps = 0
                 print("\n=====================================")
                 print("  🌙 FULL MOON FESTIVAL ENDS 🌙")
+                print('Are ghosts friendly now?')
                 print("=====================================\n")
             if time_period == "day":
                 time_period = "dusk"
@@ -3438,7 +3841,10 @@ def gamestart():
         # NIGHT DAMAGE (STRONGER)
         if time_period == "night" and not torch and not light:
             hp -= 1
-            print("Darkness burns you! HP -1")
+            print("Darkness burns you! Hp -1")
+            if "cursed dagger" in have_list:
+                print('The cursed dagger hits you in the dark. Hp -1')
+                hp -= 1
             if hp <= 0:
                 print("You were consumed by the dark...")
                 game_over = True
@@ -3702,7 +4108,7 @@ def gamestart():
                     print('You hear a demon talk to you! But you do not know what she says.')
                 print('You see here ' + rune)
                 while True:
-                    if rune1 and rune2 and rune3:
+                    if rune1 and rune2 and rune3 and x == True:
                         print('You can place the runes now, type place runes to place them.')
                     tele = input()
                     if tele == 'light lamp':
@@ -3712,14 +4118,17 @@ def gamestart():
                         else:
                             print('You do not have a lamp!')
                     elif tele == 'take rune':
-                        if rune != 'nothing':
-                            print('Ok')
-                            print('Rune says: But, if you control the demon, you must be here for all of your life.')
-                            rune = 'nothing' 
-                            rune3 = True
+                        if play_count == 2:
+                            if rune != 'nothing':
+                                print('Ok')
+                                print('Rune says: But, if you control the demon, you must be here for all of your life.')
+                                rune = 'nothing' 
+                                rune3 = True
+                            else:
+                                print('You have already taken the rune.')
                         else:
-                            print('You have already taken the rune.')
-                  
+                            print('You can not get this rune, because some mysterious power force pretents you from taking.')
+                            print('Only enable in ng2, and try to go in the death cave!\n')
                     elif tele == 'colin':
                         if light == False and not torch:
                             if hp > 10:
@@ -3770,146 +4179,160 @@ def gamestart():
                             game_back = True
                             break
                     elif tele == 'place runes':
-                        if rune1 and rune2 and rune3:
-                            good = good - evil
-                            jump_scare_face('flash')
-                            print('All runes glow! The ancient seal trembles!')
-                            if play_count == 1:
-                                print('Choose: seal (good > 10) / release / absorb / sacrifice / symbiosis (good > 5) / leave ')
-                            elif play_count == 2:
-                                print('Choose: seal (good > 10) / release / absorb / sacrifice / symbiosis / unleash (good > 20) / leave / break curse (good > 25) / truth')
-                            c = input()
-                            if c == 'seal':
-                                if good >= 10:
-                                    print('You sealed the cave Evil FOREVER.')
-                                    print('And then, you stay here until you dead.')
-                                    if grave_diary_read == True:
-                                        print('You realised that all explorers were guardians, not treasure hunters.')
-                                        print('They gave up wealth to protect the world.')
-                                        print('====== TRUE GUARDIAN ENDING ======')
-                                    else:
-                                        print('You seal the Evil again.')
-                                        print('===== HERO ENDING =====')
-                                    game_over = True
-                                    game_back = True
-                                    cleared_ending = True
-                                    break
-                                else:
-                                    print('You are not good enough.')
-                            elif c == 'unleash':
-                                if play_count == 2:
-                                    if good >= 20:
-                                        print('You unleash your great-great grandmother, the wizard -- your great-great grandfather appears.')
-                                        print('They are all free!')
-                                        print('====== FREE ENDING ======')
+                        can_enter_altar()
+                        global x2
+                        if x2 == True:
+                            if rune1 and rune2 and rune3:
+                                good = good - evil
+                                print('All runes glow! The ancient seal trembles!')
+                                if play_count == 1:
+                                    print('Choose: seal (good > 10) / release / absorb / sacrifice / symbiosis (good > 5) / leave ')
+                                elif play_count == 2:
+                                    print('Choose: seal (good > 10) / release / absorb / sacrifice / symbiosis / unleash (good > 20) / leave / break curse (good > 25) / truth')
+                                while True:
+                                    c = input()
+                                    if c == 'seal':
+                                        if good >= 10:
+                                            print('You sealed the cave Evil FOREVER.')
+                                            print('And then, you stay here until you dead.')
+                                            if grave_diary_read == True:
+                                                print('You realised that all explorers were guardians, not treasure hunters.')
+                                                print('They gave up wealth to protect the world.')
+                                                print('====== TRUE GUARDIAN ENDING ======')
+                                            else:
+                                                print('You seal the Evil again.')
+                                                print('===== HERO ENDING =====')
+                                            game_over = True
+                                            game_back = True
+                                            cleared_ending = True
+                                            break
+                                        else:
+                                            print('You are not good enough.')
+                                    elif c == 'unleash':
+                                        if play_count == 2:
+                                            if good >= 20:
+                                                print('You unleash your great-great grandmother, the wizard -- your great-great grandfather appears.')
+                                                print('They are all free!')
+                                                print('====== FREE ENDING ======')
+                                                game_over = True
+                                                game_back = True
+                                                cleared_ending = True
+                                                break
+                                            else:
+                                                print('You are not good enough.')
+                                        elif play_count == 1:
+                                            print('You do not know how to unleash, because the curse.')
+                                    elif c == 'leave':
+                                        if play_count == 2:
+                                            print('You leave the cave safetly, and you never come back again.')
+                                            print('====== ESCAPE ENDING ======')
+                                            game_over = True
+                                            cleared_ending = True
+                                            break
+                                        elif play_count == 1:
+                                            print('You want to leave, but the Evil kills you.')
+                                            print('====== DIED ENDING ======')
+                                            game_over = True
+                                            game_back = True
+                                            cleared_ending = True
+                                            break
+                                    elif c == 'release':
+                                        print('Evil awakened! It destroys everything!')
+                                        print('====== BAD ENDING ======')
                                         game_over = True
                                         game_back = True
                                         cleared_ending = True
                                         break
-                                    else:
-                                        print('You are not good enough.')
-                                elif play_count == 1:
-                                    print('You do not know how to unleash, because the curse.')
-                            elif c == 'leave':
-                                if play_count == 2:
-                                    print('You leave the cave safetly, and you never come back again.')
-                                    print('====== ESCAPE ENDING ======')
-                                    game_over = True
-                                    cleared_ending = True
-                                    break
-                                elif play_count == 1:
-                                    print('You want to leave, but the Evil kills you.')
-                                    print('====== DIED ENDING ======')
-                                    game_over = True
-                                    game_back = True
-                                    cleared_ending = True
-                                    break
-                            elif c == 'release':
-                                print('Evil awakened! It destroys everything!')
-                                print('====== BAD ENDING ======')
-                                game_over = True
-                                game_back = True
-                                cleared_ending = True
-                                break
-                            elif c == 'talk':
-                                if grave_diary_read == True and old_diary_readed == True and good >= 20:
-                                    print('You say: Hello, great-great grandmother!')
-                                    print('The Evil is shocked, then she smiles and hug you!')
-                                    print('===== THE BEST ENDING! =====')
-                                    game_over = True
-                                    game_back = True
-                                    cleared_ending = True
-                                    break
-                                else:
-                                    print('The Evil do not want to talk to you.')
-                            elif c == 'absorb':
-                                print('You absorb the Evil power!')
-                                print('You become the immortal ruler of the cave!')
-                                print('===== DEMON LORD ENDING =====')
-                                amulet = True
-                                hp = 99
-                                game_over = True
-                                game_back = True
-                                cleared_ending = True
-                                break
-                            elif c == 'sacrifice':
-                                print('You sacrifice your life force to calm the Evil.')
-                                print('You turn to stone, guarding the cave forever.')
-                                print('===== SACRIFICE ENDING =====')
-                                game_over = True
-                                game_back = True
-                                cleared_ending = True
-                                break
-                            elif c == 'symbiosis':
-                                if good >= 5:
-                                    print('You make a pact with the Evil.')
-                                    print('You gain power but can never leave the cave.')
-                                    print('===== SYMBIOSIS ENDING =====')
-                                    game_over = True
-                                    game_back = True
-                                    cleared_ending = True
-                                    break
-                                else:
-                                    print('You are not good enough.')
-                            elif c == 'truth':
-                                if play_count == 2:
-                                    if 'a magic key' in have_list:
-                                        print("You place all runes and speak the ancient words.")
-                                        print("The curse is broken. The cave is finally free.")
-                                        print("You have escaped the cycle of death.")
-                                        print("===== TRUTH ENDING =====")
-                                    else:
-                                        print('You do not have a magic key, so you can not end the curse.')
-                                        print('====== NORMAL ENDING ======')
-                                elif play_count == 1:
-                                    print('You do not know the truth.')
-                                game_over = True
-                                game_back = True
-                                cleared_ending = True
-                                break
-                            elif c == 'break curse':
-                                if 'a magic key' in have_list and play_count == 2:
-                                    if good >= 25:
-                                        print('You use the magic key to break the curse.')
-                                        print('Your great-great grandfather and his wife, and your great grandfather and his wife, and your grandfather and his wife, and you father and you mum, all appears.')
-                                        print('You celebrate together.')
-                                        print('====== THAT IS THE REAL ENDING ======')
+                                    elif c == 'talk':
+                                        if grave_diary_read == True and old_diary_readed == True and good >= 20:
+                                            print('You say: Hello, great-great grandmother!')
+                                            print('The Evil is shocked, then she smiles and hug you!')
+                                            print('===== THE BEST ENDING! =====')
+                                            game_over = True
+                                            game_back = True
+                                            cleared_ending = True
+                                            break
+                                        else:
+                                            print('The Evil do not want to talk to you.')
+                                    elif c == 'absorb':
+                                        print('You absorb the Evil power!')
+                                        print('You become the immortal ruler of the cave!')
+                                        print('===== DEMON LORD ENDING =====')
+                                        amulet = True
+                                        hp = 99
                                         game_over = True
                                         game_back = True
                                         cleared_ending = True
                                         break
+                                    elif c == 'sacrifice':
+                                        print('You sacrifice your life force to calm the Evil.')
+                                        print('You turn to stone, guarding the cave forever.')
+                                        print('===== SACRIFICE ENDING =====')
+                                        game_over = True
+                                        game_back = True
+                                        cleared_ending = True
+                                        break
+                                    elif c == 'symbiosis':
+                                        if good >= 5:
+                                            print('You make a pact with the Evil.')
+                                            print('You gain power but can never leave the cave.')
+                                            print('===== SYMBIOSIS ENDING =====')
+                                            game_over = True
+                                            game_back = True
+                                            cleared_ending = True
+                                            break
+                                        else:
+                                            print('You are not good enough.')
+                                    elif c == 'truth':
+                                        if play_count == 2:
+                                            if 'a magic key' in have_list:
+                                                print("You place all runes and speak the ancient words.")
+                                                print("The curse is broken. The cave is finally free.")
+                                                print("You have escaped the cycle of death.")
+                                                print("===== TRUTH ENDING =====")
+                                            else:
+                                                print('You do not have a magic key, so you can not end the curse.')
+                                                print('====== NORMAL ENDING ======')
+                                        elif play_count == 1:
+                                            print('You do not know the truth.')
+                                        game_over = True
+                                        game_back = True
+                                        cleared_ending = True
+                                        break
+                                    elif c == 'break curse':
+                                        if 'a magic key' in have_list and play_count == 2:
+                                            if good >= 25:
+                                                print('You use the magic key to break the curse.')
+                                                print('Your great-great grandfather and his wife, and your great grandfather and his wife, and your grandfather and his wife, and you father and you mum, all appears.')
+                                                print('You celebrate together.')
+                                                print('====== THAT IS THE REAL ENDING ======')
+                                                game_over = True
+                                                game_back = True
+                                                cleared_ending = True
+                                                break
+                                            else:
+                                                print('You are not good enough')
+                                        else:
+                                            print('You do not have a magic key.(Or you can not do it now.)')
                                     else:
-                                        print('You are not good enough')
-                                else:
-                                    print('You do not have a magic key.(Or you can not do it now.)')
+                                        print('Invalid choice!')
+                                if force_over == True:
+                                    break
+                            if game_over:
+                                print("=== END ===")
+                                print("Type 'menu' to return main menu")
+                                while True:
+                                    c = input()
+                                    if c == 'menu':
+                                        main()
+                                        return
                             else:
-                                print('Invalid choice!')
+                                print('Not enough runes!')
                             if force_over == True:
                                 break
                         else:
-                            print('Not enough runes!')
-                        if force_over == True:
-                            break
+                           print('\nYou should done the soldier and lieutenant task and then read the grave diary and the old diary in the forest.')
+                           print('Also, you should have at least 6 items in your bag. Also, of course, three runes.\n') 
                     elif tele == 'woody':
                         if light == True:
                             print('A secret power surrounds you!')
@@ -3990,21 +4413,20 @@ def gamestart():
             for i in range(len(have_list)):
                 print(have_list[i])
         elif go == 'map':
-            print("""WORLD MAP
+            print("""WORLD MAP (Only ground)
         ====================
         [Watchtower]   [Road * (You are here)]
                 |
-        [Merchant]      [House]
+        [Merchant]      [House] --> [altar] --> [???]
                 |
         [Forest]  <-->  [Haunted Hut]
                 |
         [Abandoned Camp]
                 |
-        [Grave]   [Tomb (NG+)]
+        [Grave]   [???]
                 |
         [Misty Swamp]
                 |
-        [Cave -> Altar]
         ====================""")
         elif go == "moral":
             print(f"Good: {good} | Evil: {evil}")
@@ -4012,6 +4434,8 @@ def gamestart():
                 print("You are kind. NPCs treat you friendly.")
             elif evil > good:
                 print("You are ruthless. NPCs stay alert.")
+            else:
+                print('You are not good or evil.')
         elif go == "weather":
             print_weather()
         elif go == "eat":
@@ -4030,141 +4454,160 @@ def gamestart():
             else:
                 print("No water.")
         elif go == 'north':
-            tower_check = input("Go to merchant or watchtower? (merchant / tower): ")
-            if tower_check == "tower":
+            tower_check = input("Go to merchant or watchtower or military_fort? (merchant / tower / fort): ")
+            if tower_check == "fort":
+                military_fort()
+                continue
+            elif tower_check == "tower":
                 watchtower()
                 continue
             elif tower_check == 'merchant':
-                print('You found a TRAVELING MERCHANT!')
-                print('Type trade food/water to trade.')
-                print('Type ask ask past or talk more to ask.')
-                while True:
-                    m = input('merchant> ')
-                    if m == 'trade food':
-                        if 'some food' in have_list:
-                            have_list.remove('some food')
-                            have_list.append('super amulet')
-                            amulet = True
-                            print('Trade success! Got SUPER AMULET!')
-                    elif m == 'trade water':
-                        if 'a bottle' in have_list:
-                            have_list.remove('a bottle')
-                            torch = True
-                            light = True
-                            print('Trade success! Got ETERNAL TORCH!')
-                    elif m == "stare":
-                        print("You stare at the merchant. He feels awkward.")
-                    elif m == "wave hand":
-                        print("You wave. The merchant waves back lazily.")
-                    elif m == "nod":
-                        print("You nod again and again. The merchant nods along too.")
-                    elif m == "copy move":
-                        print("You copy every move the merchant makes. He gets confused and freezes.")
-                    elif m == "pretend to cry":
-                        print("You pretend to cry. The merchant panics and does not know what to do.")
-                    elif m == "dance together":
-                        print("You dance together. Both of you look extremely clumsy.")
-                    elif m == "doze":
-                        print("You pretend to doze. The merchant stays quiet.")
-                    elif m == "walk around":
-                        print("You walk circles around him. He just stands still.")
-                    elif m == "complain":
-                        print("You complain about the cave. Merchant agrees with you.")
-                    elif m == "merchant lazy":
-                        print("You say: You look so lazy.")
-                        print("Merchant: 'Business is slow when everyone gets haunted.'")
-                    elif m == "merchant ghost":
-                        print("You ask: Are you scared of ghosts?")
-                        print("Merchant: 'Nah, they owe me money.'")
-                    elif m == "merchant tired":
-                        print("You say: You look tired.")
-                        print("Merchant: 'I work next to a death cave. Of course I’m tired!'")
-                    elif m == "arm wrestle":
-                        print("You challenge arm wrestling. You lose in one second.")
-                    elif m == 'leave' or m == 'back' or m == 'south':
-                        print('You return to road.')
-                        break
-                    elif m == "ask past":
-                        print("Merchant: I was once just like you, chasing gold in this cave.")
-                        print("I learned all the secrets, but chose to walk away from the cycle.")
-                        print("I trade goods here, watching every new heir step onto this road.")
-                    elif m == "talk more":
-                        if merchant_story_stage == 0:
-                            print("Merchant: I used to be an adventurer too, same as you.")
-                            print("Merchant: I came here with my best friend, chasing the diamond legend.\n")
-                            print('You can still type ask more if you want to know more.\n')
-                            good += 5
-                            merchant_story_stage = 1
-                        elif merchant_story_stage == 1:
-                            print("Merchant: He was the last guardian of this cave. Your grandfather's generation.")
-                            print("Merchant: He chose to stay inside, and I chose to wait outside.\n")
-                            merchant_story_stage = 2
-                            good += 5
-                        elif merchant_story_stage == 2:
-                            print("Merchant: I've seen hundreds of people walk in. Most never come out.")
-                            print("Merchant: You're the first one with his eyes. The bloodline shows.\n")
-                            good += 5
-                            merchant_story_stage = 3
-                        elif merchant_story_stage == 3:
-                            print("Merchant: End the cycle. Don't repeat his mistake.")
-                            print("Merchant: Take this. He left it for the heir.\n")
-                            if "rune1" not in have_list:
-                                have_list.append("stone rune1")
-                                print("You got a rune!")
-                            if evil >= 0:
-                                evil = 0
+                good = good - evil
+                evil = 0
+                if good >= 5:
+                    print('You found a TRAVELING MERCHANT!')
+                    print('Type trade food/water to trade.')
+                    print('Type ask ask past or talk more to ask.')
+                    if args.godmode:
+                        print('Merchant: Welcome, god, what are you going to do here?')
+                    while True:
+                        m = input('merchant> ')
+                        if m == 'trade food':
+                            if 'some food' in have_list:
+                                have_list.remove('some food')
+                                have_list.append('super amulet')
+                                amulet = True
+                                print('Trade success! Got SUPER AMULET!')
+                        elif m == 'trade water':
+                            if 'a bottle' in have_list:
+                                have_list.remove('a bottle')
+                                torch = True
+                                light = True
+                                print('Trade success! Got ETERNAL TORCH!')
+                        elif m == "stare":
+                            print("You stare at the merchant. He feels awkward.")
+                        elif m == 'attack merchant' or m == 'kill merchant' or m == 'attack him' or m == 'kill him' or m == 'fight him' or m == 'fight merchant':
+                            print('Merchant: Really? Attack a definess poor merchant? You are so evil!')
+                            evil += 5
+                        elif m == "wave hand":
+                            print("You wave. The merchant waves back lazily.")
+                        elif m == "nod":
+                            print("You nod again and again. The merchant nods along too.")
+                        elif m == "copy move":
+                            print("You copy every move the merchant makes. He gets confused and freezes.")
+                        elif m == "pretend to cry":
+                            print("You pretend to cry. The merchant panics and does not know what to do.")
+                        elif m == "dance together":
+                            print("You dance together. Both of you look extremely clumsy.")
+                        elif m == "doze":
+                            print("You pretend to doze. The merchant stays quiet.")
+                        elif m == "walk around":
+                            print("You walk circles around him. He just stands still.")
+                        elif m == "complain":
+                            print("You complain about the cave. Merchant agrees with you.")
+                        elif m == "merchant lazy":
+                            print("You say: You look so lazy.")
+                            print("Merchant: 'Business is slow when everyone gets haunted.'")
+                        elif m == "merchant ghost":
+                            print("You ask: Are you scared of ghosts?")
+                            print("Merchant: 'Nah, they owe me money.'")
+                        elif m == "merchant tired":
+                            print("You say: You look tired.")
+                            print("Merchant: 'I work next to a death cave. Of course I’m tired!'")
+                        elif m == "arm wrestle":
+                            print("You challenge arm wrestling. You lose in one second.")
+                        elif m == 'leave' or m == 'back' or m == 'south':
+                            print('You return to road.')
+                            break
+                        elif m == "ask past":
+                            print("Merchant: I was once just like you, chasing gold in this cave.")
+                            print("I learned all the secrets, but chose to walk away from the cycle.")
+                            print("I trade goods here, watching every new heir step onto this road.")
+                        elif m == "talk more" or m == 'talk':
+                            if merchant_story_stage == 0:
+                                print("Merchant: I used to be an adventurer too, same as you.")
+                                print("Merchant: I came here with my best friend, chasing the diamond legend.\n")
+                                print('You can still type ask more if you want to know more.\n')
+                                good += 5
+                                merchant_story_stage = 1
+                            elif merchant_story_stage == 1:
+                                print("Merchant: He was the last guardian of this cave. Your grandfather's generation.")
+                                print("Merchant: He chose to stay inside, and I chose to wait outside.\n")
+                                merchant_story_stage = 2
+                                good += 5
+                            elif merchant_story_stage == 2:
+                                print("Merchant: I've seen hundreds of people walk in. Most never come out.")
+                                print("Merchant: You're the first one with his eyes. The bloodline shows.\n")
+                                good += 5
+                                merchant_story_stage = 3
+                            elif merchant_story_stage == 3:
+                                print("Merchant: End the cycle. Don't repeat his mistake.")
+                                print("Merchant: Take this. He left it for the heir.\n")
+                                if "rune1" not in have_list:
+                                    have_list.append("stone rune1")
+                                    rune1 = True
+                                    print("You got a rune!")
+                                if evil >= 0:
+                                    evil = 0
+                                else:
+                                    good += 10
+                                merchant_story_stage = 4
                             else:
-                                good += 10
-                            merchant_story_stage = 4
-                        else:
-                            print("Merchant nods quietly, watching the cave entrance.\n")
-                    elif m == "ask fate":
-                        print("Merchant: Your blood ties you to this place. No one escapes easily.")
-                        print("But choices are always yours. That is the only freedom we have.")
-                    elif m == "trade secret":
-                        if play_count == 2 and grave_diary_read:
+                                print("Merchant nods quietly, watching the cave entrance.\n")
+                        elif m == "ask fate":
+                            print("Merchant: Your blood ties you to this place. No one escapes easily.")
+                            print("But choices are always yours. That is the only freedom we have.")
+                        elif m == "trade secret":
+                            if play_count == 2 and grave_diary_read:
+                                if "gold coins" in have_list:
+                                    have_list.remove("gold coins")
+                                    have_list.append("ancient scroll")
+                                    print("You traded gold for ANCIENT SCROLL.")
+                                    print("Scroll words: The key breaks chain, heart heals hate.")
+                                else:
+                                    print("You have no gold coins to trade.")
+                            else:
+                                print("He shakes his head, unwilling to talk more.")
+                        elif m == "trade coin" or m == 'trade coins' or m == 'trade gold coins':
                             if "gold coins" in have_list:
                                 have_list.remove("gold coins")
-                                have_list.append("ancient scroll")
-                                print("You traded gold for ANCIENT SCROLL.")
-                                print("Scroll words: The key breaks chain, heart heals hate.")
+                                hp += 10
+                                print("You trade your gold coins, and your HP +10.")
                             else:
-                                print("You have no gold coins to trade.")
+                                print("You do not have gold coins.")
+                        elif m == "joke":
+                            print("Merchant: 'Why did the ghost avoid the cave? Too many skeletons!'")
+                            print("You laugh. The merchant grins.")
+                        elif m == "pretend dead":
+                            print("You pretend to die. Merchant: 'Again?'")
+                        elif m == "sing together":
+                            print("You sing with him. Both of you sound terrible.")
+                        elif m == "point":
+                            print("You point at distant woods. He has no interest at all.")
+                        elif m == "tickling":
+                            print("You tickle the merchant. He laughs loudly.")
+                        elif m == "dance":
+                            print("The merchant does a silly dance. You feel better.")
+                            hp += 1
+                        elif m == "act like ghost":
+                            print("You float and howl. Merchant rolls eyes and keeps calm.")
+                        elif m == "beg for gifts" or m == 'beg':
+                            print("You ask for free gifts. Merchant shakes his head firmly.")
+                        elif m == "pretend sleep":
+                            print("You lie down to sleep. Merchant quietly walks around you.")
+                        elif m == "cheer":
+                            print("You cheer loudly. The merchant claps weakly.")
+                        elif m == "walk side by side":
+                            print("You walk beside him. He keeps a little distance.")
+                        elif m == 'attack merchant' or m == 'attack' or m == 'kill merchant' or m == 'kill' or m == 'attack him' or m == 'kill him':
+                            print('Merchant: Really? Attack a merchant, you are so evil.')
+                            evil += 5
+                            print('You feel shy and go back to the road.')
+                            break
                         else:
-                            print("He shakes his head, unwilling to talk more.")
-                    elif m == "trade coin" or m == 'trade coins' or m == 'trade gold coins':
-                        if "gold coins" in have_list:
-                            have_list.remove("gold coins")
-                            hp += 10
-                            print("You trade your gold coins, and your HP +10.")
-                        else:
-                            print("You do not have gold coins.")
-                    elif m == "joke":
-                        print("Merchant: 'Why did the ghost avoid the cave? Too many skeletons!'")
-                        print("You laugh. The merchant grins.")
-                    elif m == "pretend dead":
-                        print("You pretend to die. Merchant: 'Again?'")
-                    elif m == "sing together":
-                        print("You sing with him. Both of you sound terrible.")
-                    elif m == "point":
-                        print("You point at distant woods. He has no interest at all.")
-                    elif m == "tickling":
-                        print("You tickle the merchant. He laughs loudly.")
-                    elif m == "dance":
-                        print("The merchant does a silly dance. You feel better.")
-                        hp += 1
-                    elif m == "act like ghost":
-                        print("You float and howl. Merchant rolls eyes and keeps calm.")
-                    elif m == "beg for gifts" or m == 'beg':
-                        print("You ask for free gifts. Merchant shakes his head firmly.")
-                    elif m == "pretend sleep":
-                        print("You lie down to sleep. Merchant quietly walks around you.")
-                    elif m == "cheer":
-                        print("You cheer loudly. The merchant claps weakly.")
-                    elif m == "walk side by side":
-                        print("You walk beside him. He keeps a little distance.")
-                    else:
-                        print('Unknown command.')
+                            print('Unknown command.')
+                else:
+                    print('Merchant: Go away! Evil man!')
             else:
                 print('Unknown command.')
         elif go == "statue":
@@ -4242,12 +4685,16 @@ def gamestart():
                             print('So, he does not kill she, just control her to not let her harm anyone else.')
                             print('Then, himself become a ghost to protect the cave and also his wife -- the Evil.')
                             print('Also, all the ghosts are just the person who should protect the cave, and control the Evil.')
+                            print('And, you must not turst the book on the hill, it is just a lie for him to let people know that he is innocent.')
                             print('')
                             grandmother = True
                             if grave_diary_read == True:
                                 print('So, you are the great-great grandchild of the Evil and the wizard.')
                             else:
                                 print('You have a strange feeling to the Evil in your mind.')
+                            if hill_diary_read == True:
+                                print('You are confused with these two people.')
+                                print('You: Which one is right!')
                         elif ch == 'purify':
                             print('The statue glows with holy light.')
                             have_list.append('holy amulet')
@@ -4318,6 +4765,39 @@ def gamestart():
                 elif forest_take == 'leave' or forest_take == 'back' or forest_take == 'west':
                     print('You go back to the road.')
                     break
+                elif forest_take == 'climb tree':
+                    x = random.randint(1,2)
+                    if x == 1:
+                        print('You find some mosquite in the tree, Hp -1')
+                        print('What you are filling is as same as what I am filling!')
+                        hp -= 1
+                        if hp <= 0:
+                            print('Such a joke! Killed by a tiny mosquite.')
+                            game_back = True
+                            game_over = True
+                            break
+                    else:
+                        print('Luck for you, you find some delicious nut, Hp +1')
+                        hp += 1
+                elif forest_take == 'tree':
+                    print('Hmm... the trees are the oak tree which have grown for about fifty years.')
+                elif forest_take == 'cut tree':
+                    cmd = input('really? Cut down a tree? Y/N')
+                    if cmd == 'Y' or cmd == 'y' or cmd == 'yes' or cmd == 'YES':
+                        print('You cut down a tree, you are so evil!')
+                        print('The tree fall on your toes.')
+                        print('Oach, that hurts! Hp -5')
+                        hp -= 5
+                        if hp <= 0:
+                            print('You are killed by a tree, hahaha.')
+                            game_back = True
+                            game_over = True
+                            break
+                        evil += 10
+                    elif cmd == 'N' or cmd == 'n' or cmd == 'no' or cmd == 'NO':
+                        print('OK, so you do not cut down the tree.')
+                    else:
+                        print('PLease answer the question.')
                 elif forest_take == "talk to bird":
                     print("The bird circles above you, chirping softly.")
                     if old_diary_readed:
@@ -4335,7 +4815,7 @@ def gamestart():
                 else:
                     print('Unknown command.')
         elif go == 'south':
-            print('You find a hidden trail leading to an ABANDONED CAMP. There is a camp in the west. And also a grave in the east.')
+            print('You find a hidden trail leading to an ABANDONED CAMP. There is a camp in the west. And also a grave in the east. And the path still leads to a hill to south.')
             print('You see a grave, something is written on it: game developer, killed by a lot of bug and error.')
             print('A voice booms: Dig the grave, then you will find me. Or, you can search the grave.')
             while True:
@@ -4351,6 +4831,9 @@ def gamestart():
                     print('Old tents, cold firepit, and a chest.')
                 elif camp_cmd == "make funny face":
                     print("You make a funny face. A squirrel stares at you.")
+                elif camp_cmd == 'go to hill' or camp_cmd == 'south' or camp_cmd == 'forward' or camp_cmd == 'go to south':
+                    hill()
+                    return
                 elif camp_cmd == "count stars":
                     print("You count stars. You fall asleep after 3.")
                 elif camp_cmd == "talk to fire":
@@ -4373,11 +4856,18 @@ def gamestart():
                         print('There is a ghost hidden in the firepit!')
                         print("Ghost smiles: Happy full moon! Here's a gift!")
                         hp += 2
-                    print('There is a ghost hidden in the firepit. It kills you!')
-                    print('Game over!')
-                    game_over = True
-                    game_back = True
-                    break
+                    if amulet == False or ng_amulet == False or has_elf_amulet == False:
+                        print('There is a ghost hidden in the firepit. It kills you!')
+                        print('Game over!')
+                        game_over = True
+                        game_back = True
+                        break
+                    elif args.godmode:
+                        print('The ghost kneels to you.')
+                        print('Ghost: Wish you good luck, my god.')
+                        hp += 1
+                    else:
+                        print('Your amulet keeps the ghost away.')
                 elif camp_cmd == "play":
                     print("You play with a small stone. So fun!")
                 elif camp_cmd == "yell":
@@ -4409,6 +4899,7 @@ def gamestart():
                     else:
                         print('Ghosts wander, but they do not attack.')
                     print('You find a SUPER AMULET.')
+                    print('You put it in your bag and walk back quietly.')
                     have_list.append('super amulet')
                     amulet = True
                 elif camp_cmd == 'back' or camp_cmd == 'leave':
@@ -4453,7 +4944,7 @@ def gamestart():
                         print('')
                         print('You read the diary:')
                         print('You found the EXPLORER’S COMPLETE DIARY!')
-                        print('It reveals the full truth of the cave and the demon.')
+                        print('It reveals some of the truth of the cave and the demon.')
                         print('It says that a long time ago, there was a beautiful woman.')
                         print('Unfortunately, one day, she was killed by a man who do not like her.')
                         print('Then, she became a succubus.')
@@ -4465,10 +4956,10 @@ def gamestart():
                         print('In the end of diary, you great grandfather says that he have be in the cave for 60 years.')
                         print('He had wanted to unleash his great grandmother for a lot of times.')
                         print('Then he give up. And he also says that if you see this diary, you will have to choose an answer.')
-                        print('There is still some words, but you can not read them because they are covered by a lot of blue ink.')
+                        print('There is still some words, but you can not read them because they are covered by a lot of blood.')
                         print('')
                         grave_diary_read = True
-                    elif choice == 'leave':
+                    elif choice == 'leave' or choice == 'back':
                         print('You respect the deceased. The spirit approves.')
                         good += 20
                         print('')
@@ -4493,8 +4984,6 @@ def gamestart():
                         print('Sorry, I do not understand that word.')
                 else:
                     print('Unknown command.')
-        else:
-            print('Unknown command.')
         if game_over == True:
             print("=== END ===")
             print("Type 'menu' to return main menu")
@@ -4626,7 +5115,6 @@ def menu():
 
     print('This is the main menu.')
     print('You can type start or quit or task for tasks.')
-    print('Type under this board.')
     if play_count == 3:
         print('You can try to type time to do a time travel and avoid the trady.')
     while True:
@@ -4683,7 +5171,7 @@ def menu():
                 if play_count <= 2:
                     print('')
                     print('TASKS:')
-                    print('TRUE ENDING: find three stone runes -> go to the altar -> read diarys (You can also do not done this) -> place runes -> choose')
+                    print('TRUE ENDING (ng2): find three stone runes -> go to the altar -> read diarys (You can also do not done this) -> place runes -> choose')
                     print('RICH ENDING: house -> take things -> go on the altar -> go in the cave -> west -> choose way')
                     print('DUNGEON: play again -> south -> go to tomb -> search by yourself')
                     print('')
@@ -4703,7 +5191,7 @@ def menu():
             print('Please answer the question.')
 # main
 def main():
-    global have_list, game_over, light, hp, l, k, n, s, f, w, p, sc, secret_unlocked, map_unlocked, amulet, turn_count, chain1, chain2, diary_read, legacy_unlocked, new_game_plus, ng_amulet, ng_compass, ng_diary, current_room, torch, no_light_run, all_collected, rune1, rune2, rune3, faith, sky, moon, trap_protect, rune, grandmother, gate_unlock, old_diary_readed, grave_diary_read, force_over, game_back, play_count, tomb_unlocked, old_note_readed,cleared_ending,time_period,step_count,death_count,good,evil,death_corpse_item,death_location,has_death_corpse
+    global have_list, game_over, light, hp, l, k, n, s, f, w, p, sc, secret_unlocked, map_unlocked, amulet, turn_count, chain1, chain2, diary_read, legacy_unlocked, new_game_plus, ng_amulet, ng_compass, ng_diary, current_room, torch, no_light_run, all_collected, rune1, rune2, rune3, faith, sky, moon, trap_protect, rune, grandmother, gate_unlock, old_diary_readed, grave_diary_read, force_over, game_back, play_count, tomb_unlocked, old_note_readed,cleared_ending,time_period,step_count,death_count,good,evil,death_corpse_item,death_location,has_death_corpse,one_hole_in,two_hole_in,three_hole_in,four_hole_in
     today = datetime.date.today()
     m = today.month
     d = today.day
@@ -4714,8 +5202,21 @@ def main():
             print("✨ NEW YEAR FESTIVAL ✨")
             print("New cycle begins, hope fills the cave.")
             print("=====================================\n")
-            hp = 8
+            hp += 8
             good += 8
+        elif d == 3:
+            print("\n=====================================")
+            print("❄️ FROSTBITE CURSE ❄️")
+            print("Freezing wind pierces your bones.")
+            print("=====================================\n")
+            hp -= 3
+            evil += 2
+        elif d == 10:
+            print("\n=====================================")
+            print("🔇 DEAD SILENCE DAY 🔇")
+            print("All spirits fall silent, no one answers.")
+            print("=====================================\n")
+            faith -= 5
         elif d == 14:
             print("\n=====================================")
             print("📖 LEGACY FESTIVAL 📖")
@@ -4723,13 +5224,19 @@ def main():
             print("=====================================\n")
             diary_read = True
             have_list.append("ancient diary")
-        elif d == 21:
+        elif d == 18:
             print("\n=====================================")
-            print("🤝 BOND FESTIVAL 🤝")
-            print("Warmth connects, loneliness fades.")
+            print("👻 WINTER WHISPER CURSE 👻")
+            print("Cold whispers feed the darkness in your heart.")
             print("=====================================\n")
-            good += 12
-            hp += 4
+            evil += 6
+        elif d == 25:
+            print("\n=====================================")
+            print("🌑 LONG NIGHT CURSE 🌑")
+            print("Darkness burns twice as fierce tonight.")
+            print("=====================================\n")
+            hp -= 2
+            evil += 3
         elif d == 26:
             print("\n=====================================")
             print("🌞 DAWN FESTIVAL 🌞")
@@ -4752,6 +5259,24 @@ def main():
             print("Soft warmth calms all spirits.")
             print("=====================================\n")
             hp += 5
+        elif d == 5:
+            print("\n=====================================")
+            print("🧊 THIN ICE CURSE 🧊")
+            print("Hidden traps lie under thin ice.")
+            print("=====================================\n")
+            trap_protect = False
+        elif d == 9:
+            print("\n=====================================")
+            print("🌫️ MIST ILLUSION DAY 🌫️")
+            print("The map fades, you lose your sense of direction.")
+            print("=====================================\n")
+            map_unlocked = False
+        elif d == 12:
+            print("\n=====================================")
+            print("🦠 SPOILED AIR DAY 🦠")
+            print("Damp foul air makes you weak.")
+            print("=====================================\n")
+            hp -= 2
         elif d == 14:
             print("\n=====================================")
             print("❤️ TENDER FESTIVAL ❤️")
@@ -4764,6 +5289,12 @@ def main():
             print("Hidden treasures appear.")
             print("=====================================\n")
             have_list.append("lucky clover")
+        elif d == 19:
+            print("\n=====================================")
+            print("💔 VAIN HOPE DAY 💔")
+            print("Kindness dissolves into the fog.")
+            print("=====================================\n")
+            good -= 5
         elif d == 20:
             print("\n=====================================")
             print("💧 MERCY FESTIVAL 💧")
@@ -4771,6 +5302,19 @@ def main():
             print("=====================================\n")
             evil -= 8
             good += 5
+        elif d == 22:
+            print("\n=====================================")
+            print("💡 BROKEN LAMP DAY 💡")
+            print("Your lamp flickers and dies.")
+            print("=====================================\n")
+            light = False
+        elif d == 26:
+            print("\n=====================================")
+            print("🌀 ECHO CURSE DAY 🌀")
+            print("Twisted echoes confuse your mind.")
+            print("=====================================\n")
+            faith -= 4
+            evil += 3
         elif d == 28:
             print("\n=====================================")
             print("🕯️ EMBER FESTIVAL 🕯️")
@@ -4778,6 +5322,30 @@ def main():
             print("=====================================\n")
             light = True
             have_list.append("eternal flame")
+        elif d == 29:
+            print("\n=====================================")
+            print('Wow, you enter this game February 29th, the day four year once!')
+            print('I will let you be as well as a god!')
+            print("=====================================\n")
+            hp = 999
+            trap_protect = True
+            rune1 = True
+            rune2 = True
+            rune3 = True
+            diary_read = True
+            old_diary_readed = True
+            old_note_readed = True
+            light = True
+            good = 100
+            grave_diary_read = True
+            have_list.append('rope')
+            have_list.append('ghost sword')
+            have_list.append('gold coins')
+            have_list.append('a pick-axe')
+            have_list.append('super amulet')
+            have_list.append('holy amulet')
+            amulet = True
+            map_unlocked = True
 
     elif m == 3:
         if d == 4:
@@ -4786,6 +5354,19 @@ def main():
             print("Moonlight reveals forgotten truths.")
             print("=====================================\n")
             faith += 7
+        elif d == 6:
+            print("\n=====================================")
+            print("☠️ TOXIC MIST CURSE ☠️")
+            print("Poisonous mist fills the swamp.")
+            print("=====================================\n")
+            hp -= 2
+            evil += 4
+        elif d == 11:
+            print("\n=====================================")
+            print("👻 WRAITH AWAKEN DAY 👻")
+            print("Slumbering evil spirits wake from the earth.")
+            print("=====================================\n")
+            evil += 6
         elif d == 14:
             print("\n=====================================")
             print("🤍 PURE FESTIVAL 🤍")
@@ -4805,6 +5386,25 @@ def main():
             print("=====================================\n")
             good += 7
             evil -= 7
+        elif d == 22:
+            print("\n=====================================")
+            print("🌿 THORN GROWTH CURSE 🌿")
+            print("Cursed thorns tear at your skin.")
+            print("=====================================\n")
+            hp -= 3
+        elif d == 27:
+            print("\n=====================================")
+            print("❌ FALSE RUNE DAY ❌")
+            print("Fake runes confuse your memory.")
+            print("=====================================\n")
+            faith -= 6
+        elif d == 29:
+            print("\n=====================================")
+            print("🌧️ COLD RAIN DAY 🌧️")
+            print("Cold rain seeps through your clothes.")
+            print("=====================================\n")
+            hp -= 2
+            evil += 2
         elif d == 31:
             print("\n=====================================")
             print("👻 COMPANION FESTIVAL 👻")
@@ -4819,6 +5419,19 @@ def main():
             print("Mischief fills the halls.")
             print("=====================================\n")
             have_list.append("trickster mask")
+        elif d == 8:
+            print("\n=====================================")
+            print("🕳️ MUDDY TRAP DAY 🕳️")
+            print("Hidden mud traps are everywhere.")
+            print("=====================================\n")
+            trap_protect = False
+            hp -= 1
+        elif d == 12:
+            print("\n=====================================")
+            print("🌧️ WRAITH RAIN CURSE 🌧️")
+            print("Rain carries vengeful spirits.")
+            print("=====================================\n")
+            hp -= 3
         elif d == 14:
             print("\n=====================================")
             print("🖤 SHADOW FESTIVAL 🖤")
@@ -4831,12 +5444,25 @@ def main():
             print("Rain washes corruption.")
             print("=====================================\n")
             evil -= 10
+        elif d == 18:
+            print("\n=====================================")
+            print("🌑 SHADOW GROW DAY 🌑")
+            print("Darkness grows stronger.")
+            print("=====================================\n")
+            evil += 5
+            hp -= 1
         elif d == 22:
             print("\n=====================================")
             print("🌱 GROWTH FESTIVAL 🌱")
             print("Life force surges.")
             print("=====================================\n")
             hp += 7
+        elif d == 27:
+            print("\n=====================================")
+            print("💡 HOLLOW LIGHT DAY 💡")
+            print("Your light grows dim and weak.")
+            print("=====================================\n")
+            hp -= 2
         elif d == 30:
             print("\n=====================================")
             print("👻 AWAKEN FESTIVAL 👻")
@@ -4851,24 +5477,54 @@ def main():
             print("Bright hopes bloom.")
             print("=====================================\n")
             good += 8
+        elif d == 7:
+            print("\n=====================================")
+            print("🔥 SCORCHING HEAT DAY 🔥")
+            print("Scorching heat drains your strength.")
+            print("=====================================\n")
+            hp -= 3
+        elif d == 11:
+            print("\n=====================================")
+            print("🐺 BEAST HUNT DAY 🐺")
+            print("Wild beasts roam the woods.")
+            print("=====================================\n")
+            hp -= 3
         elif d == 14:
             print("\n=====================================")
             print("💛 GOLDEN FESTIVAL 💛")
             print("Kindness shines bright.")
             print("=====================================\n")
             good += 10
+        elif d == 16:
+            print("\n=====================================")
+            print("🩸 BLOOD BUDDING CURSE 🩸")
+            print("Cursed plants bloom with evil.")
+            print("=====================================\n")
+            evil += 7
         elif d == 20:
             print("\n=====================================")
             print("⚡ STORM FESTIVAL ⚡")
             print("Thunder awakens power.")
             print("=====================================\n")
             have_list.append("thunder core")
+        elif d == 21:
+            print("\n=====================================")
+            print("🧠 FRAYED SANITY DAY 🧠")
+            print("Hallucinations cloud your mind.")
+            print("=====================================\n")
+            faith -= 7
         elif d == 25:
             print("\n=====================================")
             print("🌙 SILVER FESTIVAL 🌙")
             print("Moonlight gathers spirits.")
             print("=====================================\n")
             faith += 8
+        elif d == 29:
+            print("\n=====================================")
+            print("🔥 HOT WIND CURSE 🔥")
+            print("Hot wind blows out your torch.")
+            print("=====================================\n")
+            torch = False
         elif d == 31:
             print("\n=====================================")
             print("👻 TIE FESTIVAL 👻")
@@ -4883,30 +5539,75 @@ def main():
             print('You receive a silly candy.')
             have_list.append('silly candy')
             print("=====================================\n")
-        if d == 6:
+        elif d == 4:
+            print("\n=====================================")
+            print("💧 DEHYDRATION DAY 💧")
+            print("The sun drains all moisture from you.")
+            print("=====================================\n")
+            hp -= 3
+        elif d == 6:
             print("\n=====================================")
             print("☀️ SOLAR FESTIVAL ☀️")
             print("Sunlight dispels shadows.")
             print("=====================================\n")
             evil -= 6
+        elif d == 9:
+            print("\n=====================================")
+            print("🔥 SCORCHED TONGUE DAY 🔥")
+            print("No spirit wants to talk to you.")
+            print("=====================================\n")
+            good -= 5
         elif d == 14:
             print("\n=====================================")
             print("💙 CALM FESTIVAL 💙")
             print("Peace calms chaos.")
             print("=====================================\n")
             good += 7
+        elif d == 16:
+            print("\n=====================================")
+            print("☀️ MIDDAY GLARE CURSE ☀️")
+            print("Blinding sunlight makes your map useless.")
+            print("=====================================\n")
+            map_unlocked = False
+        elif d == 20:
+            print("\n=====================================")
+            print('??? XXXXXXXX FESTIVAL ???')
+            print('????????????????????????????????????')
+            print("=====================================\n")
+            hp = 1
+            evil = 30
+            have_list.append('??????')
         elif d == 21:
             print("\n=====================================")
             print("🌞 LONGEST DAY FESTIVAL 🌞")
             print("Light triumphs over dark.")
             print("=====================================\n")
             hp += 8
+        elif d == 23:
+            print("\n=====================================")
+            print("🌿 WITHERED HERB DAY 🌿")
+            print("All healing herbs wither in the heat.")
+            print("=====================================\n")
+            hp -= 2
         elif d == 24:
             print("\n=====================================")
             print("🔥 GUARD FESTIVAL 🔥")
             print("Flame shields all harm.")
             print("=====================================\n")
             torch = True
+        elif d == 27:
+            print("\n=====================================")
+            print("🌪️ DUSK STORM CURSE 🌪️")
+            print("Dusk storm blows out your flame.")
+            print("=====================================\n")
+            torch = False
+            light = False
+        elif d == 29:
+            print("\n=====================================")
+            print("🦗 CICADA CHAOS DAY 🦗")
+            print("Deafening noise breaks your focus.")
+            print("=====================================\n")
+            faith -= 7
         elif d == 30:
             print("\n=====================================")
             print("👻 MEMORY FESTIVAL 👻")
@@ -4917,12 +5618,32 @@ def main():
             old_note_readed = True
 
     elif m == 7:
-        if d == 7:
+        if d == 3:
+            print("\n=====================================")
+            print("👻 GHOST HUNT CURSE 👻")
+            print("Hostile ghosts roam the land.")
+            print("=====================================\n")
+            evil += 6
+            hp -= 2
+        elif d == 7:
             print("\n=====================================")
             print("🌌 STAR FESTIVAL 🌌")
             print("Stars reveal fate.")
             print("=====================================\n")
             faith += 10
+        elif d == 10:
+            print("\n=====================================")
+            print("🥵 HEAT STROKE DAY 🥵")
+            print("Searing heat drains your strength.")
+            print("=====================================\n")
+            hp -= 4
+        elif d == 13:
+            print("\n=====================================")
+            print("🗡️ CURSED DAGGER DAY 🗡️")
+            print("A cursed blade appears in your bag.")
+            print("=====================================\n")
+            have_list.append("cursed dagger")
+            evil += 3
         elif d == 15:
             print("\n=====================================")
             print("👻 SPIRIT GATE FESTIVAL 👻")
@@ -4930,6 +5651,13 @@ def main():
             print("=====================================\n")
             have_list.append("ancestor blessing")
             good += 12
+        elif d == 18:
+            print("\n=====================================")
+            print("🏜️ MIRAGE CURSE 🏜️")
+            print("Mirages lead you astray.")
+            print("=====================================\n")
+            map_unlocked = False
+            faith -= 5
         elif d == 20:
             print("\n=====================================")
             print("🌊 WAVE FESTIVAL 🌊")
@@ -4942,6 +5670,19 @@ def main():
             print("Light reveals secrets.")
             print("=====================================\n")
             have_list.append("crystal light")
+        elif d == 28:
+            print("\n=====================================")
+            print("🌑 BLOOD MOON EVE 🌑")
+            print("Dark power surges before the blood moon.")
+            print("=====================================\n")
+            evil += 8
+        elif d == 30:
+            print("\n=====================================")
+            print("😈 SUCCUBUS WHISPER DAY 😈")
+            print("Her voice whispers in your ear.")
+            print("=====================================\n")
+            faith -= 8
+            evil += 5
         elif d == 31:
             print("\n=====================================")
             print("👻 SHADOWTALE FESTIVAL 👻")
@@ -4950,12 +5691,33 @@ def main():
             have_list.append("shadow story")
 
     elif m == 8:
-        if d == 8:
+        if d == 3:
+            print("\n=====================================")
+            print("🍂 WITHERING CURSE 🍂")
+            print("Everything withers and fades.")
+            print("=====================================\n")
+            hp -= 3
+            good -= 4
+        elif d == 6:
+            print("\n=====================================")
+            print("🪞 BROKEN GHOST MIRROR DAY 🪞")
+            print("A shattered mirror appears in your bag.")
+            print("=====================================\n")
+            have_list.append("broken ghost mirror")
+            faith -= 5
+        elif d == 8:
             print("\n=====================================")
             print("🌺 PURIFY FESTIVAL 🌺")
             print("Purity removes greed.")
             print("=====================================\n")
             good += 8
+        elif d == 11:
+            print("\n=====================================")
+            print("💀 FAMINE CURSE DAY 💀")
+            print("Hunger drains your willpower.")
+            print("=====================================\n")
+            hp -= 4
+            evil += 5
         elif d == 15:
             print("\n=====================================")
             print("🌕 FULLMOON FESTIVAL 🌕")
@@ -4963,18 +5725,46 @@ def main():
             print("=====================================\n")
             hp += 4
             amulet = True
+        elif d == 17:
+            print("\n=====================================")
+            print("🌑 BLOOD MOON FESTIVAL 🌑")
+            print("The blood moon rises. All darkness grows stronger.")
+            print("=====================================\n")
+            evil += 10
+            hp -= 3
         elif d == 20:
             print("\n=====================================")
             print("🍂 HARVEST FESTIVAL 🍂")
             print("Bounty appears.")
             print("=====================================\n")
             have_list.append("harvest fruit")
+        elif d == 23:
+            print("\n=====================================")
+            print("📿 ROTTEN CHARM DAY 📿")
+            print("A rotten charm slips into your bag.")
+            print("=====================================\n")
+            have_list.append("rotten charm")
+            amulet = False
         elif d == 25:
             print("\n=====================================")
             print("🌙 DUSK FESTIVAL 🌙")
             print("Day meets night softly.")
             print("=====================================\n")
             faith += 7
+        elif d == 27:
+            print("\n=====================================")
+            print("⛓️ SOUL CHAIN DAY ⛓️")
+            print("A cold soul chain wraps around you.")
+            print("=====================================\n")
+            have_list.append("soul chain")
+            evil += 6
+        elif d == 29:
+            print("\n=====================================")
+            print("👻 GHOST RAID DAY 👻")
+            print("Waves of ghosts launch sudden attacks.")
+            print("=====================================\n")
+            hp -= 5
+            evil += 7
         elif d == 31:
             print("\n=====================================")
             print("👻 REST FESTIVAL 👻")
@@ -4983,18 +5773,43 @@ def main():
             good += 6
 
     elif m == 9:
-        if d == 9:
+        if d == 3:
+            print("\n=====================================")
+            print("💨 WAILING WIND CURSE 💨")
+            print("Howling winds shatter your will.")
+            print("=====================================\n")
+            faith -= 7
+        elif d == 7:
+            print("\n=====================================")
+            print("🌫️ MEMORY FOG DAY 🌫️")
+            print("Fog blurs your memories.")
+            print("=====================================\n")
+            faith -= 5
+            evil += 3
+        elif d == 9:
             print("\n=====================================")
             print("📜 WISDOM FESTIVAL 📜")
             print("Ancient knowledge awakens.")
             print("=====================================\n")
             have_list.append("ancient scroll")
+        elif d == 12:
+            print("\n=====================================")
+            print("🍂 FALLEN LEAF CURSE 🍂")
+            print("Cursed leaves cut your skin.")
+            print("=====================================\n")
+            hp -= 3
         elif d == 14:
             print("\n=====================================")
             print("💜 COURAGE FESTIVAL 💜")
             print("Brave hearts stand tall.")
             print("=====================================\n")
             good += 8
+        elif d == 19:
+            print("\n=====================================")
+            print("⚔️ OLD GRUDGE AWAKEN DAY ⚔️")
+            print("Ancient grudges rise from the grave.")
+            print("=====================================\n")
+            evil += 8
         elif d == 22:
             print("\n=====================================")
             print("🍁 AUTUMN BALANCE FESTIVAL 🍁")
@@ -5008,6 +5823,12 @@ def main():
             print("Guardians watch.")
             print("=====================================\n")
             amulet = True
+        elif d == 28:
+            print("\n=====================================")
+            print("🌆 TWILIGHT CHAOS DAY 🌆")
+            print("Day and night fall into chaos.")
+            print("=====================================\n")
+            time_period = "night"
         elif d == 30:
             print("\n=====================================")
             print("🌙 ECHO FESTIVAL 🌙")
@@ -5022,12 +5843,33 @@ def main():
             print("Cave blazes warm.")
             print("=====================================\n")
             hp += 5
+        elif d == 6:
+            print("\n=====================================")
+            print("🧟 DEAD WALK DAY 🧟")
+            print("The dead walk the earth tonight.")
+            print("=====================================\n")
+            trap_protect = False
+            evil += 5
+        elif d == 11:
+            print("\n=====================================")
+            print("🌑 DARKNESS EROSION CURSE 🌑")
+            print("Darkness eats through your light.")
+            print("=====================================\n")
+            hp -= 4
+            light = False
         elif d == 15:
             print("\n=====================================")
             print("👻 GATHER FESTIVAL 👻")
             print("Ghosts assemble.")
             print("=====================================\n")
             have_list.append("shadow dance")
+        elif d == 18:
+            print("\n=====================================")
+            print("☠️ CURSE STRENGTHEN DAY ☠️")
+            print("The ancient curse grows stronger.")
+            print("=====================================\n")
+            evil += 7
+            hp -= 2
         elif d == 20:
             print("\n=====================================")
             print("💀 BONE FESTIVAL 💀")
@@ -5042,6 +5884,18 @@ def main():
             print("Light guides lost souls.")
             print("=====================================\n")
             light = True
+        elif d == 27:
+            print("\n=====================================")
+            print("👻 GHOST RAID DAY 👻")
+            print("Ghosts launch a sudden attack.")
+            print("=====================================\n")
+            hp -= 4
+        elif d == 29:
+            print("\n=====================================")
+            print("⛪ FALSE SALVATION DAY ⛪")
+            print("Fake hope twists your kindness.")
+            print("=====================================\n")
+            good -= 8
         elif d == 31:
             print("\n=====================================")
             print("🎃 ALLHALLOWS FESTIVAL 🎃")
@@ -5050,6 +5904,7 @@ def main():
             hp += 3
             good += 5
             evil -= 3
+
     elif m == 11:
         if d == 1:
             print("\n=====================================")
@@ -5063,18 +5918,54 @@ def main():
             print("Ancient tales live.")
             print("=====================================\n")
             faith += 10
+        elif d == 5:
+            print("\n=====================================")
+            print("🌫️ THICK FOG LOST DAY 🌫️")
+            print("Thick fog makes you lose your way.")
+            print("=====================================\n")
+            map_unlocked = False
+        elif d == 9:
+            print("\n=====================================")
+            print("🥶 BITTER COLD DAY 🥶")
+            print("Bitter cold freezes your bones.")
+            print("=====================================\n")
+            hp -= 4
         elif d == 11:
             print("\n=====================================")
             print("⚔️ VALOR FESTIVAL ⚔️")
             print("Fears fade away.")
             print("=====================================\n")
             hp += 7
+        elif d == 15:
+            print("\n=====================================")
+            print("🤫 SILENCE CURSE DAY 🤫")
+            print("No spirit will speak to you today.")
+            print("=====================================\n")
+            faith -= 6
         elif d == 20:
             print("\n=====================================")
             print("🌫️ VEIL FESTIVAL 🌫️")
             print("Masks hide truths.")
             print("=====================================\n")
             have_list.append("misty veil")
+        elif d == 22:
+            print("\n=====================================")
+            print("⚙️ FROZEN GEAR DAY ⚙️")
+            print("All your tools freeze and fail.")
+            print("=====================================\n")
+            trap_protect = False
+        elif d == 26:
+            print("\n=====================================")
+            print("👻 HOMELESS GHOST DAY 👻")
+            print("Wandering ghosts cling to you.")
+            print("=====================================\n")
+            evil += 7
+        elif d == 28:
+            print("\n=====================================")
+            print("⭐ FAINT STAR DAY ⭐")
+            print("Stars fade, you lose your guidance.")
+            print("=====================================\n")
+            faith -= 8
         elif d == 30:
             print("\n=====================================")
             print("🕊️ PEACE FESTIVAL 🕊️")
@@ -5083,18 +5974,44 @@ def main():
             good += 8
 
     elif m == 12:
-        if d == 5:
+        if d == 3:
+            print("\n=====================================")
+            print("🌑 POLAR NIGHT CURSE 🌑")
+            print("Endless night falls over the valley.")
+            print("=====================================\n")
+            time_period = "night"
+            evil += 4
+        elif d == 5:
             print("\n=====================================")
             print("❄️ FROST FESTIVAL ❄️")
             print("Calm quiet wraps cave.")
             print("=====================================\n")
             hp += 4
+        elif d == 8:
+            print("\n=====================================")
+            print("🥶 FROSTBITE WEATHER DAY 🥶")
+            print("Freezing weather weakens you.")
+            print("=====================================\n")
+            hp -= 3
+        elif d == 14:
+            print("\n=====================================")
+            print("😔 DESPAIR EVE 😔")
+            print("The weight of the cycle crushes hope.")
+            print("=====================================\n")
+            good -= 7
+            evil += 5
         elif d == 15:
             print("\n=====================================")
             print("🌟 HOPESTAR FESTIVAL 🌟")
             print("Hope never fades.")
             print("=====================================\n")
             faith += 10
+        elif d == 19:
+            print("\n=====================================")
+            print("🧊 FROZEN AMULET DAY 🧊")
+            print("Ice freezes your amulet powerless.")
+            print("=====================================\n")
+            amulet = False
         elif d == 22:
             print("\n=====================================")
             print("❄️ SHORTEST DAY FESTIVAL ❄️")
@@ -5108,6 +6025,19 @@ def main():
             print("=====================================\n")
             hp += 5
             have_list.append("christmas candy")
+        elif d == 27:
+            print("\n=====================================")
+            print("👻 WINTER WRAITH DAY 👻")
+            print("Frost wraiths strike from the cold.")
+            print("=====================================\n")
+            hp -= 4
+        elif d == 29:
+            print("\n=====================================")
+            print("🔁 CYCLE CLOSE DAY 🔁")
+            print("The loop tightens around you.")
+            print("=====================================\n")
+            hp -= 3
+            evil += 4
         elif d == 31:
             print("\n=====================================")
             print("✨ FAREWELL FESTIVAL ✨")
@@ -5119,6 +6049,7 @@ def main():
             diary_read = True
             old_diary_readed = True
             old_note_readed = True
+
     game_over = False
     force_over = False
     if play_count == 3:
@@ -5129,12 +6060,37 @@ def main():
         print('A voice booms: Mortrol, you final break the cycle, you pass my exam, so I will let you go to the heaven and meet me.\n')
         print('Game developer: PLayer, you have already done the main game, you can quit now or go to the last part.')
     if game_back == False:
-        print('=== Death Adventure v1.0 - Official Release ===')
-        print('Welcome to death adventure! You are a poor adventure, dream of rich and treasure. I will be your eyes and hands. You can say west or east north and south to control.')
-        print('Your family always have somebody disappears. Your father said that he will go on a holiday, but he never came back.\n')
+        if not args.godmode:
+            print('=== Death Adventure v1.0 - Official Release ===')
+            print('Welcome to death adventure! You are a poor adventure, dream of rich and treasure. I will be your eyes and hands. You can say west or east north and south to control.')
+            print('Your family always have somebody disappears. Your father said that he will go on a holiday, but he never came back.\n')
+            good += 5
+        else:
+            print('=== Death Adventure v1.0 - Official Release ===')
+            print('Welcome to death adventure! You are a god who go to the mortrol world. I will be your eyes and hands. You can say west or east north and south to control.')
+            print('You go to mortrol world beacause you see a family which have a curse. But unfortunately, you become a part of the curse too!')
+            print('Then, you become a mortrol who has the power as a god.')
+            print('Your will still die, however.\n')
         if args.godmode:
             hp = 999
             trap_protect = True
+            rune1 = True
+            rune2 = True
+            rune3 = True
+            diary_read = True
+            old_diary_readed = True
+            old_note_readed = True
+            light = True
+            good = 100
+            grave_diary_read = True
+            have_list.append('rope')
+            have_list.append('ghost sword')
+            have_list.append('gold coins')
+            have_list.append('a pick-axe')
+            have_list.append('super amulet')
+            have_list.append('holy amulet')
+            amulet = True
+            map_unlocked = True
             print("God mode activated\n")
             menu()
         if args.cheat:
@@ -5151,7 +6107,10 @@ def main():
     elif game_back == True:
         if cleared_ending == True:
             if play_count == 2:
-                have_list = []
+                if args.godmode:
+                    pass
+                else:
+                    have_list = []
                 light = False
                 hp = 5
                 l = 'a lamp, '
@@ -5198,7 +6157,7 @@ def main():
                 print('')
                 print('A voice booms:')
                 print('Descendent, you done a well job.')
-                print('Our cuse will be broken by you.')
+                print('Our curfse will be broken by you.')
                 print('Please hurry! Before out ghosts disappears.')
                 print('Go to the campsite, then go to the tomb to find me.')
                 print('')
@@ -5206,7 +6165,7 @@ def main():
                 print('')
                 menu()
             elif play_count == 3:
-                print('Welcome to the last but not least part of death adventure.')
+                print('Welcome to the last least not last part of death adventure.')
                 print('You will never go to the cave again, instead, your great-great grandfather tell you to go somewhere.')
                 print('So, you will go to the menu.')
         else:
@@ -5216,6 +6175,10 @@ def main():
                 death_corpse_item = random.choice(have_list)
             else:
                 death_corpse_item = ""
+            one_hole_in = False
+            two_hole_in = False
+            three_hole_in = False
+            four_hole_in = False
             death_location = current_room
             has_death_corpse = True
             have_list = []
@@ -5294,8 +6257,6 @@ def main():
             menu()
     if force_over == True:
         return
-
-
 if __name__ == "__main__":
     root = tk.Tk()
     app = GameConsole(root)
