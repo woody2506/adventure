@@ -628,7 +628,7 @@ def forgotten_archive():
             continue
         elif cmd == "examine corpse" or cmd == 'corpse' or cmd == 'search corpse' or cmd == 'find corpse':
             if has_death_corpse and death_location == current_room:
-                print("\nA corpse slumps against the dusty table. It wears your exact clothes.")
+                print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
                 if death_corpse_item:
                     print(f"You retrieve {death_corpse_item} from its pocket.")
                     have_list.append(death_corpse_item)
@@ -1569,7 +1569,7 @@ def wax_chamber():
                 print("Invalid number.")
         elif cmd == "examine corpse" or cmd == 'corpse' or cmd == 'search corpse' or cmd == 'find corpse':
             if has_death_corpse and death_location == current_room:
-                print("\nA corpse slumps against the dusty table. It wears your exact clothes.")
+                print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
                 if death_corpse_item:
                     print(f"You retrieve {death_corpse_item} from its pocket.")
                     have_list.append(death_corpse_item)
@@ -1695,7 +1695,7 @@ def pendulum_mortuary():
                 print("Not enough faith. The dead do not listen.")
         elif cmd == "examine corpse" or cmd == 'corpse' or cmd == 'search corpse' or cmd == 'find corpse':
             if has_death_corpse and death_location == current_room:
-                print("\nA corpse slumps against the dusty table. It wears your exact clothes.")
+                print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
                 if death_corpse_item:
                     print(f"You retrieve {death_corpse_item} from its pocket.")
                     have_list.append(death_corpse_item)
@@ -2243,7 +2243,7 @@ def misty_swamp():
             gamestart()
         elif scmd == "examine corpse" or scmd == 'corpse' or scmd == 'search corpse' or scmd == 'find corpse':
             if has_death_corpse and death_location == current_room:
-                print("\nA corpse slumps against the dusty table. It wears your exact clothes.")
+                print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
                 if death_corpse_item:
                     print(f"You retrieve {death_corpse_item} from its pocket.")
                     have_list.append(death_corpse_item)
@@ -2951,7 +2951,7 @@ def cave():
                                             print("YOU NEED A PICKAXE TO DIG!")
                                     elif gocave == "examine corpse" or gocave == 'corpse' or gocave == 'search corpse' or gocave == 'find corpse':
                                         if has_death_corpse and death_location == current_room:
-                                            print("\nA corpse slumps against the dusty table. It wears your exact clothes.")
+                                            print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
                                             if death_corpse_item:
                                                 print(f"You retrieve {death_corpse_item} from its pocket.")
                                                 have_list.append(death_corpse_item)
@@ -2994,7 +2994,7 @@ def cave():
                                                 break
                                             elif sewer_cmd == "examine corpse" or sewer_cmd == 'corpse' or sewer_cmd == 'search corpse' or sewer_cmd == 'find corpse':
                                                 if has_death_corpse and death_location == current_room:
-                                                    print("\nA corpse slumps against the dusty table. It wears your exact clothes.")
+                                                    print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
                                                     if death_corpse_item:
                                                         print(f"You retrieve {death_corpse_item} from its pocket.")
                                                         have_list.append(death_corpse_item)
@@ -3435,7 +3435,7 @@ def cave():
                                                 break
                                             elif pathwest == "examine corpse" or pathwest == 'corpse' or pathwest == 'search corpse' or pathwest == 'find corpse':
                                                 if has_death_corpse and death_location == current_room:
-                                                    print("\nA corpse slumps against the dusty table. It wears your exact clothes.")
+                                                    print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
                                                     if death_corpse_item:
                                                         print(f"You retrieve {death_corpse_item} from its pocket.")
                                                         have_list.append(death_corpse_item)
@@ -3578,7 +3578,7 @@ def cave():
             return
         elif op == "examine corpse" or op == 'corpse' or op == 'search corpse' or op == 'find corpse':
             if has_death_corpse and death_location == current_room:
-                print("\nA corpse slumps against the dusty table. It wears your exact clothes.")
+                print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
                 if death_corpse_item:
                     print(f"You retrieve {death_corpse_item} from its pocket.")
                     have_list.append(death_corpse_item)
@@ -3847,7 +3847,7 @@ def gamestart():
                         print('You find a hole which is big enough for a rune, but you may have already take the rune away.')
                 elif take == "examine corpse" or take == 'corpse' or take == 'search corpse' or take == 'find corpse':
                     if has_death_corpse and death_location == current_room:
-                        print("\nA corpse slumps against the dusty table. It wears your exact clothes.")
+                        print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
                         if death_corpse_item:
                             print(f"You retrieve {death_corpse_item} from its pocket.")
                             have_list.append(death_corpse_item)
@@ -4285,7 +4285,7 @@ def gamestart():
             print("\n...Wait, that wasn't in your bag.")
         elif go == "examine corpse" or go == 'corpse' or go == 'search corpse' or go == 'find corpse':
             if has_death_corpse and death_location == current_room:
-                print("\nA corpse slumps against the dusty table. It wears your exact clothes.")
+                print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
                 if death_corpse_item:
                     print(f"You retrieve {death_corpse_item} from its pocket.")
                     have_list.append(death_corpse_item)
@@ -4729,7 +4729,7 @@ def gamestart():
                     print("You jump up and down. You look silly.")
                 elif camp_cmd == "examine corpse" or camp_cmd == 'corpse' or camp_cmd == 'search corpse' or camp_cmd == 'find corpse':
                     if has_death_corpse and death_location == current_room:
-                        print("\nA corpse slumps against the dusty table. It wears your exact clothes.")
+                        print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
                         if death_corpse_item:
                             print(f"You retrieve {death_corpse_item} from its pocket.")
                             have_list.append(death_corpse_item)
