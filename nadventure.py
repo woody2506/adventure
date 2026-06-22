@@ -6253,6 +6253,7 @@ def main():
                 print('Goodbye!')
                 print("=== Death Adventure v3.2 - Official Release ===")
                 print("Thank you for playing!")
+                time.sleep(1)
                 exit()
             menu()
     if force_over == True:
