@@ -129,6 +129,7 @@ three_hole_in = False
 four_hole_in = False
 gnome_hole_in = False
 child_hole_in = False
+grave_take = False
 
 hunger = 20
 thirst = 15
@@ -3608,7 +3609,8 @@ def gamestart():
     global weather_duration,weather_damage
     global merchant_story_stage,swamp_spirit_story,hut_ghost_story,tower_ghost_story
     global has_death_corpse, death_location, death_corpse_item
-    global one_hole_in,two_hole_in,three_hole_in
+    global one_hole_in,two_hole_in,three_hole_in,grave_take
+
     altar = False
     if game_back == True and cleared_ending == True:
         play_count = 2
@@ -4822,53 +4824,56 @@ def gamestart():
                     else:
                         print('You find a hole for a rune, but you may have already took the rune away.')
                 elif camp_cmd == 'dig grave':
-                    print('You dig the grave. There is some treasure and a diary. Take treasure or leave it? take / leave (Even you choose any choice, you will read the diary.)')
-                    choice = input()
-                    if choice == 'take':
-                        print('You take the treasure. The spirit rages.')
-                        have_list.append('a diamond')
-                        evil += 15
-                        print('')
-                        print('You read the diary:')
-                        print('You found the EXPLORER’S COMPLETE DIARY!')
-                        print('It reveals some of the truth of the cave and the demon.')
-                        print('It says that a long time ago, there was a beautiful woman.')
-                        print('Unfortunately, one day, she was killed by a man who do not like her.')
-                        print('Then, she became a succubus.')
-                        print('The man found the succubus and the succubus killed him.')
-                        print('Then, a wizard appears, and control her, so she became a Evil.')
-                        print('She was active when the wizard died.')
-                        print('And then, the diarys owner go on and control the Evil.')
-                        print('It also says, he is your great-great grandfather!')
-                        print('In the end of diary, you great grandfather says that he have be in the cave for 60 years.')
-                        print('He had wanted to unleash his great grandmother for a lot of times.')
-                        print('Then he give up. And he also says that if you see this diary, you will have to choose an answer.')
-                        print('There is still some words, but you can not read them because they are covered by a lot of blood.')
-                        print('')
-                        grave_diary_read = True
-                    elif choice == 'leave' or choice == 'back':
-                        print('You respect the deceased. The spirit approves.')
-                        good += 20
-                        print('')
-                        print('You read the diary:')
-                        print('You found the EXPLORER’S COMPLETE DIARY!')
-                        print('It reveals the full truth of the cave and the demon.')
-                        print('It says that a long time ago, there was a beautiful woman.')
-                        print('Unfortunately, one day, she was killed by a man who do not like her.')
-                        print('Then, she became a succubus.')
-                        print('The man found the succubus and the succubus killed him.')
-                        print('Then, a wizard appears, and control her, so she became a Evil.')
-                        print('She was active when the wizard died.')
-                        print('And then, the diarys owner go on and control the Evil.')
-                        print('It also says, he is your great-great grandfather!')
-                        print('In the end of diary, you great grandfather says that he have be in the cave for 60 years.')
-                        print('He had wanted to unleash his great grandmother for a lot of times.')
-                        print('Then he give up. And he also says that if you see this diary, you will have to choose an answer.')
-                        print('There is still some words, but you can not read them because they are covered by a lot of blue ink.')
-                        print('')
-                        grave_diary_read = True
+                    if grave_take == False:
+                        print('You dig the grave. There is some treasure and a diary. Take treasure or leave it? take / leave (Even you choose any choice, you will read the diary.)')
+                        choice = input()
+                        if choice == 'take':
+                            print('You take the treasure. The spirit rages.')
+                            have_list.append('a diamond')
+                            evil += 15
+                            print('')
+                            print('You read the diary:')
+                            print('You found the EXPLORER’S COMPLETE DIARY!')
+                            print('It reveals some of the truth of the cave and the demon.')
+                            print('It says that a long time ago, there was a beautiful woman.')
+                            print('Unfortunately, one day, she was killed by a man who do not like her.')
+                            print('Then, she became a succubus.')
+                            print('The man found the succubus and the succubus killed him.')
+                            print('Then, a wizard appears, and control her, so she became a Evil.')
+                            print('She was active when the wizard died.')
+                            print('And then, the diarys owner go on and control the Evil.')
+                            print('It also says, he is your great-great grandfather!')
+                            print('In the end of diary, you great grandfather says that he have be in the cave for 60 years.')
+                            print('He had wanted to unleash his great grandmother for a lot of times.')
+                            print('Then he give up. And he also says that if you see this diary, you will have to choose an answer.')
+                            print('There is still some words, but you can not read them because they are covered by a lot of blood.')
+                            print('')
+                            grave_diary_read = True
+                        elif choice == 'leave' or choice == 'back':
+                            print('You respect the deceased. The spirit approves.')
+                            good += 20
+                            print('')
+                            print('You read the diary:')
+                            print('You found the EXPLORER’S COMPLETE DIARY!')
+                            print('It reveals the full truth of the cave and the demon.')
+                            print('It says that a long time ago, there was a beautiful woman.')
+                            print('Unfortunately, one day, she was killed by a man who do not like her.')
+                            print('Then, she became a succubus.')
+                            print('The man found the succubus and the succubus killed him.')
+                            print('Then, a wizard appears, and control her, so she became a Evil.')
+                            print('She was active when the wizard died.')
+                            print('And then, the diarys owner go on and control the Evil.')
+                            print('It also says, he is your great-great grandfather!')
+                            print('In the end of diary, you great grandfather says that he have be in the cave for 60 years.')
+                            print('He had wanted to unleash his great grandmother for a lot of times.')
+                            print('Then he give up. And he also says that if you see this diary, you will have to choose an answer.')
+                            print('There is still some words, but you can not read them because they are covered by a lot of blue ink.')
+                            print('')
+                            grave_diary_read = True
+                        else:
+                            print('Sorry, I do not understand that word.')
                     else:
-                        print('Sorry, I do not understand that word.')
+                        print('You have alrady dig the grave!')
                 else:
                     print('Unknown command.')
         if game_over == True:
