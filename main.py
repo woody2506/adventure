@@ -130,6 +130,13 @@ four_hole_in = False
 gnome_hole_in = False
 child_hole_in = False
 grave_take = False
+grave_looted = False
+church_purified = False
+church_desecrated = False
+swamp_quest_done = False
+sewer_treasure_taken = False
+explorer_thank_reward = False
+tomb_pray_used = False
 
 hunger = 20
 thirst = 15
@@ -1903,6 +1910,8 @@ def dwarven_forge_vault():
 def tomb():
     global game_over, hp, have_list, play_count, tomb_unlocked, game_back,cleared_ending
     global one_hole_in,two_hole_in,three_hole_in
+    global tomb_pray_used
+    
     jump_scare_face('flash')
     print("\n=== FORGOTTEN TOMB (NG+ ONLY) ===")
     print("You step into a dark, ancient tomb.")
@@ -2077,12 +2086,17 @@ def tomb():
                 print("'Free us, and free yourself.'")
                 have_list.append("final diary")
         elif cmd == "pray":
-            print("You kneel and pray for your ancestors.")
-            print("A warm light surrounds you.")
-            print("You feel their forgiveness.")
-            hp += 5
-            print("HP +5!")
-            print("===== ANCESTOR'S BLESSING =====")
+            if not tomb_pray_used:
+                print("You kneel and pray for your ancestors.")
+                print("A warm light surrounds you.")
+                print("You feel their forgiveness.")
+                hp += 5
+                print("HP +5!")
+                print("===== ANCESTOR'S BLESSING =====")
+                tomb_pray_used = True
+            else:
+                print("The ancestors have already given their blessing.")
+                print("No more power comes from further prayer.")
         elif cmd == "open coffin":
             print("You open a stone coffin.")
             print("Inside: bones and a broken amulet. And a magic key.")
@@ -2137,6 +2151,7 @@ def tomb():
 # misty swamp
 def misty_swamp():
     global game_over, hp, have_list, time_period, good, evil, rune2, game_back, swamp_quest, swamp_visited, lily_count,cleared_ending,swamp_spirit_story,misty_end,has_death_corpse,death_corpse_item,death_location,four_hole_in,night
+    global swamp_quest_done
 
     print("\n=== MISTY SWAMP ===")
     print("Thick fog covers the marsh. Every step is dangerous.")
@@ -2179,11 +2194,14 @@ def misty_swamp():
         elif scmd == "moral":
             print(f"Good: {good} | Evil: {evil}")
         elif scmd == "quest":
-            swamp_quest = True
-            print("A lost spirit appears")
-            print("Bring 3 lilies to help it rest")
-            print('Type find lily to find lily.')
-            print('Type turn in if you find three lily.')
+            if not swamp_quest_done:
+                swamp_quest = True
+                print("A lost spirit appears")
+                print("Bring 3 lilies to help it rest")
+                print('Type find lily to find lily.')
+                print('Type turn in if you find three lily.')
+            else:
+                print("The spirit has already found peace.")
         elif scmd == "find lily" and swamp_quest:
             rnd = random.randint(1,6)
             if rnd <= 3:
@@ -2879,10 +2897,13 @@ def hill():
                 return
             else:
                 print('Please answer the question.')
+
 #cave
 def cave():
     global game_over, hp, have_list, light, p, amulet, map_unlocked, secret_unlocked, diary_read, legacy_unlocked, current_room, torch,rune1,rune2,rune3,rune,grandmother,gate_unlock,old_diary_readed, game_back,play_count,old_note_readed,festival_mode,cleared_ending,force_in_cave,all_collected,amulet,ng_amulet,has_elf_amulet
     global has_death_corpse, death_location, death_corpse_item
+    global sewer_treasure_taken, explorer_thank_reward
+
     game_over = False
     jump_scare_face('flash')
     while True:
@@ -3028,8 +3049,12 @@ def cave():
                                                     game_back = True
                                                     break
                                             elif sewer_cmd == 'treasure':
-                                                print('You find gold coins.')
-                                                have_list.append('gold coins')
+                                                if not sewer_treasure_taken:
+                                                    print('You find gold coins.')
+                                                    have_list.append('gold coins')
+                                                    sewer_treasure_taken = True
+                                                else:
+                                                    print('The treasure pile has already been looted.')
                                             elif sewer_cmd == "deep" or sewer_cmd == 'go deep':
                                                 jump_scare_face('flash')
                                                 print("You wade through dark water, reach a hidden stone door.")
@@ -3349,9 +3374,12 @@ def cave():
                                                                     game_back = True
                                                                     break
                                                             elif west3 == 'thank you':
-                                                                if diary_read:
+                                                                if diary_read and not explorer_thank_reward:
                                                                     print('A warm wind brings you diamonds.')
                                                                     have_list.append('diamonds')
+                                                                    explorer_thank_reward = True
+                                                                elif diary_read:
+                                                                    print('No more blessings come from the explorer spirit.')
                                                                 else:
                                                                     print('No one hears you.')
                                                             elif west3 == 'colin woody':
@@ -3610,6 +3638,7 @@ def gamestart():
     global merchant_story_stage,swamp_spirit_story,hut_ghost_story,tower_ghost_story
     global has_death_corpse, death_location, death_corpse_item
     global one_hole_in,two_hole_in,three_hole_in,grave_take
+    global grave_looted, church_purified, church_desecrated
 
     altar = False
     if game_back == True and cleared_ending == True:
@@ -3783,10 +3812,13 @@ def gamestart():
                 take = input()
                 if handle_terminal_cmd(take):
                     continue
-                if take == 'take lamp':
-                    print('Ok')
-                    have_list.append('a lamp')
-                    l = ''
+                elif take == 'take lamp':
+                    if 'a lamp' not in have_list:
+                        print('Ok')
+                        have_list.append('a lamp')
+                        l = ''
+                    else:
+                        print('You have already taken it.')
                 elif take == 'down' or take == 'go down' or take == 'climb down':
                     if one_hole_in == False:
                         forgotten_archive()
@@ -4585,18 +4617,27 @@ def gamestart():
                                 print('You are confused with these two people.')
                                 print('You: Which one is right!')
                         elif ch == 'purify':
-                            print('The statue glows with holy light.')
-                            have_list.append('holy amulet')
-                            amulet = True
+                            if not church_purified:
+                                print('The statue glows with holy light.')
+                                have_list.append('holy amulet')
+                                amulet = True
+                                church_purified = True
+                            else:
+                                print('The statue has already been purified.')
+
+                        elif ch == 'desecrate':
+                            if not church_desecrated:
+                                print('Dark power surrounds you.')
+                                have_list.append('demon claw')
+                                church_desecrated = True
+                            else:
+                                print('No more dark power lingers here.')
                         elif ch == "look bottom":
                             print("You wipe dust off the stone, find faded words:")
                             print("Three paths await the heir: Guard, Forgive, Depart.")
                             print("Guard the cage, forgive the pain, depart the cycle.")
                             if play_count == 2:
                                 print("Extra line: Only blood and key can end all sorrow.")
-                        elif ch == 'desecrate':
-                            print('Dark power surrounds you.')
-                            have_list.append('demon claw')
                         elif ch == 'bag':
                             for i in have_list:
                                 print(i)
@@ -4766,11 +4807,18 @@ def gamestart():
                     print("You tell a joke to the grave.")
                     print("A faint laugh echoes: 'That was terrible!'")
                 elif camp_cmd == 'search':
-                    print('You find a ROPE.')
-                    have_list.append('rope')
+                    if 'rope' not in have_list:
+                        print('You find a ROPE.')
+                        have_list.append('rope')
+                    else:
+                        print('You searched thoroughly. Nothing else remains.')
+
                 elif camp_cmd == 'chest':
-                    print('You open the chest and find a FLINT.')
-                    have_list.append('flint')
+                    if 'flint' not in have_list:
+                        print('You open the chest and find a FLINT.')
+                        have_list.append('flint')
+                    else:
+                        print('The chest is already empty.')
                 elif camp_cmd == "tomb" or camp_cmd == 'go to tomb' or camp_cmd == 'go to the tomb':
                     if play_count == 2:
                         print("\n[NG+ ONLY] A hidden stone door slowly opens...")
@@ -4787,10 +4835,13 @@ def gamestart():
                         hp += 2
                     else:
                         print('Ghosts wander, but they do not attack.')
-                    print('You find a SUPER AMULET.')
-                    print('You put it in your bag and walk back quietly.')
-                    have_list.append('super amulet')
-                    amulet = True
+                    if 'super amulet' not in have_list:
+                        print('You find a SUPER AMULET.')
+                        print('You put it in your bag and walk back quietly.')
+                        have_list.append('super amulet')
+                        amulet = True
+                    else:
+                        print('Nothing there.')
                 elif camp_cmd == 'back' or camp_cmd == 'leave':
                     print('You walk back to the road.')
                     break
