@@ -3140,7 +3140,7 @@ def cave():
                             west = input()
                             if west == 'west':
                                 print('There is a stone path to west.')
-                                print('And there is also a sewer.')
+                                print('And there is also a sewer, type sewer to go in.')
                                 while True:
                                     print('You feel that the way back is collapsed.')
                                     if has_death_corpse and death_location == current_room:
