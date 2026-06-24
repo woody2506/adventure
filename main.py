@@ -3091,7 +3091,6 @@ def cave():
     global sewer_treasure_taken, explorer_thank_reward
 
     game_over = False
-    jump_scare_face('flash')
     while True:
         if has_death_corpse and death_location == current_room:
             print('You see here a corpse, type corpse to search it.\n')
@@ -3133,7 +3132,6 @@ def cave():
                                 print('Your amulet protects you!')
                                 have_list.remove('super amulet')
                     else:
-                        jump_scare_face('flash')
                         print('You succeed in unlock the grate. There is a path to the west.')
                         print('You see here a small library, type library to go in.')
                         while True:
@@ -3144,6 +3142,7 @@ def cave():
                                 print('There is a stone path to west.')
                                 print('And there is also a sewer.')
                                 while True:
+                                    print('You feel that the way back is collapsed.')
                                     if has_death_corpse and death_location == current_room:
                                         print('You see here a corpse, type corpse to search it.\n')
                                     gocave = input()
@@ -3706,6 +3705,15 @@ def cave():
                             elif west == 'bag':
                                 for i in range(len(have_list)):
                                     print(have_list[i])
+                        
+                            elif west == 'north':
+                                print('There is no way to go to this direction.')
+                            elif west == 'south':
+                                print('There is no way to go to this direction.')
+                            elif west == 'east':
+                                print('There is no way to go to this direction.')
+                            else:
+                                print('Sorry, I do not understand that word.')
                             if game_over == True:
                                 print("=== END ===")
                                 print("Type 'menu' to return main menu")
@@ -3716,15 +3724,6 @@ def cave():
                                         return
                                     else:
                                         print('Please answer the question.')
-                        
-                            elif west == 'north':
-                                print('There is no way to go to this direction.')
-                            elif west == 'south':
-                                print('There is no way to go to this direction.')
-                            elif west == 'east':
-                                print('There is no way to go to this direction.')
-                            else:
-                                print('Sorry, I do not understand that word.')
                         if game_over == True:
                             print("=== END ===")
                             print("Type 'menu' to return main menu")
