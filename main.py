@@ -3192,7 +3192,7 @@ def cave():
                                     elif gocave == 'sewer' or gocave == 'go into sewer' or gocave == 'go into the sewer' or gocave == 'go to sewer':
                                         print('You crawl into a DARK SEWER TUNNEL.')
                                         print('You see here something is shinning in the deep.')
-                                        print('TYPE deep OR GO DEEP to go deep.')
+                                        print('TYPE deep or go deep to go deep, and you see a water path to east.')
                                         while True:
                                             if has_death_corpse and death_location == current_room:
                                                 print('You see here a corpse, type corpse to search it.\n')
@@ -3200,6 +3200,9 @@ def cave():
                                             if sewer_cmd == 'west' or sewer_cmd == 'back' or sewer_cmd == 'leave':
                                                 print('You climb back to the cave path.')
                                                 break
+                                            elif sewer_cmd == 'east' or sewer_cmd == 'e' or sewer_cmd == 'go east':
+                                                underwater_ruins()
+                                                continue
                                             elif sewer_cmd == "examine corpse" or sewer_cmd == 'corpse' or sewer_cmd == 'search corpse' or sewer_cmd == 'find corpse':
                                                 if has_death_corpse and death_location == current_room:
                                                     print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
