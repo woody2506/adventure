@@ -2890,6 +2890,200 @@ def hill():
             else:
                 print('Please answer the question.')
 
+def underwater_ruins():
+    global hp, good, evil, have_list, game_over, game_back, current_room
+    global underwater_visited, oxygen, diving_suit_obtained
+    global water_rune_1, water_rune_2, water_rune_3, pearl_obtained
+    global underwater_ending_unlocked
+    global has_death_corpse, death_location, death_corpse_item
+
+    current_room = "sunken_temple"
+    underwater_visited = True
+
+    print("\n==================== SUNKEN TEMPLE RUINS ====================")
+    print("Cold dark water surrounds you. Bubbles rise slowly from the stone floor.")
+    print("Ancient sea god carvings cover every wall, glowing faintly blue.")
+    print("Your oxygen is limited. Find air pockets or you will drown.")
+    print("Oxygen starts at 10. Every action consumes 1 oxygen.")
+
+    oxygen = 10
+    current_zone = "flooded_corridor"
+    rune_order = 0
+    correct_runes = ["tide", "abyss", "storm"]
+
+    while True:
+        oxygen -= 1
+        if oxygen <= 0:
+            print("You run out of air. Water fills your lungs.")
+            hp -= 5
+            if hp <= 0:
+                print("You drown in the dark temple.")
+                game_over = True
+                game_back = True
+                break
+            print("You gasp and barely survive. HP -5")
+            oxygen = 2
+
+        if has_death_corpse and death_location == current_room:
+            print('You see a corpse on the seabed. Type corpse to search it.\n')
+
+        cmd = input("underwater> ").strip().lower()
+        if handle_terminal_cmd(cmd):
+            continue
+
+        if cmd == "back" or cmd == "surface":
+            print("You swim back up to the cave tunnel.")
+            break
+
+        elif cmd == "bag":
+            for item in have_list:
+                print(item)
+            continue
+
+        elif cmd == "hp":
+            print(f"HP: {hp}")
+            continue
+
+        elif cmd == "oxygen":
+            print(f"Oxygen remaining: {oxygen}")
+            continue
+
+        elif cmd == "corpse" or cmd == "search corpse":
+            if has_death_corpse and death_location == current_room:
+                print("\nA drowned explorer lies on the stone.")
+                if death_corpse_item:
+                    print(f"You retrieve {death_corpse_item} from its pocket.")
+                    have_list.append(death_corpse_item)
+                else:
+                    print("Nothing useful left.")
+                has_death_corpse = False
+            else:
+                print("There is no corpse here.")
+
+        elif current_zone == "flooded_corridor":
+            if cmd == "look":
+                print("A long stone corridor half-buried in silt.")
+                print("Three paths: forward to shrine, left to air pocket, right to treasury.")
+                print("A faded rune glows on the left wall.")
+            elif cmd == "forward":
+                current_zone = "rune_shrine"
+                print("You swim forward into the central rune shrine.")
+            elif cmd == "left":
+                current_zone = "air_pocket"
+                print("You swim left into a small cave with breathable air.")
+            elif cmd == "right":
+                current_zone = "deep_treasury"
+                print("You swim right into the sunken treasure room.")
+            elif cmd == "examine rune":
+                if not water_rune_1:
+                    water_rune_1 = True
+                    print("First water rune: TIDE")
+                    print("It pulses with slow, steady energy.")
+                else:
+                    print("You already studied this rune.")
+            else:
+                print("Unknown command. Try 'look'.")
+
+        elif current_zone == "air_pocket":
+            if cmd == "look":
+                print("A small cave with an air bubble at the top.")
+                print("You can breathe here to restore oxygen.")
+                print("A second rune is carved into the cave ceiling.")
+            elif cmd == "breathe":
+                oxygen = 10
+                print("You take deep breaths. Oxygen restored to full.")
+            elif cmd == "examine rune":
+                if not water_rune_2:
+                    water_rune_2 = True
+                    print("Second water rune: ABYSS")
+                    print("It hums with deep, silent power.")
+                else:
+                    print("You already studied this rune.")
+            elif cmd == "back":
+                current_zone = "flooded_corridor"
+                print("You swim back to the corridor.")
+            else:
+                print("Unknown command. Try 'breathe' or 'look'.")
+
+        elif current_zone == "rune_shrine":
+            if cmd == "look":
+                print("A circular shrine with three stone altars underwater.")
+                print("You must activate the runes in the correct order.")
+                print("Type 'activate [rune]' to press an altar.")
+                print("Wrong order will trigger a water jet attack.")
+            elif cmd.startswith("activate "):
+                rune_name = cmd.split()[1] if len(cmd.split()) > 1 else ""
+                if rune_name not in ["tide", "abyss", "storm"]:
+                    print("Unknown rune.")
+                    continue
+                if rune_name == correct_runes[rune_order]:
+                    rune_order += 1
+                    print(f"Rune {rune_name} glows bright blue.")
+                    if rune_order == 3:
+                        print("All runes align. A hidden passage opens upward.")
+                        print("A glowing pearl rises from the depths.")
+                        if not pearl_obtained:
+                            have_list.append("water-breathing pearl")
+                            pearl_obtained = True
+                            hp += 10
+                            good += 10
+                            print("You obtained the WATER-BREATHING PEARL.")
+                            print("You will never drown in dark waters again.")
+                            underwater_ending_unlocked = True
+                else:
+                    hp -= 3
+                    print("Wrong rune! Pressurized water slams into you. HP -3")
+                    rune_order = 0
+                    if hp <= 0:
+                        print("You are knocked unconscious and drown.")
+                        game_over = True
+                        game_back = True
+                        break
+            elif cmd == "back":
+                current_zone = "flooded_corridor"
+                print("You swim back to the corridor.")
+            else:
+                print("Unknown command. Try 'look'.")
+
+        elif current_zone == "deep_treasury":
+            if cmd == "look":
+                print("A sunken treasure room filled with broken chests and coral.")
+                print("A third rune is carved on the far wall.")
+            elif cmd == "examine rune":
+                if not water_rune_3:
+                    water_rune_3 = True
+                    print("Third water rune: STORM")
+                    print("It crackles with wild, violent energy.")
+                else:
+                    print("You already studied this rune.")
+            elif cmd == "search":
+                find = random.randint(1, 3)
+                if find == 1:
+                    print("You find gold coins in a broken chest.")
+                    have_list.append("gold coins")
+                elif find == 2:
+                    print("You find an ancient sea amulet.")
+                    have_list.append("sea amulet")
+                else:
+                    print("Only rust and coral.")
+            elif cmd == "back":
+                current_zone = "flooded_corridor"
+                print("You swim back to the corridor.")
+            else:
+                print("Unknown command. Try 'look'.")
+
+        else:
+            print("Unknown command.")
+
+    if game_over:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input()
+            if c == "menu":
+                main()
+                return
+
 #cave
 def cave():
     global game_over, hp, have_list, light, p, amulet, map_unlocked, secret_unlocked, diary_read, legacy_unlocked, current_room, torch,rune1,rune2,rune3,rune,grandmother,gate_unlock,old_diary_readed, game_back,play_count,old_note_readed,festival_mode,cleared_ending,force_in_cave,all_collected,amulet,ng_amulet,has_elf_amulet
