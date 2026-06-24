@@ -4218,8 +4218,11 @@ def gamestart():
                             if force_over == True:
                                 break
                         else:
-                           print('\nYou should done the soldier and lieutenant task and then read the grave diary and the old diary in the forest.')
-                           print('Also, you should have at least 6 items in your bag. Also, of course, three runes.\n') 
+                            if play_count == 2:
+                                print('\nYou should done the soldier and lieutenant task and then read the grave diary and the old diary in the forest.')
+                                print('Also, you should have at least 6 items in your bag. Also, of course, three runes.\n')
+                            else:
+                               print('Only avalible in ng2.')
                     elif tele == 'woody':
                         if light == True:
                             print('A secret power surrounds you!')
