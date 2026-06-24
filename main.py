@@ -3828,6 +3828,7 @@ def gamestart():
     global has_death_corpse, death_location, death_corpse_item
     global one_hole_in,two_hole_in,three_hole_in,grave_take
     global grave_looted, church_purified, church_desecrated
+    global x2
 
     altar = False
     if game_back == True and cleared_ending == True:
@@ -4203,7 +4204,7 @@ def gamestart():
                     print('You hear a demon talk to you! But you do not know what she says.')
                 print('You see here ' + rune)
                 while True:
-                    if rune1 and rune2 and rune3 and x == True:
+                    if rune1 and rune2 and rune3 and x2 == True:
                         print('You can place the runes now, type place runes to place them.')
                     tele = input()
                     if tele == 'light lamp':
@@ -4278,7 +4279,6 @@ def gamestart():
                             break
                     elif tele == 'place runes':
                         can_enter_altar()
-                        global x2
                         if x2 == True:
                             if rune1 and rune2 and rune3:
                                 good = good - evil
