@@ -4042,16 +4042,6 @@ def gamestart():
                         light = True
                     else:
                         print("You need flint and a lamp.")
-                elif take == 'Garry':
-                    if play_count == 1:
-                        print('You pray to Garry, Garry the god let you to be a god too!')
-                        print('===== WIN BY PRAY TO GOD =====')
-                        game_over = True
-                        game_back = True
-                        cleared_ending = True
-                        break
-                    else:
-                        print('The god does not want to help you.')
                 elif take == 'take note':
                     print('When you take the note, some magic energy hurts you, you can not take away it. You read it, it says magic word: colin, but you should read it on an altar.')
                 elif take == 'out':
@@ -4093,17 +4083,12 @@ def gamestart():
                 elif take == 'garry' and chain2:
                     if play_count == 1:
                         print('Wow, you know the magic words!')
-                        print('I will let you win as soon as possible.')
-                        print('===== YOU WIN! =====')
-                        hp = 5
-                        amulet = True
+                        print('YOu are so cool.')
+                        print('I will give you light in exchange.')
+                        print('The room bright up.\n')
                         light = True
-                        game_over = True
-                        game_back = True
-                        cleared_ending = True
-                        break
                     else:
-                        print('I do not want to let you win even if you know the magic words. Because you have to done all by yourself.')
+                        print('I do not want to give you light even if you know the magic words. Because you have to done all by yourself.')
                 elif take == 'map':
                     print('MAP: House -> Altar -> Cave -> West -> Diamonds')
                     map_unlocked = True
