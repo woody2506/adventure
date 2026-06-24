@@ -4036,44 +4036,47 @@ def gamestart():
                             print('You can not get this rune, because some mysterious power force pretents you from taking.')
                             print('Only enable in ng2, and try to go in the death cave!\n')
                     elif tele == 'colin':
-                        if light == False and not torch:
-                            if hp > 10:
-                                print('A Grue bites you! Hp -10')
-                                hp -= 10
-                                force_in_cave = True
-                            else:
-                                print("It is very dark here. You feel like you are be eaten by a Grue.")
-                                print('Game over.')
-                                game_over = True
-                                game_back = True
-                                break
-                        elif torch == True:
-                            print("Your torch keeps Grue away.")
-                            print('Welcome to death cave!')
-                            print('You are in a cave, there is a grate. The grate is locked. You must open the grate to go further.')
-                            current_room = "cave"
-                            cave()
-                            if game_over == True:
-                                print("=== END ===")
-                                print("Type 'menu' to return main menu")
-                                while True:
-                                    c = input()
-                                    if c == 'menu':
-                                        main()
-                                        return
-                        elif light == True or force_in_cave:
-                            print('Welcome to death cave!')
-                            print('You are in a cave, there is a grate. The grate is locked. You must open the grate to go further.')
-                            current_room = "cave"
-                            cave()
-                            if game_over == True:
-                                print("=== END ===")
-                                print("Type 'menu' to return main menu")
-                                while True:
-                                    c = input()
-                                    if c == 'menu':
-                                        main()
-                                        return  
+                        if play_count == 1:
+                            if light == False and not torch:
+                                if hp > 10:
+                                    print('A Grue bites you! Hp -10')
+                                    hp -= 10
+                                    force_in_cave = True
+                                else:
+                                    print("It is very dark here. You feel like you are be eaten by a Grue.")
+                                    print('Game over.')
+                                    game_over = True
+                                    game_back = True
+                                    break
+                            elif torch == True:
+                                print("Your torch keeps Grue away.")
+                                print('Welcome to death cave!')
+                                print('You are in a cave, there is a grate. The grate is locked. You must open the grate to go further.')
+                                current_room = "cave"
+                                cave()
+                                if game_over == True:
+                                    print("=== END ===")
+                                    print("Type 'menu' to return main menu")
+                                    while True:
+                                        c = input()
+                                        if c == 'menu':
+                                            main()
+                                            return
+                            elif light == True or force_in_cave:
+                                print('Welcome to death cave!')
+                                print('You are in a cave, there is a grate. The grate is locked. You must open the grate to go further.')
+                                current_room = "cave"
+                                cave()
+                                if game_over == True:
+                                    print("=== END ===")
+                                    print("Type 'menu' to return main menu")
+                                    while True:
+                                        c = input()
+                                        if c == 'menu':
+                                            main()
+                                            return  
+                        else:
+                            print('You can not go in again, try to collect three runes to pass ng2.')
                     elif tele == 'down':
                         if 'rope' in have_list:
                             print('You go down safetly with your rope.')
