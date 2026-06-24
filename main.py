@@ -2366,31 +2366,23 @@ def developer_room():
     print("               DEVELOPER ROOM")
     print("="*60)
     print("Welcome, dev tester! You can cheat here.")
-    print("Commands: heal, max, runes, godmode, leave")
+    print("Commands: heal, max, godmode, leave")
     print("="*60)
 
     while True:
         cmd = input("dev> ")
         if cmd == "heal":
-            hp = 20
-            print("HP restored to 20!")
+            hp = 10
+            print("HP restored to 10!")
         elif cmd == "max":
-            hp = 999
-            good = 999
+            hp = 10
+            good = 10
             evil = 0
-            print("MAX STATS!")
-        elif cmd == "runes":
-            rune1 = rune2 = rune3 = True
-            have_list.append("rune stone 1")
-            have_list.append("rune stone 2")
-            have_list.append("rune stone 3")
-            print("All runes unlocked!")
+            print("HALF MAX STATS!")
         elif cmd == "godmode":
             trap_protect = True
             festival_mode = True
-            hp = 999
-            have_list.append("dev amulet")
-            have_list.append("infinite torch")
+            hp = 10
             print("GOD MODE ACTIVATED!")
         elif cmd == "leave" or cmd == "back":
             print('')
