@@ -1728,7 +1728,7 @@ def wax_chamber():
                         print('You can not be birth forever!')
                         print('')
                         print('Goodbye!')
-                        print("=== Death Adventure v1.2 - Official Release ===")
+                        print("=== Death Adventure v3.2 - Official Release ===")
                         print("Thank you for playing!")
                         exit()
             except:
@@ -1855,7 +1855,7 @@ def pendulum_mortuary():
                         print('You can not be rebirth.')
                         print('')
                         print('Goodbye!')
-                        print("=== Death Adventure v1.2 - Official Release ===")
+                        print("=== Death Adventure v3.2 - Official Release ===")
                         print("Thank you for playing!")
                         exit()
             except:
@@ -2699,7 +2699,7 @@ def print_heaven():
                 print("=============================")
                 print('And, do you know, when you are at the ng one, you can type garry in the house, then you will win!')
                 print('Also, you can type colin, and woody and garry in the house, then you will pass the ng one.\n')
-                print("=== Death Adventure v1.2 - Official Release ===")
+                print("=== Death Adventure v3.2 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
             elif choice == "return to earth":
@@ -2722,7 +2722,7 @@ def print_heaven():
                 print("=============================")
                 print('And, do you know, when you are at the ng one, you can type garry in the house, then you will win!')
                 print('Also, you can type colin, and woody and garry in the house, then you will pass the ng one.\n')
-                print("=== Death Adventure v1.2 - Official Release ===")
+                print("=== Death Adventure v3.2 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
             elif choice == "create a new world":
@@ -2744,7 +2744,7 @@ def print_heaven():
                 print("=============================")
                 print('And, do you know, when you are at the ng one, you can type garry in the house, then you will win!')
                 print('Also, you can type colin, and woody and garry in the house, then you will pass the ng one.\n')
-                print("=== Death Adventure v1.2 - Official Release ===")
+                print("=== Death Adventure v3.2 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
 
@@ -2792,7 +2792,7 @@ def print_heaven():
             print("=============================")
             print('And, do you know, when you are at the ng one, you can type garry in the house, then you will win!')
             print('Also, you can type colin, and woody and garry in the house, then you will pass the ng one.\n')
-            print("=== Death Adventure v1.2 - Official Release ===")
+            print("=== Death Adventure v3.2 - Official Release ===")
             print("Thank you for playing!")
             exit()
         elif opt == "6":
@@ -5181,7 +5181,7 @@ def menu():
                 if play_count <= 4:
                     print('')
                     print('Goodbye!')
-                    print("=== Death Adventure v1.2 - Official Release ===")
+                    print("=== Death Adventure v3.2 - Official Release ===")
                     print("Thank you for playing!")
                     exit()
                 else:
@@ -5200,7 +5200,7 @@ def menu():
                     print("=============================")
                     print('And, do you know, when you are at the ng one, you can type Garry in the house, then you will win!')
                     print('Also, you can type colin, and woody and garry in the house, then you will pass the ng one.\n')
-                    print("=== Death Adventure v1.2 - Official Release ===")
+                    print("=== Death Adventure v3.2 - Official Release ===")
                     print("Thank you for playing!")
                     exit()   
             elif start == "time" or start == 'time travel':
@@ -5224,7 +5224,7 @@ def menu():
             elif start == 'quit':
                 print('')
                 print('Goodbye!')
-                print("=== Death Adventure v1.2 - Official Release ===")
+                print("=== Death Adventure v3.2 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
             
@@ -6102,12 +6102,12 @@ def main():
         print('Game developer: PLayer, you have already done the main game, you can quit now or go to the last part.')
     if game_back == False:
         if not args.godmode:
-            print('=== Death Adventure v1.2 - Official Release ===')
+            print('=== Death Adventure v3.2 - Official Release ===')
             print('Welcome to death adventure! You are a poor adventure, dream of rich and treasure. I will be your eyes and hands. You can say west or east north and south to control.')
             print('Your family always have somebody disappears. Your father said that he will go on a holiday, but he never came back.\n')
             good += 5
         else:
-            print('=== Death Adventure v1.2 - Official Release ===')
+            print('=== Death Adventure v3.2 - Official Release ===')
             print('Welcome to death adventure! You are a god who go to the mortrol world. I will be your eyes and hands. You can say west or east north and south to control.')
             print('You go to mortrol world beacause you see a family which have a curse. But unfortunately, you become a part of the curse too!')
             print('Then, you become a mortrol who has the power as a god.')
@@ -6292,7 +6292,7 @@ def main():
                 print('You finally become a ghost, and can not be birth forever.')
                 print('')
                 print('Goodbye!')
-                print("=== Death Adventure v1.2 - Official Release ===")
+                print("=== Death Adventure v3.2 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
             menu()
