@@ -3763,13 +3763,11 @@ def cave():
                     print("Ghost smiles: Happy full moon! Here's a gift!")
                     hp += 2
                 else:
-                    if amulet == True or ng_amulet == True or has_elf_amulet == True:
-                        print('Your amulet protects you from the ghost.')
-                    else:
-                        print('You do not have a key, you unleashed a ghost, the ghost kill you.')
-                        print('Game over!')
-                        game_over = True
-                        game_back = True
+                    print('You do not have a key, you unleashed a ghost, the ghost kill you.')
+                    print('If you have an amulet, you still have to be killed(laugh)')
+                    print('Game over!')
+                    game_over = True
+                    game_back = True
             if game_over == True:
                 print("=== END ===")
                 print("Type 'menu' to return main menu")
@@ -3778,7 +3776,6 @@ def cave():
                     if c == 'menu':
                         main()
                         return
-            print('There is no way to go to this direction.')
         elif op == 'south':
             print('There is no way to go to this direction.')
         elif op == 'east':
