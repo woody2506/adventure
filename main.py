@@ -3813,7 +3813,8 @@ def cave():
 
 def advance_time():
     global step_count, time_period, festival_steps, festival_mode
-    global weather_duration, weather_damage, hp, amulet, game_over, game_back
+    global weather_duration, weather_damage, hp, amulet, game_over, game_back,good,evil
+
     step_count += 1
     if step_count % 4 == 0:
         festival_steps += 1
