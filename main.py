@@ -3848,13 +3848,23 @@ def advance_time():
         elif time_period == 'night':
             time_period = "day"
             print("\n=== SUNRISE | Safe again ===")
-    if time_period == 'night' and not light or not torch:
-        print('Darkness burn you, Hp -1')
+    if time_period == "night" and not torch and not light:
         hp -= 1
-    if hp <= 0:
-        print('You are consumed by the dark.')
-        game_over = True
-        game_back = True
+        print("Darkness burns you! Hp -1")
+        if "cursed dagger" in have_list:
+            print('The cursed dagger hits you in the dark. Hp -1')
+            hp -= 1
+        if hp <= 0:
+            print("You were consumed by the dark...")
+            game_over = True
+            game_back = True
+            print("=== END ===")
+            print("Type 'menu' to return main menu")
+            while True:
+                c = input()
+                if c == 'menu':
+                    main()
+                    return
     if game_over == True:
         print("=== END ===")
         print("Type 'menu' to return main menu")
@@ -3965,23 +3975,6 @@ def gamestart():
         # STRONGER DAY/NIGHT FEEL
         advance_time()
         # NIGHT DAMAGE (STRONGER)
-        if time_period == "night" and not torch and not light:
-            hp -= 1
-            print("Darkness burns you! Hp -1")
-            if "cursed dagger" in have_list:
-                print('The cursed dagger hits you in the dark. Hp -1')
-                hp -= 1
-            if hp <= 0:
-                print("You were consumed by the dark...")
-                game_over = True
-                game_back = True
-                print("=== END ===")
-                print("Type 'menu' to return main menu")
-                while True:
-                    c = input()
-                    if c == 'menu':
-                        main()
-                        return
         if festival_mode:
             print('Full moon! A hole appears on the ground, type down to go down.')
         go = input()
