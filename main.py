@@ -130,6 +130,7 @@ four_hole_in = False
 gnome_hole_in = False
 child_hole_in = False
 grave_take = False
+sewer_in = False
 grave_looted = False
 church_purified = False
 church_desecrated = False
@@ -2576,8 +2577,6 @@ def print_heaven():
                 print("  -c, -C, -cheat      Enable cheat mode (all items)")
                 print("  -h, -help           Show help")
                 print("=============================")
-                print('And, do you know, when you are at the ng one, you can type garry in the house, then you will win!')
-                print('Also, you can type colin, and woody and garry in the house, then you will pass the ng one.\n')
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
@@ -2599,8 +2598,6 @@ def print_heaven():
                 print("  -c, -C, -cheat      Enable cheat mode (all items)")
                 print("  -h, -help           Show help")
                 print("=============================")
-                print('And, do you know, when you are at the ng one, you can type garry in the house, then you will win!')
-                print('Also, you can type colin, and woody and garry in the house, then you will pass the ng one.\n')
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
@@ -2621,8 +2618,6 @@ def print_heaven():
                 print("  -c, -C, -cheat      Enable cheat mode (all items)")
                 print("  -h, -help           Show help")
                 print("=============================")
-                print('And, do you know, when you are at the ng one, you can type garry in the house, then you will win!')
-                print('Also, you can type colin, and woody and garry in the house, then you will pass the ng one.\n')
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
@@ -2892,10 +2887,11 @@ def hill():
 
 def underwater_ruins():
     global hp, good, evil, have_list, game_over, game_back, current_room
-    global underwater_visited, oxygen, diving_suit_obtained
+    global underwater_visited, oxygen, diving_suit_obtained 
     global water_rune_1, water_rune_2, water_rune_3, pearl_obtained
     global underwater_ending_unlocked
     global has_death_corpse, death_location, death_corpse_item
+    global sewer_in
 
     current_room = "sunken_temple"
     underwater_visited = True
@@ -2904,9 +2900,9 @@ def underwater_ruins():
     print("Cold dark water surrounds you. Bubbles rise slowly from the stone floor.")
     print("Ancient sea god carvings cover every wall, glowing faintly blue.")
     print("Your oxygen is limited. Find air pockets or you will drown.")
-    print("Oxygen starts at 10. Every action consumes 1 oxygen.")
+    print("Oxygen starts at 6. Every action consumes 1 oxygen.")
 
-    oxygen = 10
+    oxygen = 6
     current_zone = "flooded_corridor"
     rune_order = 0
     correct_runes = ["tide", "abyss", "storm"]
@@ -2915,13 +2911,13 @@ def underwater_ruins():
         oxygen -= 1
         if oxygen <= 0:
             print("You run out of air. Water fills your lungs.")
-            hp -= 5
+            hp -= 3
             if hp <= 0:
                 print("You drown in the dark temple.")
                 game_over = True
                 game_back = True
                 break
-            print("You gasp and barely survive. HP -5")
+            print("You gasp and barely survive. HP -3")
             oxygen = 2
 
         if has_death_corpse and death_location == current_room:
@@ -3088,7 +3084,7 @@ def underwater_ruins():
 def cave():
     global game_over, hp, have_list, light, p, amulet, map_unlocked, secret_unlocked, diary_read, legacy_unlocked, current_room, torch,rune1,rune2,rune3,rune,grandmother,gate_unlock,old_diary_readed, game_back,play_count,old_note_readed,festival_mode,cleared_ending,force_in_cave,all_collected,amulet,ng_amulet,has_elf_amulet
     global has_death_corpse, death_location, death_corpse_item
-    global sewer_treasure_taken, explorer_thank_reward
+    global sewer_treasure_taken, explorer_thank_reward,sewer_in
 
     game_over = False
     while True:
@@ -3200,8 +3196,11 @@ def cave():
                                                 print('You climb back to the cave path.')
                                                 break
                                             elif sewer_cmd == 'east' or sewer_cmd == 'e' or sewer_cmd == 'go east':
-                                                underwater_ruins()
-                                                continue
+                                                if sewer_in == False:
+                                                    underwater_ruins()
+                                                    continue
+                                                else:
+                                                    print('You have already gone in.')
                                             elif sewer_cmd == "examine corpse" or sewer_cmd == 'corpse' or sewer_cmd == 'search corpse' or sewer_cmd == 'find corpse':
                                                 if has_death_corpse and death_location == current_room:
                                                     print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
