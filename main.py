@@ -438,6 +438,7 @@ def military_fort():
     print("Available locations: east_sentry = 1 | swamp_command = 2| top_headquarters = 3| barracks = 4| armory = 5| back = 6")
 
     while True:
+        advance_time()
         cmd = input("fort> ")
         if cmd == "back" or cmd == '6':
             print("You leave the military fort and return to the northern road.")
@@ -2174,6 +2175,7 @@ def misty_swamp():
         print('You see a deep hole with some runed rope, type down to go down.')
         if has_death_corpse and death_location == current_room:
             print('You see here a corpse, type corpse to search it.\n')
+        advance_time()
         scmd = input("swamp> ")
         if handle_terminal_cmd(scmd):
             continue
@@ -2408,8 +2410,8 @@ def watchtower():
 
     floor = 1
     while True:
+        advance_time()
         cmd = input("tower> ")
-
         if cmd == "climb" or cmd == "up":
             if floor == 1:
                 print("You climb to FLOOR 2. Dust and old ropes cover the walls.")
@@ -2804,6 +2806,7 @@ def hill():
     current_room = 'hill'
     print('You are now at the bottom of the hill, type climb to climb, look to look around.')
     while True:
+        advance_time()
         cmd = input()
         if cmd == 'climb':
             if high == 0:
@@ -3813,7 +3816,7 @@ def cave():
 
 def advance_time():
     global step_count, time_period, festival_steps, festival_mode
-    global weather_duration, weather_damage, hp, amulet, game_over, game_back,good,evil
+    global weather_duration, weather_damage, hp, amulet, game_over, game_back,good,evil,hp
 
     step_count += 1
     if step_count % 4 == 0:
@@ -3845,6 +3848,21 @@ def advance_time():
         elif time_period == 'night':
             time_period = "day"
             print("\n=== SUNRISE | Safe again ===")
+    if time_period == 'night' and not light or not torch:
+        print('Darkness burn you, Hp -1')
+        hp -= 1
+    if hp <= 0:
+        print('You are consumed by the dark.')
+        game_over = True
+        game_back = True
+    if game_over == True:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input()
+            if c == 'menu':
+                main()
+                return
 #game
 def gamestart():
     global have_list, game_over, light, hp, map_unlocked, secret_unlocked, amulet, take, chain1, chain2, current_room, torch,l,k,n,s,f,w,sc,rune1,rune2,rune3,rune,grandmother,diary_read,old_diary_readed,grave_diary_read, game_back,play_count,trap_protect,cleared_ending,force_in_cave,hill_diary_read
@@ -4572,6 +4590,7 @@ def gamestart():
                     if args.godmode:
                         print('Merchant: Welcome, god, what are you going to do here?')
                     while True:
+                        advance_time()
                         m = input('merchant> ')
                         if m == 'trade food':
                             if 'some food' in have_list:
@@ -4828,6 +4847,7 @@ def gamestart():
             print('You are in the forest.')
             print('An old diary lies on the ground. Further east lies the misty swamp.')
             while True:
+                advance_time()
                 forest_take = input("read diary / east / leave: ")
                 if forest_take == 'read diary' or forest_take == 'take diary':
                     print('You read this old diary. It says:')
@@ -4934,6 +4954,7 @@ def gamestart():
                 print('Type search to search, chest to open chest, back to go back.')
                 if has_death_corpse and death_location == current_room:
                     print('You see here a corpse, type corpse to search it.\n')
+                advance_time()
                 camp_cmd = input('camp> ')
                 if camp_cmd == 'west':
                     print('You head west into the camp.')
