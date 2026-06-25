@@ -4151,7 +4151,7 @@ def gamestart():
                 elif take == 'woody' and chain1:
                     chain2 = True
                     print('You say woody, you get some money!')
-                
+                    have_list.append('some gold coins')                
                 elif take == 'garry' and chain2:
                     if play_count == 1:
                         print('Wow, you know the magic words!')
