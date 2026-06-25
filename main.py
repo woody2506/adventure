@@ -3818,10 +3818,8 @@ def advance_time():
     global step_count, time_period, festival_steps, festival_mode
     global weather_duration, weather_damage, hp, amulet, game_over, game_back,good,evil,hp
 
-    print_weather()
     step_count += 1
     if step_count % 4 == 0:
-        update_weather()
         festival_steps += 1
         if time_period == "dusk" and festival_steps >= 7 and random.randint(1,2) == 1:
             festival_mode = True
@@ -3869,6 +3867,31 @@ def advance_time():
                     return
     else:
         print('Your light protects you from the darkness.')
+    # Weather
+    weather_duration -= 1
+    if weather_duration <= 0:
+        update_weather()
+        print("\nThe weather changes.")
+        print_weather()
+    if weather_damage > 0:
+        if amulet == False:
+            hp -= weather_damage
+            print(f"You take {weather_damage} damage from the weather.")
+            if hp <= 0:
+                print("You died from the harsh weather.")
+                game_over = True
+                game_back = True
+                if game_over == True:
+                    print("=== END ===")
+                    print("Type 'menu' to return main menu")
+                    while True:
+                        c = input()
+                        if c == 'menu':
+                            main()
+                            return
+        else:
+            print('Your amulet protects you from the bad weather.')
+        print('')
     if game_over == True:
         print("=== END ===")
         print("Type 'menu' to return main menu")
@@ -3898,7 +3921,7 @@ def gamestart():
         torch = True
         light = True
         print("=== NEW GAME+ ===")
-        print("The cave remembers you.\n")
+        print("The curse and this game remembers you.\n")
     else:
         play_count = 1
     cleared_ending = False
@@ -3951,31 +3974,6 @@ def gamestart():
             print(f"'{player_name}... turn around...'")
             print("There is nobody behind you.")
             hp -= 1
-        # Weather
-        weather_duration -= 1
-        if weather_duration <= 0:
-            update_weather()
-            print("\nThe weather changes.")
-            print_weather()
-        if weather_damage > 0:
-            if amulet == False:
-                hp -= weather_damage
-                print(f"You take {weather_damage} damage from the weather.")
-                if hp <= 0:
-                    print("You died from the harsh weather.")
-                    game_over = True
-                    game_back = True
-                    if game_over == True:
-                        print("=== END ===")
-                        print("Type 'menu' to return main menu")
-                        while True:
-                            c = input()
-                            if c == 'menu':
-                                main()
-                                return
-            else:
-                print('Your amulet protects you from the bad weather.')
-            print('')
         # STRONGER DAY/NIGHT FEEL
         advance_time()
         # NIGHT DAMAGE (STRONGER)
