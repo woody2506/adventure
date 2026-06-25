@@ -3889,8 +3889,6 @@ def advance_time():
                         if c == 'menu':
                             main()
                             return
-        else:
-            print('Your amulet protects you from the bad weather.')
         print('')
     if game_over == True:
         print("=== END ===")
