@@ -3892,7 +3892,7 @@ def advance_time():
         else:
             print('\nYour amulet protects you from the harsh weather.')
     if current_weather == 'light_rain' and random.randint(1,2) == 1:
-        print('You are in the rain, so romantic, you feel better. Hp +1')
+        print('You are in the rain, so romantic, luckily, you feel better. Hp +1')
         hp += 1
     if game_over == True:
         print("=== END ===")
