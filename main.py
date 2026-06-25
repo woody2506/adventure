@@ -3865,7 +3865,7 @@ def advance_time():
                 if c == 'menu':
                     main()
                     return
-    else:
+    elif time_period == 'night' and torch or time_period == 'night' and light:
         print('Your light protects you from the darkness.')
     # Weather
     weather_duration -= 1
