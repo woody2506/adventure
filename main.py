@@ -3914,7 +3914,7 @@ def gamestart():
         step_count += 1
         if step_count % 4 == 0:
             festival_steps += 1
-            if time_period == "dusk" and festival_steps >= 7 and random.randint(1,3) == 1:
+            if time_period == "dusk" and festival_steps >= 7 and random.randint(1,2) == 1:
                 festival_mode = True
                 festival_steps = 0
                 print("\n=====================================")
@@ -3929,7 +3929,7 @@ def gamestart():
             elif time_period == "dusk":
                 time_period = "night"
                 print("\n=== NIGHT FALLS | Without light, you will DIE!!! ===")
-            elif time_period == "night":
+            elif time_period == "night" and festival_mode:
                 time_period = "day"
                 print("\n=== SUNRISE | Safe again ===")
                 festival_mode = False
@@ -3938,6 +3938,9 @@ def gamestart():
                 print("  FULL MOON FESTIVAL ENDS  ")
                 print("Ghosts return to their normal state.")
                 print("=====================================\n")
+            elif time_period == 'night':
+                time_period = "day"
+                print("\n=== SUNRISE | Safe again ===")
         # NIGHT DAMAGE (STRONGER)
         if time_period == "night" and not torch and not light:
             hp -= 1
