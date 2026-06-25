@@ -424,7 +424,7 @@ def update_weather():
 
 def print_weather():
     print(f"\nWeather: {current_weather} | Visibility: {visibility}%")
-    if weather_damage > 0:
+    if weather_damage > 0 and amulet == False:
         print("The harsh weather hurts you.")
 
 def military_fort():
@@ -3866,7 +3866,7 @@ def advance_time():
                     main()
                     return
     elif time_period == 'night' and torch or time_period == 'night' and light:
-        print('Your light protects you from the darkness.')
+        print('\nYour light protects you from the darkness.')
     # Weather
     weather_duration -= 1
     if weather_duration <= 0:
@@ -3890,7 +3890,7 @@ def advance_time():
                             main()
                             return
         else:
-            print('Your amulet protects you from the harsh weather.')
+            print('\nYour amulet protects you from the harsh weather.')
     if game_over == True:
         print("=== END ===")
         print("Type 'menu' to return main menu")
