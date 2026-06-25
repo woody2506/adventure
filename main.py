@@ -3818,10 +3818,10 @@ def advance_time():
     global step_count, time_period, festival_steps, festival_mode
     global weather_duration, weather_damage, hp, amulet, game_over, game_back,good,evil,hp
 
-    update_weather()
     print_weather()
     step_count += 1
     if step_count % 4 == 0:
+        update_weather()
         festival_steps += 1
         if time_period == "dusk" and festival_steps >= 7 and random.randint(1,2) == 1:
             festival_mode = True
