@@ -5098,6 +5098,8 @@ def gamestart():
                         print('You have alrady dig the grave!')
                 else:
                     print('Unknown command.')
+        else:
+            print('Unknown command.')
         if game_over == True:
             print("=== END ===")
             print("Type 'menu' to return main menu")
