@@ -3811,6 +3811,39 @@ def cave():
                     main()
                     return
 
+def advance_time():
+    global step_count, time_period, festival_steps, festival_mode
+    global weather_duration, weather_damage, hp, amulet, game_over, game_back
+    step_count += 1
+    if step_count % 4 == 0:
+        festival_steps += 1
+        if time_period == "dusk" and festival_steps >= 7 and random.randint(1,2) == 1:
+            festival_mode = True
+            festival_steps = 0
+            print("\n=====================================")
+            print("FULL MOON FESTIVAL BEGINS!")
+            print(" All ghosts are friendly tonight!")
+            print("=====================================\n")
+            hp += 5
+            good += 5
+        if time_period == "day":
+            time_period = "dusk"
+            print("\n=== DUSK | The world fades to dark ===")
+        elif time_period == "dusk":
+            time_period = "night"
+            print("\n=== NIGHT FALLS | Without light, you will DIE!!! ===")
+        elif time_period == "night" and festival_mode:
+            time_period = "day"
+            print("\n=== SUNRISE | Safe again ===")
+            festival_mode = False
+            festival_steps = 0
+            print("\n=====================================")
+            print("  FULL MOON FESTIVAL ENDS  ")
+            print("Ghosts return to their normal state.")
+            print("=====================================\n")
+        elif time_period == 'night':
+            time_period = "day"
+            print("\n=== SUNRISE | Safe again ===")
 #game
 def gamestart():
     global have_list, game_over, light, hp, map_unlocked, secret_unlocked, amulet, take, chain1, chain2, current_room, torch,l,k,n,s,f,w,sc,rune1,rune2,rune3,rune,grandmother,diary_read,old_diary_readed,grave_diary_read, game_back,play_count,trap_protect,cleared_ending,force_in_cave,hill_diary_read
@@ -3911,36 +3944,7 @@ def gamestart():
                 print('Your amulet protects you from the bad weather.')
             print('')
         # STRONGER DAY/NIGHT FEEL
-        step_count += 1
-        if step_count % 4 == 0:
-            festival_steps += 1
-            if time_period == "dusk" and festival_steps >= 7 and random.randint(1,2) == 1:
-                festival_mode = True
-                festival_steps = 0
-                print("\n=====================================")
-                print("FULL MOON FESTIVAL BEGINS!")
-                print(" All ghosts are friendly tonight!")
-                print("=====================================\n")
-                hp += 5
-                good += 5
-            if time_period == "day":
-                time_period = "dusk"
-                print("\n=== DUSK | The world fades to dark ===")
-            elif time_period == "dusk":
-                time_period = "night"
-                print("\n=== NIGHT FALLS | Without light, you will DIE!!! ===")
-            elif time_period == "night" and festival_mode:
-                time_period = "day"
-                print("\n=== SUNRISE | Safe again ===")
-                festival_mode = False
-                festival_steps = 0
-                print("\n=====================================")
-                print("  FULL MOON FESTIVAL ENDS  ")
-                print("Ghosts return to their normal state.")
-                print("=====================================\n")
-            elif time_period == 'night':
-                time_period = "day"
-                print("\n=== SUNRISE | Safe again ===")
+        advance_time()
         # NIGHT DAMAGE (STRONGER)
         if time_period == "night" and not torch and not light:
             hp -= 1
