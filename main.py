@@ -3865,6 +3865,8 @@ def advance_time():
                 if c == 'menu':
                     main()
                     return
+    else:
+        print('Your light protects you from the darkness.')
     if game_over == True:
         print("=== END ===")
         print("Type 'menu' to return main menu")
