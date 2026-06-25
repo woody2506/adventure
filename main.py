@@ -415,7 +415,7 @@ def update_weather():
         visibility = 25
         move_penalty = 2
         weather_damage = 2
-    elif current_weather == "snow":
+    elif current_weather == "heavy_snow":
         visibility = 40
         move_penalty = 1
         weather_damage = 1
@@ -3816,7 +3816,7 @@ def cave():
 
 def advance_time():
     global step_count, time_period, festival_steps, festival_mode
-    global weather_duration, weather_damage, hp, amulet, game_over, game_back,good,evil,hp
+    global weather_duration, weather_damage, amulet, game_over, game_back,good,evil,hp,current_weather
 
     step_count += 1
     if step_count % 4 == 0:
@@ -3891,6 +3891,9 @@ def advance_time():
                             return
         else:
             print('\nYour amulet protects you from the harsh weather.')
+    if current_weather == 'light_rain' and random.randint(1,2) == 1:
+        print('You are in the rain, so romantic, you feel better. Hp +1')
+        hp += 1
     if game_over == True:
         print("=== END ===")
         print("Type 'menu' to return main menu")
