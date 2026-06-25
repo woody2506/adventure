@@ -4683,8 +4683,7 @@ def gamestart():
                         elif m == "tickling":
                             print("You tickle the merchant. He laughs loudly.")
                         elif m == "dance":
-                            print("The merchant does a silly dance. You feel better.")
-                            hp += 1
+                            print("The merchant does a silly dance. You feel silly too.")
                         elif m == "act like ghost":
                             print("You float and howl. Merchant rolls eyes and keeps calm.")
                         elif m == "beg for gifts" or m == 'beg':
