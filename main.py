@@ -4043,9 +4043,11 @@ def advance_time():
             print("  FULL MOON FESTIVAL ENDS  ")
             print("Ghosts return to their normal state.")
             print("=====================================\n")
-        elif blood_moon:
+        elif blood_moon and time_period == 'night':
             blood_moon = False
             blood_warrior_alive = False
+            time_period = "day"
+            print("\n=== SUNRISE | Safe again ===")
             print("\n=====================================")
             print("  BLOODY MOON FADES  ")
             print("The moon returns to normal. Evil calms down.")
