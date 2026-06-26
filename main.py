@@ -3943,7 +3943,7 @@ def blood_rift_dungeon():
                 print("The altar is silent. You need all three runes first.")
                 continue
             print("The altar has three slots. Place runes in order.")
-            print("Type 'place hatred', 'place agony', 'place despair'")
+            print("Type 'place hatred', 'place despair', 'place agony'")
             while len(input_order) < 3:
                 place_cmd = input("altar> ").strip().lower()
                 if place_cmd.startswith("place "):
