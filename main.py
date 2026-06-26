@@ -3895,6 +3895,111 @@ def blood_warrior_encounter():
                 main()
                 return
 
+def blood_rift_dungeon():
+    global hp, evil, have_list, game_over, game_back
+    global blood_dungeon_cleared, blood_rune_hatred, blood_rune_agony, blood_rune_despair
+    global blood_lord_seal_obtained
+
+    print("\n=== BLOOD RIFT DUNGEON ===")
+    print("You climb down the crimson crack in the ground.")
+    print("Warm blood-like liquid drips from the walls.")
+    print("Three side chambers and a central altar stand before you.")
+    print("Commands: left | middle | right | altar | back | bag | hp")
+
+    correct_order = ["hatred", "agony", "despair"]
+    input_order = []
+    blood_dungeon_cleared = False
+
+    while True:
+        cmd = input("rift> ").strip().lower()
+
+        if cmd == "back":
+            print("You climb back up to the surface.")
+            break
+
+        elif cmd == "left":
+            if not blood_rune_hatred:
+                print("A rune glows on the wall: HATRED")
+                blood_rune_hatred = True
+            else:
+                print("You already took the hatred rune.")
+
+        elif cmd == "middle":
+            if not blood_rune_agony:
+                print("A rune glows on the wall: AGONY")
+                blood_rune_agony = True
+            else:
+                print("You already took the agony rune.")
+
+        elif cmd == "right":
+            if not blood_rune_despair:
+                print("A rune glows on the wall: DESPAIR")
+                blood_rune_despair = True
+            else:
+                print("You already took the despair rune.")
+
+        elif cmd == "altar":
+            if not (blood_rune_hatred and blood_rune_agony and blood_rune_despair):
+                print("The altar is silent. You need all three runes first.")
+                continue
+            print("The altar has three slots. Place runes in order.")
+            print("Type 'place hatred', 'place agony', 'place despair'")
+            while len(input_order) < 3:
+                place_cmd = input("altar> ").strip().lower()
+                if place_cmd.startswith("place "):
+                    rune_name = place_cmd.split()[1]
+                    if rune_name not in ["hatred", "agony", "despair"]:
+                        print("Unknown rune.")
+                        continue
+                    input_order.append(rune_name)
+                elif place_cmd == "reset":
+                    input_order = []
+                    print("You reset the altar.")
+                else:
+                    print("Unknown command.")
+
+            if input_order == correct_order:
+                print("\nAll runes glow deep red. The altar shakes violently!")
+                print("A black seal rises from the blood pool.")
+                if not blood_lord_seal_obtained:
+                    have_list.append("blood lord seal")
+                    blood_lord_seal_obtained = True
+                    evil += 15
+                    hp += 10
+                    print("You obtained the BLOOD LORD SEAL.")
+                    print("Max HP +10, Evil +15")
+                blood_dungeon_cleared = True
+                break
+            else:
+                hp -= 3
+                print("\nWrong order! Blood energy explodes in your face!")
+                print("HP -3. The altar resets.")
+                input_order = []
+                if hp <= 0:
+                    print("You burn to ash in the blood fire.")
+                    game_over = True
+                    game_back = True
+                    break
+
+        elif cmd == "bag":
+            for item in have_list:
+                print(item)
+
+        elif cmd == "hp":
+            print(f"HP: {hp}")
+
+        else:
+            print("Unknown command.")
+
+    if game_over:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input()
+            if c == "menu":
+                main()
+                return
+
 def advance_time():
     global step_count, time_period, festival_steps, festival_mode
     global weather_duration, weather_damage, amulet, game_over, game_back,good,evil,hp,current_weather,blood_dungeon_cleared,blood_lord_seal_obtained,blood_moon,blood_rune_agony,blood_warrior_alive,blood_warrior_hp
@@ -5044,6 +5149,8 @@ def gamestart():
             print('You find a hidden trail leading to an ABANDONED CAMP. There is a camp in the west. And also a grave in the east. And the path still leads to a hill to south.')
             print('You see a grave, something is written on it: game developer, killed by a lot of bug and error.')
             print('A voice booms: Dig the grave, then you will find me. Or, you can search the grave.')
+            if blood_moon:
+                print('Bloody moon in the sky, a crimson crack appears on the ground, type down to go down.')
             while True:
                 print('You see a lot of camps and a cliff.')
                 if play_count == 2:
@@ -5056,6 +5163,9 @@ def gamestart():
                 if camp_cmd == 'west':
                     print('You head west into the camp.')
                     print('Old tents, cold firepit, and a chest.')
+                elif camp_cmd == 'down' or camp_cmd == 'go down' or camp_cmd == 'd':
+                    blood_rift_dungeon()
+                    continue
                 elif camp_cmd == "make funny face":
                     print("You make a funny face. A squirrel stares at you.")
                 elif camp_cmd == 'go to hill' or camp_cmd == 'south' or camp_cmd == 'forward' or camp_cmd == 'go to south':
