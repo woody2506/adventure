@@ -4119,7 +4119,7 @@ def gamestart():
     global has_death_corpse, death_location, death_corpse_item
     global one_hole_in,two_hole_in,three_hole_in,grave_take
     global grave_looted, church_purified, church_desecrated
-    global x2
+    global x2,blood_moon
 
     altar = False
     if game_back == True and cleared_ending == True:
