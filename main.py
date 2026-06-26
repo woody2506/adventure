@@ -100,6 +100,15 @@ giant_path_opened = False
 # Titan Easter Egg (3rd Playthrough Only)
 titan_meet = False
 
+blood_moon = False
+blood_warrior_alive = False
+blood_warrior_hp = 15
+blood_dungeon_cleared = False
+blood_rune_hatred = False
+blood_rune_agony = False
+blood_rune_despair = False
+blood_lord_seal_obtained = False
+
 # Special Item Flags
 has_elf_amulet = False
 has_trap_tool = False
@@ -3814,14 +3823,86 @@ def cave():
                     main()
                     return
 
+def blood_warrior_encounter():
+    global hp, evil, have_list, game_over, game_back, blood_warrior_alive
+
+    print("\n=== BLOOD CURSED WARRIOR ===")
+    print("A towering warrior wrapped in crimson mist blocks your path.")
+    print("Its eyes glow red. It does not speak, it only wants to kill.")
+    print("Commands: attack | defend | flee | bag | hp")
+
+    while True:
+        if blood_warrior_hp <= 0:
+            print("\nThe warrior collapses and dissolves into blood mist.")
+            print("You find a Cursed Greatsword in its remains.")
+            have_list.append("cursed greatsword")
+            evil += 10
+            blood_warrior_alive = False
+            print("You won the fight! Evil +10")
+            break
+
+        if hp <= 0:
+            print("\nThe warrior cuts you down. You bleed out in the dirt.")
+            game_over = True
+            game_back = True
+            break
+
+        cmd = input("warrior> ").strip().lower()
+
+        if cmd == "attack":
+            player_dmg = random.randint(1, 3)
+            blood_warrior_hp -= player_dmg
+            print(f"You strike the warrior! Deal {player_dmg} damage.")
+            if blood_warrior_hp > 0:
+                enemy_dmg = random.randint(2, 4)
+                hp -= enemy_dmg
+                print(f"The warrior swings its blade! You take {enemy_dmg} damage.")
+
+        elif cmd == "defend":
+            enemy_dmg = random.randint(1, 2)
+            hp -= enemy_dmg
+            print(f"You raise your guard. You only take {enemy_dmg} damage.")
+
+        elif cmd == "flee":
+            if random.randint(1, 3) == 1:
+                print("You escape from the warrior.")
+                break
+            else:
+                enemy_dmg = random.randint(2, 3)
+                hp -= enemy_dmg
+                print(f"You fail to run! The warrior hits you from behind. -{enemy_dmg} HP")
+
+        elif cmd == "talk" or cmd == "negotiate" or cmd == "purify":
+            print("The warrior does not respond. It feels no reason, no mercy.")
+
+        elif cmd == "bag":
+            for item in have_list:
+                print(item)
+
+        elif cmd == "hp":
+            print(f"Your HP: {hp}")
+            print(f"Warrior HP: {blood_warrior_hp}")
+
+        else:
+            print("Unknown command.")
+
+    if game_over:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input()
+            if c == "menu":
+                main()
+                return
+
 def advance_time():
     global step_count, time_period, festival_steps, festival_mode
-    global weather_duration, weather_damage, amulet, game_over, game_back,good,evil,hp,current_weather
+    global weather_duration, weather_damage, amulet, game_over, game_back,good,evil,hp,current_weather,blood_dungeon_cleared,blood_lord_seal_obtained,blood_moon,blood_rune_agony,blood_warrior_alive,blood_warrior_hp
 
     step_count += 1
     if step_count % 4 == 0:
         festival_steps += 1
-        if time_period == "dusk" and festival_steps >= 7 and random.randint(1,2) == 1:
+        if time_period == "dusk" and festival_steps >= 7 and random.randint(1,3) == 1:
             festival_mode = True
             festival_steps = 0
             print("\n=====================================")
@@ -3830,6 +3911,18 @@ def advance_time():
             print("=====================================\n")
             hp += 5
             good += 5
+        elif random.randint(1, 4) == 1 and not festival_mode:
+            blood_moon = True
+            blood_warrior_alive = True
+            festival_steps = 0
+            print("\n=====================================")
+            print("A BLOODY MOON RISES")
+            print("The sky turns crimson. Evil surges in the air.")
+            print("=====================================\n")
+            hp -= 1
+            evil += 5
+            print('Suddenly, you are hit by something.')
+            blood_warrior_encounter()
         if time_period == "day":
             time_period = "dusk"
             print("\n=== DUSK | The world fades to dark ===")
@@ -3844,6 +3937,13 @@ def advance_time():
             print("\n=====================================")
             print("  FULL MOON FESTIVAL ENDS  ")
             print("Ghosts return to their normal state.")
+            print("=====================================\n")
+        elif blood_moon:
+            blood_moon = False
+            blood_warrior_alive = False
+            print("\n=====================================")
+            print("  BLOODY MOON FADES  ")
+            print("The moon returns to normal. Evil calms down.")
             print("=====================================\n")
         elif time_period == 'night':
             time_period = "day"
