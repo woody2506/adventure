@@ -77,6 +77,7 @@ escape_bonus = 0
 player_weapon_damage = 2
 player_armor_reduction = 0
 
+defeated_enemies = set()
 npc_reputation = {
     "merchant": 0,
     "hut_ghost": 0,
@@ -368,36 +369,36 @@ def character_creation():
         choice = input("origin> ").strip().lower()
         if choice == "1" or choice == "warrior":
             player_class = "warrior"
-            hp = 12
+            hp = 20
             base_attack_bonus = 2
             base_defense_bonus = 1
             have_list.append("iron sword")
             player_weapon_damage = 3
             print("You choose the path of the Warrior.")
-            print("HP: 12 | ATK Bonus: +2 | DEF Bonus: +1")
+            print("HP: 20 | ATK Bonus: +2 | DEF Bonus: +1")
             print("Starting item: Iron Sword")
             break
         elif choice == "2" or choice == "rogue":
             player_class = "rogue"
-            hp = 8
+            hp = 15
             base_attack_bonus = 1
             escape_bonus = 2
             have_list.append("lockpick")
             have_list.append("rope")
             player_weapon_damage = 2
             print("You choose the path of the Rogue.")
-            print("HP: 8 | ATK Bonus: +1 | Escape Bonus: +2")
+            print("HP: 15 | ATK Bonus: +1 | Escape Bonus: +2")
             print("Starting items: Lockpick, Rope")
             break
         elif choice == "3" or choice == "mage":
             player_class = "mage"
-            hp = 6
+            hp = 12
             base_attack_bonus = 3
             light = True
             have_list.append("magic staff")
             player_weapon_damage = 4
             print("You choose the path of the Mage.")
-            print("HP: 6 | ATK Bonus: +3 | Permanent inner light")
+            print("HP: 12 | ATK Bonus: +3 | Permanent inner light")
             print("Starting item: Magic Staff")
             break
         else:
@@ -3354,6 +3355,8 @@ def cave():
                                     elif gocave == 'west':
                                         print('You walk deeper into the cave. There is still a path to west.')
                                         print('You see old footprints on the ground. Someone came here before.')
+                                        print('Suddenly, a bat appears, it wants to kill you!')
+                                        combat("cave bat swarm", 4, 2, None, 1,enemy_id='bat')
                                         while True:
                                             if has_death_corpse and death_location == current_room:
                                                 print('You see here a corpse, type corpse to search it.\n')
@@ -3889,11 +3892,11 @@ def cave():
                     main()
                     return
 
-def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evil = 0):
+def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evil = 0, enemy_id = None):
     global hp, good, evil, have_list, game_over, game_back
     global base_attack_bonus, base_defense_bonus, escape_bonus
     global player_weapon_damage, player_armor_reduction
-    global difficulty_scalar
+    global difficulty_scalar, defeated_enemies
 
     enemy_hp = int(base_enemy_hp * difficulty_scalar)
     enemy_max_dmg = int(base_enemy_dmg * difficulty_scalar)
@@ -3910,8 +3913,10 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
                 print(f"You find: {loot_item}")
                 have_list.append(loot_item)
             if loot_evil != 0:
-                evil += loot_evil
                 print(f"Evil {('+' if loot_evil > 0 else '')}{loot_evil}")
+                evil += loot_evil
+            if enemy_id is not None:
+                defeated_enemies.add(enemy_id)
             return True
 
         if hp <= 0:
@@ -4535,16 +4540,8 @@ def gamestart():
                     elif tele == 'colin':
                         if play_count == 1:
                             if light == False and not torch:
-                                if hp > 10:
-                                    print('A Grue bites you! Hp -10')
-                                    hp -= 10
-                                    force_in_cave = True
-                                else:
-                                    print("It is very dark here. You feel like you are be eaten by a Grue.")
-                                    print('Game over.')
-                                    game_over = True
-                                    game_back = True
-                                    break
+                                print('A Grue appears, it would not die forever, you can just make it turns to flee.')
+                                combat("Grue", 20, 5, None, 7)
                             elif torch == True:
                                 print("Your torch keeps Grue away.")
                                 print('Welcome to death cave!')
@@ -5113,6 +5110,7 @@ def gamestart():
                                 print('The statue has already been purified.')
 
                         elif ch == 'desecrate':
+                            combat("corrupted church phantom", 12, 3, "demon claw fragment", 8,enemy_id='phantom')
                             if not church_desecrated:
                                 print('Dark power surrounds you.')
                                 have_list.append('demon claw')
@@ -5135,6 +5133,8 @@ def gamestart():
         elif go == 'east':
             print('You are in the forest.')
             print('An old diary lies on the ground. Further east lies the misty swamp.')
+            print('Sunnenly, a wolf appears.')
+            combat("feral forest wolf", 6, 2, "wolf pelt", 2,enemy_id = "forest_wolf")
             while True:
                 advance_time()
                 forest_take = input("read diary / east / leave: ")
