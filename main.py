@@ -3902,7 +3902,7 @@ def advance_time():
     step_count += 1
     if step_count % 4 == 0:
         festival_steps += 1
-        if time_period == "dusk" and festival_steps >= 3 and random.randint(1,3) == 1:
+        if time_period == "dusk" and festival_steps >= 3 and random.randint(1,3) == 1 and not blood_moon:
             festival_mode = True
             festival_steps = 0
             print("\n=====================================")
@@ -3911,7 +3911,7 @@ def advance_time():
             print("=====================================\n")
             hp += 5
             good += 5
-        elif random.randint(1, 4) == 1 and festival_steps >= 3 and not festival_mode:
+        elif time_period == 'night' and random.randint(1, 4) == 1 and festival_steps >= 3 and not festival_mode:
             blood_moon = True
             blood_warrior_alive = True
             festival_steps = 0
