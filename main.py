@@ -3995,6 +3995,8 @@ def blood_rift_dungeon():
     global blood_dungeon_cleared, blood_rune_hatred, blood_rune_agony, blood_rune_despair
     global blood_lord_seal_obtained
 
+    if 'hound' not in defeated_enemies:
+        combat("blood hound", 10, 4, "blood fang", 6, enemy_id = "hound")
     print("\n=== BLOOD RIFT DUNGEON ===")
     print("You climb down the crimson crack in the ground.")
     print("Warm blood-like liquid drips from the walls.")
@@ -5331,6 +5333,9 @@ def gamestart():
                     break
                 elif camp_cmd == 'east':
                     print('You find an old graveyard.')
+                    if 'grave_boss' not in defeated_enemies:
+                        print('A grave digger find you, but he is undead.')
+                        combat("undead gravedigger", 14, 4, 'some gold coins', 6, enemy_id = "grave_boss")
                     if festival_mode:
                         print("Ghost smiles: Happy full moon! Here's a gift!")
                         hp += 2
