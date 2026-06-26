@@ -3824,7 +3824,7 @@ def cave():
                     return
 
 def blood_warrior_encounter():
-    global hp, evil, have_list, game_over, game_back, blood_warrior_alive
+    global hp, evil, have_list, game_over, game_back, blood_warrior_alive,blood_rune_agony,blood_warrior_hp
 
     print("\n=== BLOOD CURSED WARRIOR ===")
     print("A towering warrior wrapped in crimson mist blocks your path.")
