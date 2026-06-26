@@ -183,6 +183,24 @@ death_count = 0
 misty_end = False
 x2 = None
 
+player_class = "wanderer"
+base_attack_bonus = 0
+base_defense_bonus = 0
+escape_bonus = 0
+player_weapon_damage = 2
+player_armor_reduction = 0
+
+defeated_enemies = set()
+npc_reputation = {
+    "merchant": 0,
+    "hut_ghost": 0,
+    "tower_guard": 0,
+    "fort_lieutenant": 0
+}
+
+ng_plus_level = 1
+difficulty_scalar = 1.0
+
 # Military Fort - Random Password System
 military_password = ""
 password_attempts = 0
@@ -212,6 +230,15 @@ giant_path_opened = False
 
 # Titan Easter Egg (3rd Playthrough Only)
 titan_meet = False
+
+blood_moon = False
+blood_warrior_alive = False
+blood_warrior_hp = 15
+blood_dungeon_cleared = False
+blood_rune_hatred = False
+blood_rune_agony = False
+blood_rune_despair = False
+blood_lord_seal_obtained = False
 
 # Special Item Flags
 has_elf_amulet = False
@@ -441,6 +468,55 @@ tasks = {
     "Unlock the family truth": False
 }
 
+def character_creation():
+    global hp, base_attack_bonus, base_defense_bonus, escape_bonus
+    global have_list, player_class, player_weapon_damage, light
+
+    print("\n=== CHOOSE YOUR ORIGIN ===")
+    print("Select your background:")
+    print("1. Warrior  | High HP, strong melee attacks")
+    print("2. Rogue    | High escape, trap resistance")
+    print("3. Mage     | Innate light, basic magic damage")
+
+    while True:
+        choice = input("origin> ").strip().lower()
+        if choice == "1" or choice == "warrior":
+            player_class = "warrior"
+            hp = 20
+            base_attack_bonus = 2
+            base_defense_bonus = 1
+            have_list.append("iron sword")
+            player_weapon_damage = 3
+            print("You choose the path of the Warrior.")
+            print("HP: 20 | ATK Bonus: +2 | DEF Bonus: +1")
+            print("Starting item: Iron Sword")
+            break
+        elif choice == "2" or choice == "rogue":
+            player_class = "rogue"
+            hp = 15
+            base_attack_bonus = 1
+            escape_bonus = 2
+            have_list.append("lockpick")
+            have_list.append("rope")
+            player_weapon_damage = 2
+            print("You choose the path of the Rogue.")
+            print("HP: 15 | ATK Bonus: +1 | Escape Bonus: +2")
+            print("Starting items: Lockpick, Rope")
+            break
+        elif choice == "3" or choice == "mage":
+            player_class = "mage"
+            hp = 12
+            base_attack_bonus = 3
+            light = True
+            have_list.append("magic staff")
+            player_weapon_damage = 4
+            print("You choose the path of the Mage.")
+            print("HP: 12 | ATK Bonus: +3 | Permanent inner light")
+            print("Starting item: Magic Staff")
+            break
+        else:
+            print("Invalid choice. Type 1, 2, 3 or class name.")
+
 def can_enter_altar():
     global soldier_task_done,lieutenant_task_done,old_diary_readed,grave_diary_read,have_list,x2
 
@@ -528,7 +604,7 @@ def update_weather():
         visibility = 25
         move_penalty = 2
         weather_damage = 2
-    elif current_weather == "snow":
+    elif current_weather == "heavy_snow":
         visibility = 40
         move_penalty = 1
         weather_damage = 1
@@ -537,7 +613,7 @@ def update_weather():
 
 def print_weather():
     print(f"\nWeather: {current_weather} | Visibility: {visibility}%")
-    if weather_damage > 0:
+    if weather_damage > 0 and amulet == False:
         print("The harsh weather hurts you.")
 
 def military_fort():
@@ -551,6 +627,7 @@ def military_fort():
     print("Available locations: east_sentry = 1 | swamp_command = 2| top_headquarters = 3| barracks = 4| armory = 5| back = 6")
 
     while True:
+        advance_time()
         cmd = input("fort> ")
         if cmd == "back" or cmd == '6':
             print("You leave the military fort and return to the northern road.")
@@ -2287,6 +2364,7 @@ def misty_swamp():
         print('You see a deep hole with some runed rope, type down to go down.')
         if has_death_corpse and death_location == current_room:
             print('You see here a corpse, type corpse to search it.\n')
+        advance_time()
         scmd = input("swamp> ")
         if handle_terminal_cmd(scmd):
             continue
@@ -2521,8 +2599,8 @@ def watchtower():
 
     floor = 1
     while True:
+        advance_time()
         cmd = input("tower> ")
-
         if cmd == "climb" or cmd == "up":
             if floor == 1:
                 print("You climb to FLOOR 2. Dust and old ropes cover the walls.")
@@ -2912,11 +2990,16 @@ def jump_scare_face(mode="normal"):
 
 def hill():
     global current_room,hp,evil,good,game_back,game_over,cleared_ending,map_unlocked,hill_diary_read,grandmother
-    high = 0
+    global defeated_enemies
 
+    high = 0
     current_room = 'hill'
+    if 'hungry_ghoul' not in defeated_enemies:
+        print('A ghoul find you.')
+        combat("hungry ghoul", 11, 4, "ghoul claw", 5, enemy_id = "hungry_ghoul")
     print('You are now at the bottom of the hill, type climb to climb, look to look around.')
     while True:
+        advance_time()
         cmd = input()
         if cmd == 'climb':
             if high == 0:
@@ -3389,6 +3472,9 @@ def cave():
                                     elif gocave == 'west':
                                         print('You walk deeper into the cave. There is still a path to west.')
                                         print('You see old footprints on the ground. Someone came here before.')
+                                        print('Suddenly, a bat appears, it wants to kill you!')
+                                        if 'bat' not in defeated_enemies:
+                                            combat("cave bat swarm", 4, 2, None, 1,enemy_id='bat')
                                         while True:
                                             if has_death_corpse and death_location == current_room:
                                                 print('You see here a corpse, type corpse to search it.\n')
@@ -3924,6 +4010,313 @@ def cave():
                     main()
                     return
 
+def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evil = 0, enemy_id = None):
+    global hp, good, evil, have_list, game_over, game_back
+    global base_attack_bonus, base_defense_bonus, escape_bonus
+    global player_weapon_damage, player_armor_reduction
+    global difficulty_scalar, defeated_enemies
+
+    enemy_hp = int(base_enemy_hp * difficulty_scalar)
+    enemy_max_dmg = int(base_enemy_dmg * difficulty_scalar)
+    enemy_min_dmg = max(1, enemy_max_dmg - 2)
+
+    print(f"\n=== {enemy_name.upper()} ===")
+    print(f"A {enemy_name} blocks your path.")
+    print("Commands: attack | defend | flee | use potion | bag | hp")
+
+    while True:
+        if enemy_hp <= 0:
+            print(f"\nThe {enemy_name} falls defeated.")
+            if loot_item:
+                print(f"You find: {loot_item}")
+                have_list.append(loot_item)
+            if loot_evil != 0:
+                print(f"Evil {('+' if loot_evil > 0 else '')}{loot_evil}")
+                evil += loot_evil
+            if enemy_id is not None:
+                defeated_enemies.add(enemy_id)
+            return True
+
+        if hp <= 0:
+            print(f"\nThe {enemy_name} strikes you down.")
+            game_over = True
+            game_back = True
+            return False
+
+        cmd = input("combat> ").strip().lower()
+
+        if cmd == "attack":
+            player_dmg = random.randint(1, player_weapon_damage) + base_attack_bonus
+            enemy_hp -= player_dmg
+            print(f"You strike! Deal {player_dmg} damage.")
+            if enemy_hp > 0:
+                enemy_dmg = random.randint(enemy_min_dmg, enemy_max_dmg)
+                final_dmg = max(0, enemy_dmg - base_defense_bonus - player_armor_reduction)
+                hp -= final_dmg
+                print(f"{enemy_name.title()} attacks! You take {final_dmg} damage.")
+
+        elif cmd == "defend":
+            enemy_dmg = random.randint(enemy_min_dmg, enemy_max_dmg)
+            final_dmg = max(0, enemy_dmg // 2 - base_defense_bonus - player_armor_reduction)
+            hp -= final_dmg
+            print(f"You raise your guard. You take {final_dmg} damage.")
+
+        elif cmd == "flee":
+            escape_chance = 3 + escape_bonus
+            if random.randint(1, 10) <= escape_chance:
+                print("You successfully escape.")
+                return None
+            else:
+                enemy_dmg = random.randint(enemy_min_dmg, enemy_max_dmg)
+                final_dmg = max(0, enemy_dmg - base_defense_bonus)
+                hp -= final_dmg
+                print(f"Escape failed! You take {final_dmg} damage while running.")
+
+        elif cmd == "use potion":
+            if "healing potion" in have_list:
+                have_list.remove("healing potion")
+                heal = random.randint(5, 10)
+                hp += heal
+                print(f"You drink a healing potion. Restore {heal} HP.")
+            else:
+                print("You have no healing potion.")
+
+        elif cmd == "bag":
+            for item in have_list:
+                print(item)
+
+        elif cmd == "hp":
+            print(f"Your HP: {hp}")
+            print(f"Enemy HP: {enemy_hp}")
+
+        else:
+            print("Unknown command.")
+
+    if game_over:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input()
+            if c == "menu":
+                main()
+                return
+
+def blood_warrior_encounter():
+    combat("blood cursed warrior", 15, 4, "cursed greatsword", 10)
+def blood_rift_dungeon():
+    global hp, evil, have_list, game_over, game_back
+    global blood_dungeon_cleared, blood_rune_hatred, blood_rune_agony, blood_rune_despair
+    global blood_lord_seal_obtained
+
+    print("\n=== BLOOD RIFT DUNGEON ===")
+    print("You climb down the crimson crack in the ground.")
+    print("Warm blood-like liquid drips from the walls.")
+    print("Three side chambers and a central altar stand before you.")
+    print("Commands: left | middle | right | altar | back | bag | hp")
+
+    correct_order = ["hatred", "agony", "despair"]
+    input_order = []
+    blood_dungeon_cleared = False
+
+    while True:
+        cmd = input("rift> ").strip().lower()
+
+        if cmd == "back":
+            print("You climb back up to the surface.")
+            break
+
+        elif cmd == "left":
+            if not blood_rune_hatred:
+                print("A rune glows on the wall: HATRED")
+                blood_rune_hatred = True
+            else:
+                print("You already took the hatred rune.")
+
+        elif cmd == "middle":
+            if not blood_rune_agony:
+                print("A rune glows on the wall: AGONY")
+                blood_rune_agony = True
+            else:
+                print("You already took the agony rune.")
+
+        elif cmd == "right":
+            if not blood_rune_despair:
+                print("A rune glows on the wall: DESPAIR")
+                blood_rune_despair = True
+            else:
+                print("You already took the despair rune.")
+
+        elif cmd == "altar":
+            if not (blood_rune_hatred and blood_rune_agony and blood_rune_despair):
+                print("The altar is silent. You need all three runes first.")
+                continue
+            print("The altar has three slots. Place runes in order.")
+            print("Type 'place hatred', 'place despair', 'place agony'")
+            while len(input_order) < 3:
+                place_cmd = input("altar> ").strip().lower()
+                if place_cmd.startswith("place "):
+                    rune_name = place_cmd.split()[1]
+                    if rune_name not in ["hatred", "agony", "despair"]:
+                        print("Unknown rune.")
+                        continue
+                    input_order.append(rune_name)
+                elif place_cmd == "reset":
+                    input_order = []
+                    print("You reset the altar.")
+                else:
+                    print("Unknown command.")
+
+            if input_order == correct_order:
+                print("\nAll runes glow deep red. The altar shakes violently!")
+                print("A black seal rises from the blood pool.")
+                if not blood_lord_seal_obtained:
+                    have_list.append("blood lord seal")
+                    blood_lord_seal_obtained = True
+                    evil += 15
+                    hp += 10
+                    print("You obtained the BLOOD LORD SEAL.")
+                    print("Max HP +10, Evil +15")
+                blood_dungeon_cleared = True
+                break
+            else:
+                hp -= 3
+                print("\nWrong order! Blood energy explodes in your face!")
+                print("HP -3. The altar resets.")
+                input_order = []
+                if hp <= 0:
+                    print("You burn to ash in the blood fire.")
+                    game_over = True
+                    game_back = True
+                    break
+
+        elif cmd == "bag":
+            for item in have_list:
+                print(item)
+
+        elif cmd == "hp":
+            print(f"HP: {hp}")
+
+        else:
+            print("Unknown command.")
+
+    if game_over:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input()
+            if c == "menu":
+                main()
+                return
+
+def advance_time():
+    global step_count, time_period, festival_steps, festival_mode
+    global weather_duration, weather_damage, amulet, game_over, game_back,good,evil,hp,current_weather,blood_dungeon_cleared,blood_lord_seal_obtained,blood_moon,blood_rune_agony,blood_warrior_alive,blood_warrior_hp
+
+    step_count += 1
+    if step_count % 4 == 0:
+        festival_steps += 1
+        if time_period == "dusk" and festival_steps >= 3 and random.randint(1,3) == 1 and not blood_moon:
+            festival_mode = True
+            festival_steps = 0
+            print("\n=====================================")
+            print("FULL MOON FESTIVAL BEGINS!")
+            print(" All ghosts are friendly tonight!")
+            print("=====================================\n")
+            hp += 5
+            good += 5
+        if time_period == 'dusk' and random.randint(1, 4) == 1 and festival_steps >= 1 and not festival_mode:
+            blood_moon = True
+            blood_warrior_alive = True
+            festival_steps = 0
+            print("\n=====================================")
+            print("A BLOODY MOON RISES")
+            print("The sky turns crimson. Evil surges in the air.")
+            print("=====================================\n")
+            hp -= 1
+            evil += 5
+            print('Suddenly, you are hit by something.')
+            blood_warrior_encounter()
+        if time_period == "day":
+            time_period = "dusk"
+            print("\n=== DUSK | The world fades to dark ===")
+        elif time_period == "dusk":
+            time_period = "night"
+            print("\n=== NIGHT FALLS | Without light, you will DIE!!! ===")
+        elif time_period == "night" and festival_mode:
+            time_period = "day"
+            print("\n=== SUNRISE | Safe again ===")
+            festival_mode = False
+            festival_steps = 0
+            print("\n=====================================")
+            print("  FULL MOON FESTIVAL ENDS  ")
+            print("Ghosts return to their normal state.")
+            print("=====================================\n")
+        elif blood_moon and time_period == 'night':
+            blood_moon = False
+            blood_warrior_alive = False
+            time_period = "day"
+            print("\n=== SUNRISE | Safe again ===")
+            print("\n=====================================")
+            print("  BLOODY MOON FADES  ")
+            print("The moon returns to normal. Evil calms down.")
+            print("=====================================\n")
+        elif time_period == 'night':
+            time_period = "day"
+            print("\n=== SUNRISE | Safe again ===")
+    if time_period == "night" and not torch and not light:
+        hp -= 1
+        print("Darkness burns you! Hp -1")
+        if "cursed dagger" in have_list:
+            print('The cursed dagger hits you in the dark. Hp -1')
+            hp -= 1
+        if hp <= 0:
+            print("You were consumed by the dark...")
+            game_over = True
+            game_back = True
+            print("=== END ===")
+            print("Type 'menu' to return main menu")
+            while True:
+                c = input()
+                if c == 'menu':
+                    main()
+                    return
+    elif time_period == 'night' and torch or time_period == 'night' and light:
+        print('\nYour light protects you from the darkness.')
+    # Weather
+    weather_duration -= 1
+    if weather_duration <= 0:
+        update_weather()
+        print("\nThe weather changes.")
+        print_weather()
+    if weather_damage > 0:
+        if amulet == False:
+            hp -= weather_damage
+            print(f"You take {weather_damage} damage from the weather.")
+            if hp <= 0:
+                print("You died from the harsh weather.")
+                game_over = True
+                game_back = True
+                if game_over == True:
+                    print("=== END ===")
+                    print("Type 'menu' to return main menu")
+                    while True:
+                        c = input()
+                        if c == 'menu':
+                            main()
+                            return
+        else:
+            print('\nYour amulet protects you from the harsh weather.')
+    if current_weather == 'light_rain' and random.randint(1,2) == 1:
+        print('You are in the rain, so romantic, luckily, you feel better. Hp +1')
+        hp += 1
+    if game_over == True:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input()
+            if c == 'menu':
+                main()
+                return
 #game
 def gamestart():
     global have_list, game_over, light, hp, map_unlocked, secret_unlocked, amulet, take, chain1, chain2, current_room, torch,l,k,n,s,f,w,sc,rune1,rune2,rune3,rune,grandmother,diary_read,old_diary_readed,grave_diary_read, game_back,play_count,trap_protect,cleared_ending,force_in_cave,hill_diary_read
@@ -3936,7 +4329,7 @@ def gamestart():
     global has_death_corpse, death_location, death_corpse_item
     global one_hole_in,two_hole_in,three_hole_in,grave_take
     global grave_looted, church_purified, church_desecrated
-    global x2
+    global x2,blood_moon,defeated_enemies
 
     altar = False
     if game_back == True and cleared_ending == True:
@@ -3945,7 +4338,7 @@ def gamestart():
         torch = True
         light = True
         print("=== NEW GAME+ ===")
-        print("The cave remembers you.\n")
+        print("The curse and this game remembers you.\n")
     else:
         play_count = 1
     cleared_ending = False
@@ -3998,80 +4391,9 @@ def gamestart():
             print(f"'{player_name}... turn around...'")
             print("There is nobody behind you.")
             hp -= 1
-        # Weather
-        weather_duration -= 1
-        if weather_duration <= 0:
-            update_weather()
-            print("\nThe weather changes.")
-            print_weather()
-        if weather_damage > 0:
-            if amulet == False:
-                hp -= weather_damage
-                print(f"You take {weather_damage} damage from the weather.")
-                if hp <= 0:
-                    print("You died from the harsh weather.")
-                    game_over = True
-                    game_back = True
-                    if game_over == True:
-                        print("=== END ===")
-                        print("Type 'menu' to return main menu")
-                        while True:
-                            c = input()
-                            if c == 'menu':
-                                main()
-                                return
-            else:
-                print('Your amulet protects you from the bad weather.')
-            print('')
         # STRONGER DAY/NIGHT FEEL
-        step_count += 1
-        if step_count % 4 == 0:
-            # FESTIVAL EGG — FULL MOON EVENT
-            festival_steps += 1
-            if festival_steps >= 7 and random.randint(1,3) == 1:
-                festival_mode = True
-                festival_steps = 0
-                print("\n=====================================")
-                print("FULL MOON FESTIVAL BEGINS!")
-                print(" All ghosts are friendly tonight!")
-                print("=====================================\n")
-                hp += 5
-                good += 5
-            elif festival_steps >= 25:
-                festival_mode = False
-                festival_steps = 0
-                print("\n=====================================")
-                print("  🌙 FULL MOON FESTIVAL ENDS 🌙")
-                print('Are ghosts friendly now?')
-                print("=====================================\n")
-            if time_period == "day":
-                time_period = "dusk"
-                print("\n=== DUSK | The world fades to dark ===")
-            elif time_period == "dusk":
-                time_period = "night"
-                print("\n=== NIGHT FALLS | Without light, you will DIE!!! ===")
-            elif time_period == "night":
-                time_period = "day"
-                print("\n=== SUNRISE | Safe again ===")
-
+        advance_time()
         # NIGHT DAMAGE (STRONGER)
-        if time_period == "night" and not torch and not light:
-            hp -= 1
-            print("Darkness burns you! Hp -1")
-            if "cursed dagger" in have_list:
-                print('The cursed dagger hits you in the dark. Hp -1')
-                hp -= 1
-            if hp <= 0:
-                print("You were consumed by the dark...")
-                game_over = True
-                game_back = True
-                print("=== END ===")
-                print("Type 'menu' to return main menu")
-                while True:
-                    c = input()
-                    if c == 'menu':
-                        main()
-                        return
         if festival_mode:
             print('Full moon! A hole appears on the ground, type down to go down.')
         go = input()
@@ -4264,7 +4586,7 @@ def gamestart():
                 elif take == 'woody' and chain1:
                     chain2 = True
                     print('You say woody, you get some money!')
-                
+                    have_list.append('some gold coins')                
                 elif take == 'garry' and chain2:
                     if play_count == 1:
                         print('Wow, you know the magic words!')
@@ -4336,16 +4658,8 @@ def gamestart():
                     elif tele == 'colin':
                         if play_count == 1:
                             if light == False and not torch:
-                                if hp > 10:
-                                    print('A Grue bites you! Hp -10')
-                                    hp -= 10
-                                    force_in_cave = True
-                                else:
-                                    print("It is very dark here. You feel like you are be eaten by a Grue.")
-                                    print('Game over.')
-                                    game_over = True
-                                    game_back = True
-                                    break
+                                print('A Grue appears, it would not die forever, you can just make it turns to flee.')
+                                combat("Grue", 20, 5, None, 7)
                             elif torch == True:
                                 print("Your torch keeps Grue away.")
                                 print('Welcome to death cave!')
@@ -4680,6 +4994,7 @@ def gamestart():
                     if args.godmode:
                         print('Merchant: Welcome, god, what are you going to do here?')
                     while True:
+                        advance_time()
                         m = input('merchant> ')
                         if m == 'trade food':
                             if 'some food' in have_list:
@@ -4796,8 +5111,7 @@ def gamestart():
                         elif m == "tickling":
                             print("You tickle the merchant. He laughs loudly.")
                         elif m == "dance":
-                            print("The merchant does a silly dance. You feel better.")
-                            hp += 1
+                            print("The merchant does a silly dance. You feel silly too.")
                         elif m == "act like ghost":
                             print("You float and howl. Merchant rolls eyes and keeps calm.")
                         elif m == "beg for gifts" or m == 'beg':
@@ -4914,6 +5228,8 @@ def gamestart():
                                 print('The statue has already been purified.')
 
                         elif ch == 'desecrate':
+                            if 'phantom' not in defeated_enemies:
+                                combat("corrupted church phantom", 12, 3, "demon claw fragment", 8,enemy_id='phantom')
                             if not church_desecrated:
                                 print('Dark power surrounds you.')
                                 have_list.append('demon claw')
@@ -4936,7 +5252,11 @@ def gamestart():
         elif go == 'east':
             print('You are in the forest.')
             print('An old diary lies on the ground. Further east lies the misty swamp.')
+            print('Sunnenly, a wolf appears.')
+            if "forest_wolf" not in defeated_enemies:
+                combat("feral forest wolf", 6, 2, "wolf pelt", 2,enemy_id = "forest_wolf")
             while True:
+                advance_time()
                 forest_take = input("read diary / east / leave: ")
                 if forest_take == 'read diary' or forest_take == 'take diary':
                     print('You read this old diary. It says:')
@@ -5036,6 +5356,8 @@ def gamestart():
             print('You find a hidden trail leading to an ABANDONED CAMP. There is a camp in the west. And also a grave in the east. And the path still leads to a hill to south.')
             print('You see a grave, something is written on it: game developer, killed by a lot of bug and error.')
             print('A voice booms: Dig the grave, then you will find me. Or, you can search the grave.')
+            if blood_moon:
+                print('Bloody moon in the sky, a crimson crack appears on the ground, type down to go down.')
             while True:
                 print('You see a lot of camps and a cliff.')
                 if play_count == 2:
@@ -5043,10 +5365,14 @@ def gamestart():
                 print('Type search to search, chest to open chest, back to go back.')
                 if has_death_corpse and death_location == current_room:
                     print('You see here a corpse, type corpse to search it.\n')
+                advance_time()
                 camp_cmd = input('camp> ')
                 if camp_cmd == 'west':
                     print('You head west into the camp.')
                     print('Old tents, cold firepit, and a chest.')
+                elif camp_cmd == 'down' or camp_cmd == 'go down' or camp_cmd == 'd':
+                    blood_rift_dungeon()
+                    continue
                 elif camp_cmd == "make funny face":
                     print("You make a funny face. A squirrel stares at you.")
                 elif camp_cmd == 'go to hill' or camp_cmd == 'south' or camp_cmd == 'forward' or camp_cmd == 'go to south':
@@ -5215,6 +5541,8 @@ def gamestart():
                         print('You have alrady dig the grave!')
                 else:
                     print('Unknown command.')
+        else:
+            print('Unknown command.')
         if game_over == True:
             print("=== END ===")
             print("Type 'menu' to return main menu")
@@ -6295,13 +6623,16 @@ def main():
             print('=== Death Adventure v1.3 - Official Release ===')
             print('Welcome to death adventure! You are a poor adventure, dream of rich and treasure. I will be your eyes and hands. You can say west or east north and south to control.')
             print('Your family always have somebody disappears. Your father said that he will go on a holiday, but he never came back.\n')
+            character_creation()
             good += 5
         else:
             print('=== Death Adventure v1.3 - Official Release ===')
             print('Welcome to death adventure! You are a god who go to the mortrol world. I will be your eyes and hands. You can say west or east north and south to control.')
             print('You go to mortrol world beacause you see a family which have a curse. But unfortunately, you become a part of the curse too!')
             print('Then, you become a mortrol who has the power as a god.')
+            print('You should still have to choose a character.')
             print('Your will still die, however.\n')
+            character_creation()
         if args.godmode:
             hp = 999
             trap_protect = True
