@@ -2877,9 +2877,13 @@ def jump_scare_face(mode="normal"):
 
 def hill():
     global current_room,hp,evil,good,game_back,game_over,cleared_ending,map_unlocked,hill_diary_read,grandmother
-    high = 0
+    global defeated_enemies
 
+    high = 0
     current_room = 'hill'
+    if 'hungry_ghoul' not in defeated_enemies:
+        print('A ghoul find you.')
+        combat("hungry ghoul", 11, 4, "ghoul claw", 5, enemy_id = "hungry_ghoul")
     print('You are now at the bottom of the hill, type climb to climb, look to look around.')
     while True:
         advance_time()
