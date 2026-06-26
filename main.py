@@ -70,6 +70,23 @@ death_count = 0
 misty_end = False
 x2 = None
 
+player_class = "wanderer"
+base_attack_bonus = 0
+base_defense_bonus = 0
+escape_bonus = 0
+player_weapon_damage = 2
+player_armor_reduction = 0
+
+npc_reputation = {
+    "merchant": 0,
+    "hut_ghost": 0,
+    "tower_guard": 0,
+    "fort_lieutenant": 0
+}
+
+ng_plus_level = 1
+difficulty_scalar = 1.0
+
 # Military Fort - Random Password System
 military_password = ""
 password_attempts = 0
@@ -336,6 +353,55 @@ tasks = {
     "Climb the watchtower": False,
     "Unlock the family truth": False
 }
+
+def character_creation():
+    global hp, base_attack_bonus, base_defense_bonus, escape_bonus
+    global have_list, player_class, player_weapon_damage, light
+
+    print("\n=== CHOOSE YOUR ORIGIN ===")
+    print("Select your background:")
+    print("1. Warrior  | High HP, strong melee attacks")
+    print("2. Rogue    | High escape, trap resistance")
+    print("3. Mage     | Innate light, basic magic damage")
+
+    while True:
+        choice = input("origin> ").strip().lower()
+        if choice == "1" or choice == "warrior":
+            player_class = "warrior"
+            hp = 12
+            base_attack_bonus = 2
+            base_defense_bonus = 1
+            have_list.append("iron sword")
+            player_weapon_damage = 3
+            print("You choose the path of the Warrior.")
+            print("HP: 12 | ATK Bonus: +2 | DEF Bonus: +1")
+            print("Starting item: Iron Sword")
+            break
+        elif choice == "2" or choice == "rogue":
+            player_class = "rogue"
+            hp = 8
+            base_attack_bonus = 1
+            escape_bonus = 2
+            have_list.append("lockpick")
+            have_list.append("rope")
+            player_weapon_damage = 2
+            print("You choose the path of the Rogue.")
+            print("HP: 8 | ATK Bonus: +1 | Escape Bonus: +2")
+            print("Starting items: Lockpick, Rope")
+            break
+        elif choice == "3" or choice == "mage":
+            player_class = "mage"
+            hp = 6
+            base_attack_bonus = 3
+            light = True
+            have_list.append("magic staff")
+            player_weapon_damage = 4
+            print("You choose the path of the Mage.")
+            print("HP: 6 | ATK Bonus: +3 | Permanent inner light")
+            print("Starting item: Magic Staff")
+            break
+        else:
+            print("Invalid choice. Type 1, 2, 3 or class name.")
 
 def can_enter_altar():
     global soldier_task_done,lieutenant_task_done,old_diary_readed,grave_diary_read,have_list,x2
@@ -3823,57 +3889,74 @@ def cave():
                     main()
                     return
 
-def blood_warrior_encounter():
-    global hp, evil, have_list, game_over, game_back, blood_warrior_alive,blood_rune_agony,blood_warrior_hp
+def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evil = 0):
+    global hp, good, evil, have_list, game_over, game_back
+    global base_attack_bonus, base_defense_bonus, escape_bonus
+    global player_weapon_damage, player_armor_reduction
+    global difficulty_scalar
 
-    print("\n=== BLOOD CURSED WARRIOR ===")
-    print("A towering warrior wrapped in crimson mist blocks your path.")
-    print("Its eyes glow red. It does not speak, it only wants to kill.")
-    print("Commands: attack | defend | flee | bag | hp")
+    enemy_hp = int(base_enemy_hp * difficulty_scalar)
+    enemy_max_dmg = int(base_enemy_dmg * difficulty_scalar)
+    enemy_min_dmg = max(1, enemy_max_dmg - 2)
+
+    print(f"\n=== {enemy_name.upper()} ===")
+    print(f"A {enemy_name} blocks your path.")
+    print("Commands: attack | defend | flee | use potion | bag | hp")
 
     while True:
-        if blood_warrior_hp <= 0:
-            print("\nThe warrior collapses and dissolves into blood mist.")
-            print("You find a Cursed Greatsword in its remains.")
-            have_list.append("cursed greatsword")
-            evil += 10
-            blood_warrior_alive = False
-            print("You won the fight! Evil +10")
-            break
+        if enemy_hp <= 0:
+            print(f"\nThe {enemy_name} falls defeated.")
+            if loot_item:
+                print(f"You find: {loot_item}")
+                have_list.append(loot_item)
+            if loot_evil != 0:
+                evil += loot_evil
+                print(f"Evil {('+' if loot_evil > 0 else '')}{loot_evil}")
+            return True
 
         if hp <= 0:
-            print("\nThe warrior cuts you down. You bleed out in the dirt.")
+            print(f"\nThe {enemy_name} strikes you down.")
             game_over = True
             game_back = True
-            break
+            return False
 
-        cmd = input("warrior> ").strip().lower()
+        cmd = input("combat> ").strip().lower()
 
         if cmd == "attack":
-            player_dmg = random.randint(1, 3)
-            blood_warrior_hp -= player_dmg
-            print(f"You strike the warrior! Deal {player_dmg} damage.")
-            if blood_warrior_hp > 0:
-                enemy_dmg = random.randint(2, 4)
-                hp -= enemy_dmg
-                print(f"The warrior swings its blade! You take {enemy_dmg} damage.")
+            player_dmg = random.randint(1, player_weapon_damage) + base_attack_bonus
+            enemy_hp -= player_dmg
+            print(f"You strike! Deal {player_dmg} damage.")
+            if enemy_hp > 0:
+                enemy_dmg = random.randint(enemy_min_dmg, enemy_max_dmg)
+                final_dmg = max(0, enemy_dmg - base_defense_bonus - player_armor_reduction)
+                hp -= final_dmg
+                print(f"{enemy_name.title()} attacks! You take {final_dmg} damage.")
 
         elif cmd == "defend":
-            enemy_dmg = random.randint(1, 2)
-            hp -= enemy_dmg
-            print(f"You raise your guard. You only take {enemy_dmg} damage.")
+            enemy_dmg = random.randint(enemy_min_dmg, enemy_max_dmg)
+            final_dmg = max(0, enemy_dmg // 2 - base_defense_bonus - player_armor_reduction)
+            hp -= final_dmg
+            print(f"You raise your guard. You take {final_dmg} damage.")
 
         elif cmd == "flee":
-            if random.randint(1, 3) == 1:
-                print("You escape from the warrior.")
-                break
+            escape_chance = 3 + escape_bonus
+            if random.randint(1, 10) <= escape_chance:
+                print("You successfully escape.")
+                return None
             else:
-                enemy_dmg = random.randint(2, 3)
-                hp -= enemy_dmg
-                print(f"You fail to run! The warrior hits you from behind. -{enemy_dmg} HP")
+                enemy_dmg = random.randint(enemy_min_dmg, enemy_max_dmg)
+                final_dmg = max(0, enemy_dmg - base_defense_bonus)
+                hp -= final_dmg
+                print(f"Escape failed! You take {final_dmg} damage while running.")
 
-        elif cmd == "talk" or cmd == "negotiate" or cmd == "purify":
-            print("The warrior does not respond. It feels no reason, no mercy.")
+        elif cmd == "use potion":
+            if "healing potion" in have_list:
+                have_list.remove("healing potion")
+                heal = random.randint(5, 10)
+                hp += heal
+                print(f"You drink a healing potion. Restore {heal} HP.")
+            else:
+                print("You have no healing potion.")
 
         elif cmd == "bag":
             for item in have_list:
@@ -3881,7 +3964,7 @@ def blood_warrior_encounter():
 
         elif cmd == "hp":
             print(f"Your HP: {hp}")
-            print(f"Warrior HP: {blood_warrior_hp}")
+            print(f"Enemy HP: {enemy_hp}")
 
         else:
             print("Unknown command.")
@@ -3895,6 +3978,8 @@ def blood_warrior_encounter():
                 main()
                 return
 
+def blood_warrior_encounter():
+    combat("blood cursed warrior", 15, 4, "cursed greatsword", 10)
 def blood_rift_dungeon():
     global hp, evil, have_list, game_over, game_back
     global blood_dungeon_cleared, blood_rune_hatred, blood_rune_agony, blood_rune_despair
@@ -6418,13 +6503,16 @@ def main():
             print('=== Death Adventure v1.3 - Official Release ===')
             print('Welcome to death adventure! You are a poor adventure, dream of rich and treasure. I will be your eyes and hands. You can say west or east north and south to control.')
             print('Your family always have somebody disappears. Your father said that he will go on a holiday, but he never came back.\n')
+            character_creation()
             good += 5
         else:
             print('=== Death Adventure v1.3 - Official Release ===')
             print('Welcome to death adventure! You are a god who go to the mortrol world. I will be your eyes and hands. You can say west or east north and south to control.')
             print('You go to mortrol world beacause you see a family which have a curse. But unfortunately, you become a part of the curse too!')
             print('Then, you become a mortrol who has the power as a god.')
+            print('You should still have to choose a character.')
             print('Your will still die, however.\n')
+            character_creation()
         if args.godmode:
             hp = 999
             trap_protect = True
