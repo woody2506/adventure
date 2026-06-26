@@ -3356,7 +3356,8 @@ def cave():
                                         print('You walk deeper into the cave. There is still a path to west.')
                                         print('You see old footprints on the ground. Someone came here before.')
                                         print('Suddenly, a bat appears, it wants to kill you!')
-                                        combat("cave bat swarm", 4, 2, None, 1,enemy_id='bat')
+                                        if 'bat' not in defeated_enemies:
+                                            combat("cave bat swarm", 4, 2, None, 1,enemy_id='bat')
                                         while True:
                                             if has_death_corpse and death_location == current_room:
                                                 print('You see here a corpse, type corpse to search it.\n')
@@ -4211,7 +4212,7 @@ def gamestart():
     global has_death_corpse, death_location, death_corpse_item
     global one_hole_in,two_hole_in,three_hole_in,grave_take
     global grave_looted, church_purified, church_desecrated
-    global x2,blood_moon
+    global x2,blood_moon,defeated_enemies
 
     altar = False
     if game_back == True and cleared_ending == True:
@@ -5110,7 +5111,8 @@ def gamestart():
                                 print('The statue has already been purified.')
 
                         elif ch == 'desecrate':
-                            combat("corrupted church phantom", 12, 3, "demon claw fragment", 8,enemy_id='phantom')
+                            if 'phantom' not in defeated_enemies:
+                                combat("corrupted church phantom", 12, 3, "demon claw fragment", 8,enemy_id='phantom')
                             if not church_desecrated:
                                 print('Dark power surrounds you.')
                                 have_list.append('demon claw')
@@ -5134,7 +5136,8 @@ def gamestart():
             print('You are in the forest.')
             print('An old diary lies on the ground. Further east lies the misty swamp.')
             print('Sunnenly, a wolf appears.')
-            combat("feral forest wolf", 6, 2, "wolf pelt", 2,enemy_id = "forest_wolf")
+            if "forest_wolf" not in defeated_enemies:
+                combat("feral forest wolf", 6, 2, "wolf pelt", 2,enemy_id = "forest_wolf")
             while True:
                 advance_time()
                 forest_take = input("read diary / east / leave: ")
