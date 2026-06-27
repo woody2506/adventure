@@ -215,7 +215,6 @@ def consume_step_durability():
         if torch_durability <= 0:
             light = False
             print("Your light burns out completely. Darkness closes in.")
-            print('You can use torch instead.')
 
 def load_messages():
     if not os.path.exists(MSG_FILE):
@@ -540,6 +539,7 @@ def military_fort():
 
     while True:
         advance_time()
+        consume_step_durability()
         cmd = input("fort> ")
         if cmd == "back" or cmd == '6':
             print("You leave the military fort and return to the northern road.")
@@ -635,6 +635,7 @@ def orc_tribe_dungeon():
     print("\n==================== ORC TRIBE UNDERGROUND DUNGEON ====================")
     print("A primitive orc settlement trapped inside the infinite cave cycle. You can choose to negotiate or raid this tribe.")
     while True:
+        consume_step_durability()
         cmd = input("orc> negotiate | raid | search_totem | back: ")
         if cmd == "back":
             print("You leave the orc dungeon area.")
@@ -722,6 +723,8 @@ def forgotten_archive():
     while True:
         if has_death_corpse and death_location == current_room:
             print('You see here a corpse, type corpse to search it.\n')
+        
+        consume_step_durability()
         cmd = input("archive> ").strip().lower()
 
         if cmd == "leave" or cmd == "back" or cmd == 'walk back':
@@ -1127,6 +1130,7 @@ def child_tomb():
     while True:
         if has_death_corpse and death_location == current_room:
             print('You see here a corpse, type corpse to search it.\n')
+        consume_step_durability()
         cmd = input("child> ").strip().lower()
 
         if handle_terminal_cmd(cmd):
@@ -1499,6 +1503,7 @@ def full_moon_maze():
     if has_death_corpse and death_location == current_room:
         print('You see here a corpse, type corpse to search it.\n')
     while True:
+        consume_step_durability()
         cmd = input("moon> ").strip().lower()
 
         if cmd == "leave" or cmd == "back":
@@ -1654,6 +1659,7 @@ def wax_chamber():
     if has_death_corpse and death_location == current_room:
         print('You see here a corpse, type corpse to search it.\n')
     while True:
+        consume_step_durability()
         cmd = input("wax> ").strip().lower()
 
         if cmd == "leave" or cmd == "back":
@@ -1757,6 +1763,7 @@ def pendulum_mortuary():
     }
 
     while True:
+        consume_step_durability()
         cmd = input("mortuary> ").strip().lower()
         if cmd == "leave" or cmd == "back":
             print("You turn and walk out before the dead wake.")
@@ -1973,6 +1980,7 @@ def dwarven_forge_vault():
 
     while True:
         print(f"Materials left for {attempts_left} attempts.")
+        consume_step_durability()
         cmd = input("forge> craft | back\n")
         if cmd == "back":
             break
@@ -2028,6 +2036,7 @@ def tomb():
     tomb_unlocked = True
 
     while True:
+        consume_step_durability()
         cmd = input("tomb> ")
         if handle_terminal_cmd(cmd):
             continue
@@ -2277,6 +2286,7 @@ def misty_swamp():
         if has_death_corpse and death_location == current_room:
             print('You see here a corpse, type corpse to search it.\n')
         advance_time()
+        consume_step_durability()
         scmd = input("swamp> ")
         if handle_terminal_cmd(scmd):
             continue
@@ -2512,6 +2522,7 @@ def watchtower():
     floor = 1
     while True:
         advance_time()
+        consume_step_durability()
         cmd = input("tower> ")
         if cmd == "climb" or cmd == "up":
             if floor == 1:
@@ -2912,6 +2923,7 @@ def hill():
     print('You are now at the bottom of the hill, type climb to climb, look to look around.')
     while True:
         advance_time()
+        consume_step_durability()
         cmd = input()
         if cmd == 'climb':
             if high == 0:
@@ -3008,6 +3020,9 @@ def underwater_ruins():
     print("Cold dark water surrounds you. Bubbles rise slowly from the stone floor.")
     print("Ancient sea god carvings cover every wall, glowing faintly blue.")
     print("Your oxygen is limited. Find air pockets or you will drown.")
+    if light == True:
+        print('Your light gones down by the water.')
+        light = False
     print("Oxygen starts at 6. Every action consumes 1 oxygen.")
 
     oxygen = 6
@@ -3198,6 +3213,7 @@ def cave():
     while True:
         if has_death_corpse and death_location == current_room:
             print('You see here a corpse, type corpse to search it.\n')
+        consume_step_durability()
         op = input()
         if handle_terminal_cmd(op):
             continue
@@ -3241,6 +3257,7 @@ def cave():
                         while True:
                             if has_death_corpse and death_location == current_room:
                                 print('You see here a corpse, type corpse to search it.\n')
+                            consume_step_durability()
                             west = input()
                             if west == 'west':
                                 print('There is a stone path to west.')
@@ -3249,6 +3266,7 @@ def cave():
                                     print('You feel that the way back is collapsed.')
                                     if has_death_corpse and death_location == current_room:
                                         print('You see here a corpse, type corpse to search it.\n')
+                                    consume_step_durability()
                                     gocave = input()
                                     if gocave == 'east':
                                         print("The way back is collapsed! You can't return unless you have a pick-axe.")
@@ -3274,6 +3292,7 @@ def cave():
                                     elif gocave == 'library':
                                         print('Bookshelves full of diaries, all written by your ancestors.')
                                         while True:
+                                            consume_step_durability()
                                             lib = input('library> ')
                                             if lib == 'read':
                                                 print('You read a memory:')
@@ -3299,6 +3318,7 @@ def cave():
                                         while True:
                                             if has_death_corpse and death_location == current_room:
                                                 print('You see here a corpse, type corpse to search it.\n')
+                                            consume_step_durability()
                                             sewer_cmd = input('sewer> ')
                                             if sewer_cmd == 'west' or sewer_cmd == 'back' or sewer_cmd == 'leave':
                                                 print('You climb back to the cave path.')
@@ -3355,6 +3375,7 @@ def cave():
                                                 print("You wade through dark water, reach a hidden stone door.")
                                                 print("Ancient magic lingers here.")
                                                 while True:
+                                                    consume_step_durability()
                                                     deep_cmd = input("deep> ")
                                                     if deep_cmd == "open door":
                                                         if "rune stone 1" in have_list:
@@ -3390,6 +3411,7 @@ def cave():
                                         while True:
                                             if has_death_corpse and death_location == current_room:
                                                 print('You see here a corpse, type corpse to search it.\n')
+                                            consume_step_durability()
                                             pathwest = input()
                                             if pathwest == 'west':
                                                 print('You see here a note. And a diary. There is still a way to west.')
@@ -3397,12 +3419,14 @@ def cave():
                                                 while True:
                                                     if has_death_corpse and death_location == current_room:
                                                         print('You see here a corpse, type corpse to search it.\n')
+                                                    consume_step_durability()
                                                     west2 = input()
                                                     if west2 == 'west':
                                                         while True:
                                                             print('You can see a ghost, but the ghost does not see you!')
                                                             print('You go west, you see here a human corpse, you are shocked! There is still path to west. You see here ' + p)
                                                             print('Try touch corpse or ask about dev or west and you see a orc dungeon, type orc to go in.')
+                                                            consume_step_durability()
                                                             west3 = input()
                                                             if west3 == 'west':
                                                                 while True:
@@ -4042,6 +4066,7 @@ def blood_rift_dungeon():
     blood_dungeon_cleared = False
 
     while True:
+        consume_step_durability()
         cmd = input("rift> ").strip().lower()
 
         if cmd == "back":
@@ -4076,6 +4101,7 @@ def blood_rift_dungeon():
             print("The altar has three slots. Place runes in order.")
             print("Type 'place hatred', 'place despair', 'place agony'")
             while len(input_order) < 3:
+                consume_step_durability()
                 place_cmd = input("altar> ").strip().lower()
                 if place_cmd.startswith("place "):
                     rune_name = place_cmd.split()[1]
@@ -4320,6 +4346,7 @@ def gamestart():
         # NIGHT DAMAGE (STRONGER)
         if festival_mode:
             print('Full moon! A hole appears on the ground, type down to go down.')
+        consume_step_durability()
         go = input()
         if handle_terminal_cmd(go):
             continue
@@ -4353,6 +4380,7 @@ def gamestart():
                 print('You see here a shaft, it is not too deep, type ’down‘ to go down.')
                 if has_death_corpse and death_location == current_room:
                     print('You see here a corpse, type corpse to search it.\n')
+                consume_step_durability()
                 take = input()
                 if handle_terminal_cmd(take):
                     continue
@@ -4561,6 +4589,7 @@ def gamestart():
                 while True:
                     if rune1 and rune2 and rune3 and x2 == True:
                         print('You can place the runes now, type place runes to place them.')
+                    consume_step_durability()
                     tele = input()
                     if tele == 'light lamp':
                         if 'a lamp' in have_list:
@@ -4920,6 +4949,7 @@ def gamestart():
                         print('Merchant: Welcome, god, what are you going to do here?')
                     while True:
                         advance_time()
+                        consume_step_durability()
                         m = input('merchant> ')
                         if m == 'trade food':
                             if 'some food' in have_list:
@@ -5068,6 +5098,7 @@ def gamestart():
             print('You hear a woman crying: forgive me!')
             print('You see there still to west. Type west to go or talk ro talk.')
             while True:
+                consume_step_durability()
                 h = input('hut> ')
                 if h == 'talk':
                     print('Ghost: Bring me my husband’s diary.')
@@ -5119,6 +5150,7 @@ def gamestart():
                     print('You find an ABANDONED CHURCH. There is a stone with something write on it.')
                     print('You can read stone, purify or desecrate.')
                     while True:
+                        consume_step_durability()
                         ch = input('church> ')
                         if ch == 'east' or ch == 'back' or ch == 'leave':
                             print('You return to the hut.')
@@ -5182,6 +5214,7 @@ def gamestart():
                 combat("feral forest wolf", 6, 2, "wolf pelt", 2,enemy_id = "forest_wolf")
             while True:
                 advance_time()
+                consume_step_durability()
                 forest_take = input("read diary / east / leave: ")
                 if forest_take == 'read diary' or forest_take == 'take diary':
                     print('You read this old diary. It says:')
@@ -5291,6 +5324,7 @@ def gamestart():
                 if has_death_corpse and death_location == current_room:
                     print('You see here a corpse, type corpse to search it.\n')
                 advance_time()
+                consume_step_durability()
                 camp_cmd = input('camp> ')
                 if camp_cmd == 'west':
                     print('You head west into the camp.')
@@ -5505,6 +5539,7 @@ def ng_three():
             print("4. FINAL CHOICE")
         print("5. EXIT TUNNEL")
         
+        consume_step_durability()
         opt = input(">")
         
         if opt == "1":
