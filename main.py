@@ -4,6 +4,7 @@ import os
 import time
 import datetime
 import argparse
+import difflib
 
 # test github
 # start settings
@@ -69,6 +70,21 @@ hut_ghost_story = 0
 death_count = 0
 misty_end = False
 x2 = None
+
+# Torch Durability
+torch_durability = 20
+TORCH_MAX = 20
+
+# Weapon Durability (5 attacks before breaking)
+weapon_durability = 5
+weapon_broken = False
+
+# Amulet Durability System
+# Types: none / basic / advanced / super / holy
+current_amulet = "none"
+amulet_durability = 0
+AMULET_BASIC_MAX = 5
+AMULET_HIGH_MAX = 20
 
 player_class = "wanderer"
 base_attack_bonus = 0
@@ -191,6 +207,15 @@ def init_military_password():
     military_password = d1 + d2 + d3
 
 init_military_password()
+
+def consume_step_durability():
+    global light, torch_durability
+    if light and torch_durability > 0:
+        torch_durability -= 1
+        if torch_durability <= 0:
+            light = False
+            print("Your light burns out completely. Darkness closes in.")
+            print('You can use torch instead.')
 
 def load_messages():
     if not os.path.exists(MSG_FILE):
@@ -3901,7 +3926,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
     global hp, good, evil, have_list, game_over, game_back
     global base_attack_bonus, base_defense_bonus, escape_bonus
     global player_weapon_damage, player_armor_reduction
-    global difficulty_scalar, defeated_enemies
+    global difficulty_scalar, defeated_enemies,weapon_broken,weapon_durability,weather_duration
 
     enemy_hp = int(base_enemy_hp * difficulty_scalar)
     enemy_max_dmg = int(base_enemy_dmg * difficulty_scalar)
@@ -3936,6 +3961,15 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
             player_dmg = random.randint(1, player_weapon_damage) + base_attack_bonus
             enemy_hp -= player_dmg
             print(f"You strike! Deal {player_dmg} damage.")
+            if not weapon_broken and player_weapon_damage > 1:
+                weapon_durability -= 1
+                if weapon_durability <= 0:
+                    weapon_broken = True
+                    player_weapon_damage = 1
+                    for w in ["iron sword", "cursed greatsword", "captain longsword"]:
+                        if w in have_list:
+                            have_list.remove(w)
+                    print("Your weapon shatters! You fight with bare fists from now on.")
             if enemy_hp > 0:
                 enemy_dmg = random.randint(enemy_min_dmg, enemy_max_dmg)
                 final_dmg = max(0, enemy_dmg - base_defense_bonus - player_armor_reduction)
@@ -4101,6 +4135,7 @@ def advance_time():
     global step_count, time_period, festival_steps, festival_mode
     global weather_duration, weather_damage, amulet, game_over, game_back,good,evil,hp,current_weather,blood_dungeon_cleared,blood_lord_seal_obtained,blood_moon,blood_rune_agony,blood_warrior_alive,blood_warrior_hp
 
+    consume_step_durability()
     step_count += 1
     if step_count % 4 == 0:
         festival_steps += 1
@@ -4218,7 +4253,7 @@ def gamestart():
     global has_death_corpse, death_location, death_corpse_item
     global one_hole_in,two_hole_in,three_hole_in,grave_take
     global grave_looted, church_purified, church_desecrated
-    global x2,blood_moon,defeated_enemies
+    global x2,blood_moon,defeated_enemies,torch_durability
 
     altar = False
     if game_back == True and cleared_ending == True:
@@ -4325,6 +4360,7 @@ def gamestart():
                     if 'a lamp' not in have_list:
                         print('Ok')
                         have_list.append('a lamp')
+                        torch_durability = TORCH_MAX
                         l = ''
                     else:
                         print('You have already taken it.')
