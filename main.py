@@ -3990,7 +3990,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
                 if weapon_durability <= 0:
                     weapon_broken = True
                     player_weapon_damage = 1
-                    for w in ["iron sword", "cursed greatsword", "captain longsword"]:
+                    for w in ["iron sword", "cursed greatsword", "captain longsword",'ghost sword']:
                         if w in have_list:
                             have_list.remove(w)
                     print("Your weapon shatters! You fight with bare fists from now on.")
@@ -4005,6 +4005,8 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
             final_dmg = max(0, enemy_dmg // 2 - base_defense_bonus - player_armor_reduction)
             hp -= final_dmg
             print(f"You raise your guard. You take {final_dmg} damage.")
+            print('You then hit again and deal 1 damage.')
+            enemy_hp -= 1
 
         elif cmd == "flee":
             escape_chance = 3 + escape_bonus
