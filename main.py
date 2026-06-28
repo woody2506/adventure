@@ -4010,15 +4010,19 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
 
         elif cmd == "flee":
             escape_chance = 3 + escape_bonus
-            if random.randint(1, 10) <= escape_chance:
-                print("You successfully escape.")
-                return None
+            if enemy_hp <= 5:
+                if random.randint(1, 10) <= escape_chance:
+                    print("You successfully escape.")
+                    return None
+                else:
+                    enemy_dmg = random.randint(enemy_min_dmg, enemy_max_dmg)
+                    final_dmg = max(0, enemy_dmg - base_defense_bonus)
+                    hp -= final_dmg
+                    print(f"Escape failed! You take {final_dmg} damage while running.")
             else:
-                enemy_dmg = random.randint(enemy_min_dmg, enemy_max_dmg)
-                final_dmg = max(0, enemy_dmg - base_defense_bonus)
-                hp -= final_dmg
-                print(f"Escape failed! You take {final_dmg} damage while running.")
-
+                print('The enemy is strong enough so you can not flee.')
+                print('You then take 1 damage from the enemy.')
+                hp -= 1
         elif cmd == "use potion":
             if "healing potion" in have_list:
                 have_list.remove("healing potion")
