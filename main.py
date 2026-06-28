@@ -3673,7 +3673,7 @@ def cave():
                                                                         if amulet == True:
                                                                             print('Amulet protects you!')
                                                                         else:
-                                                                            print('The ghost kills you! GAME OVER!')
+                                                                            combat("ghost fighter", 8, 3, "ghost sword", 8)
                                                                             game_over = True
                                                                             game_back = True
                                                                             break
