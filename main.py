@@ -2361,7 +2361,7 @@ def misty_swamp():
             hp += 20
             print('HP +20')
             if play_count == 2:
-                print('Mortrol, you can break the curse now.')
+                print('Mortol, you can break the curse now.')
             misty_end = True
             gamestart()
             return
@@ -4937,14 +4937,14 @@ def gamestart():
             else:
                 print("No water.")
         elif go == 'north':
-            tower_check = input("Go to merchant or watchtower or military_fort? (merchant / tower / fort): ")
-            if tower_check == "fort":
+            tower_check = input("Go to merchant or watchtower or military_fort? (1.merchant / 2.tower / 3.fort): ")
+            if tower_check == "fort" or tower_check == '3':
                 military_fort()
                 continue
-            elif tower_check == "tower":
+            elif tower_check == "tower" or tower_check == '2':
                 watchtower()
                 continue
-            elif tower_check == 'merchant':
+            elif tower_check == 'merchant' or tower_check == '1':
                 good = good - evil
                 evil = 0
                 if good >= 5:
@@ -5648,23 +5648,23 @@ def menu():
     while True:
         print('')
         if play_count == 3:
-            start = input('start/quit/task/time: ')
+            start = input('1.start/2.quit/3.task/4.time: ')
         elif play_count == 4:
-            start = input('heaven/quit: ')
+            start = input('1.heaven/2.quit: ')
         else:
-            start = input('start/quit/task: ')
+            start = input('1.start/2.quit/3.task: ')
         if play_count != 4:
-            if start == 'start':
+            if start == 'start' or start == '1':
                 print('')
                 if play_count <= 2:
                     print('Type dev to cheat.')
                     print('')
                     gamestart()
                 elif play_count == 3:
-                    print('A voice booms: Mortrol, you have done well, you can go to my home -- ILLUSION TUNNEL and meet me now.')
+                    print('A voice booms: Mortol, you have done well, you can go to my home -- ILLUSION TUNNEL and meet me now.')
                     print('The voice also says: And I have tell you that I am your great-great grandfather -- the wizard.')
                     ng_three()
-            elif start == 'quit':
+            elif start == 'quit' or start == '2':
                 if play_count <= 4:
                     print('')
                     print('Goodbye!')
@@ -5690,12 +5690,12 @@ def menu():
                     print("=== Death Adventure v1.3 - Official Release ===")
                     print("Thank you for playing!")
                     exit()   
-            elif start == "time" or start == 'time travel':
+            elif start == "time" or start == 'time travel' or start == '4':
                 if play_count == 3:
                     time_travel_origin()
                 else:
                     print("Only available in 3rd run.")
-            elif start == 'task':
+            elif start == 'task' or start == '3':
                 if play_count <= 2:
                     print('')
                     print('TASKS:')
@@ -5706,11 +5706,23 @@ def menu():
                 else:
                     print('I can not help you too.')
         elif play_count == 4:
-            if start == 'heaven':
+            if start == 'heaven' or start == '1':
                 print_heaven()
-            elif start == 'quit':
+            elif start == 'quit' or start == '2':
+                print('You break the circle but refuses to go to the heaven, instead, you live in mortol world forever.')
+                show_message_wall()
+                name = input("Your name: ")
+                msg = input("Your message: ")
+                save_message(name, msg)
                 print('')
-                print('Goodbye!')
+                print('You can final see what you can cheat:')
+                print("=== Death Adventure Cheat ===")
+                print("Usage: python3 main.py [OPTIONS]")
+                print("Options:")
+                print("  -g, -G, -godmode    Enable god mode (invincible)")
+                print("  -c, -C, -cheat      Enable cheat mode (all items)")
+                print("  -h, -help           Show help")
+                print("=============================")
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
@@ -6585,7 +6597,7 @@ def main():
     if play_count == 2 and cleared_ending == True:
         play_count = 3
     if play_count == 4:
-        print('A voice booms: Mortrol, you final break the cycle, you pass my exam, so I will let you go to the heaven and meet me.\n')
+        print('A voice booms: Mortol, you final break the cycle, you pass my exam, so I will let you go to the heaven and meet me.\n')
         print('Game developer: PLayer, you have already done the main game, you can quit now or go to the last part.')
     if game_back == False:
         if not args.godmode:
@@ -6596,9 +6608,9 @@ def main():
             good += 5
         else:
             print('=== Death Adventure v1.3 - Official Release ===')
-            print('Welcome to death adventure! You are a god who go to the mortrol world. I will be your eyes and hands. You can say west or east north and south to control.')
-            print('You go to mortrol world beacause you see a family which have a curse. But unfortunately, you become a part of the curse too!')
-            print('Then, you become a mortrol who has the power as a god.')
+            print('Welcome to death adventure! You are a god who go to the mortol world. I will be your eyes and hands. You can say west or east north and south to control.')
+            print('You go to mortol world beacause you see a family which have a curse. But unfortunately, you become a part of the curse too!')
+            print('Then, you become a mortol who has the power as a god.')
             print('You should still have to choose a character.')
             print('Your will still die, however.\n')
             character_creation()
