@@ -4,10 +4,8 @@ import os
 import time
 import datetime
 import argparse
-import difflib
+import getpass
 
-# test github
-# start settings
 
 have_list = []
 game_over = False
@@ -198,6 +196,68 @@ parser = argparse.ArgumentParser(description="Death Adventure")
 parser.add_argument("-g",'-G',"-godmode",'-GODMODE',dest="godmode", action="store_true", help="Enable invincibility and trap protection")
 parser.add_argument("-c",'-C', "-cheat",'-CHEAT',dest="cheat", action="store_true", help="Unlock all key items and max stats")
 args = parser.parse_args()
+
+meta_file_tier = 0
+DESKTOP_PATH = os.path.expanduser("~/Desktop")
+# Hidden files on macOS start with "." -- invisible by default
+META_FILENAMES = [
+    ".do_not_open.txt",
+    ".they_are_watching.txt",
+    ".stop_playing.txt",
+    ".i_know_you.txt",
+    ".it_is_too_late.txt"
+]
+
+def get_real_username():
+    try:
+        return getpass.getuser()
+    except:
+        return "player"
+
+def write_creepy_desktop_file(tier: int):
+    global meta_file_tier, death_count, session_start_time
+
+    if tier <= meta_file_tier:
+        return
+    meta_file_tier = tier
+    username = get_real_username()
+    play_minutes = int((time.time() - session_start_time) // 60)
+
+    try:
+        file_path = os.path.join(DESKTOP_PATH, META_FILENAMES[tier - 1])
+        with open(file_path, "w", encoding="utf-8") as f:
+            if tier == 1:
+                f.write("I can see you through the screen.\n")
+                f.write(f"Hello, {username}.\n")
+                f.write("Don't look behind you.\n")
+            elif tier == 2:
+                f.write(f"You have died {death_count} times now.\n")
+                f.write(f"You've been playing for {play_minutes} minutes.\n")
+                f.write("You think this is just a game.\n")
+                f.write("It's not.\n")
+                f.write("The cave is real.\n")
+            elif tier == 3:
+                f.write("You found the developer room.\n")
+                f.write("He didn't make this place.\n")
+                f.write("He just wrote down what he saw.\n")
+                f.write(f"{username}, you should stop while you can.\n")
+                f.write("Close the window. Run.\n")
+            elif tier == 4:
+                f.write("The blood moon is real too.\n")
+                f.write("It's not code.\n")
+                f.write("It's looking through your window right now.\n")
+                f.write("Don't turn around.\n")
+                f.write("I'm not in the game.\n")
+                f.write("I'm behind you.\n")
+            elif tier == 5:
+                f.write("You reached the end.\n")
+                f.write("But you can't leave.\n")
+                f.write("Every time you restart, you go deeper into the cave.\n")
+                f.write("Soon you won't be able to come back.\n")
+                f.write(f"Goodbye, {username}.\n")
+                f.write("Enjoy your stay.\n")
+    except:
+        pass
 
 def init_military_password():
     global military_password
@@ -2475,7 +2535,9 @@ def misty_swamp():
 
 def developer_room():
     global hp, have_list, good, evil, rune1, rune2, rune3, trap_protect, festival_mode
+    global meta_file_tier
 
+    write_creepy_desktop_file(3)
     print("\n" + "="*60)
     print("               DEVELOPER ROOM")
     print("="*60)
@@ -3208,6 +3270,7 @@ def cave():
     global game_over, hp, have_list, light, p, amulet, map_unlocked, secret_unlocked, diary_read, legacy_unlocked, current_room, torch,rune1,rune2,rune3,rune,grandmother,gate_unlock,old_diary_readed, game_back,play_count,old_note_readed,festival_mode,cleared_ending,force_in_cave,all_collected,amulet,ng_amulet,has_elf_amulet
     global has_death_corpse, death_location, death_corpse_item
     global sewer_treasure_taken, explorer_thank_reward,sewer_in
+    global meta_file_tier
 
     game_over = False
     while True:
@@ -4286,6 +4349,7 @@ def gamestart():
     global one_hole_in,two_hole_in,three_hole_in,grave_take
     global grave_looted, church_purified, church_desecrated
     global x2,blood_moon,defeated_enemies,torch_durability
+    global meta_file_tier
 
     altar = False
     if game_back == True and cleared_ending == True:
@@ -4664,6 +4728,7 @@ def gamestart():
                         if x2 == True:
                             if rune1 and rune2 and rune3:
                                 good = good - evil
+                                write_creepy_desktop_file(5)
                                 print('All runes glow! The ancient seal trembles!')
                                 if play_count == 1:
                                     print('Choose: seal (good > 10) / release / absorb / sacrifice / symbiosis (good > 5) / leave ')
@@ -5524,6 +5589,8 @@ def gamestart():
 
 def ng_three():
     global m1, m2, m3,cleared_ending
+    global meta_file_tier
+
     m1 = False
     m2 = False
     m3 = False
@@ -5638,9 +5705,13 @@ def ng_three():
             break
 # main menu
 def menu():
+    global meta_file_tier
+    global force_over   
 
-    global force_over
-
+    if death_count == 1:
+        write_creepy_desktop_file(1)
+    elif death_count == 3:
+        write_creepy_desktop_file(2)
     print('This is the main menu.')
     print('You can type start or quit or task for tasks.')
     if play_count == 3:
