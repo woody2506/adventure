@@ -4227,7 +4227,6 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
             print(f"\nThe {enemy_name} strikes you down.")
             game_over = True
             game_back = True
-            return False
 
         cmd = input("combat> ").strip().lower()
 
@@ -4293,14 +4292,14 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
         else:
             print("Unknown command.")
 
-    if game_over:
-        print("=== END ===")
-        print("Type 'menu' to return main menu")
-        while True:
-            c = input()
-            if c == "menu":
-                main()
-                return
+        if game_over:
+            print("=== END ===")
+            print("Type 'menu' to return main menu")
+            while True:
+                c = input()
+                if c == "menu":
+                    main()
+                    return
 
 def blood_warrior_encounter():
     combat("blood cursed warrior", 15, 4, "cursed greatsword", 10)
