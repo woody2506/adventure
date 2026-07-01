@@ -7002,15 +7002,19 @@ def main():
                 print('')
                 print('So, you will go to the menu.')
                 print('')
+                game_over = False
+                cleared_ending = False
                 menu()
             elif play_count == 3:
                 print('Welcome to the last least not last part of death adventure.')
                 print('You will never go to the cave again, instead, your great-great grandfather tell you to go somewhere.')
                 print('So, you will go to the menu.')
+                game_over = False
+                cleared_ending = False
         else:
             print('So, you died, and you will go back to the menu to choose if you want to challenge again.')
             print('And you have to come to the first turn of the cycle.')
-            player_score = 0
+            player_total_score = 0
             no_death_run = False
             if len(have_list) > 0:
                 death_corpse_item = random.choice(have_list)
