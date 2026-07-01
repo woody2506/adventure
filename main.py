@@ -341,14 +341,14 @@ def survival_tick():
                 main()
                 return
         
-def end_score_rating(base_score, ending_multiplier):
-    global no_death_run,SCORE_SAVE_FILE
+def end_score_rating():
+    global no_death_run,SCORE_SAVE_FILE,player_total_score
 
-    total = base_score
+    total = player_total_score
     if no_death_run:
         total += 100
-    total = round(total * ending_multiplier)
-
+    if total >= 1000:
+        rank = 'Wow, you are wonderful!'
     if total >= 600:
         rank = "S RANK, you are so cool~~~"
     elif total >= 450:
@@ -4227,6 +4227,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
             print(f"\nThe {enemy_name} strikes you down.")
             game_over = True
             game_back = True
+            break
 
         cmd = input("combat> ").strip().lower()
 
@@ -4292,14 +4293,14 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
         else:
             print("Unknown command.")
 
-        if game_over:
-            print("=== END ===")
-            print("Type 'menu' to return main menu")
-            while True:
-                c = input()
-                if c == "menu":
-                    main()
-                    return
+    if game_over:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input()
+            if c == "menu":
+                main()
+                return
 
 def blood_warrior_encounter():
     combat("blood cursed warrior", 15, 4, "cursed greatsword", 10)
@@ -4540,7 +4541,8 @@ def gamestart():
     global x2,blood_moon,defeated_enemies,torch_durability
     global meta_file_tier
     global player_total_score
-
+    
+    game_over = False
     altar = False
     if game_back == True and cleared_ending == True:
         play_count = 2
@@ -5928,8 +5930,12 @@ def ng_three():
 # main menu
 def menu():
     global meta_file_tier
-    global force_over   
+    global game_over,time_period,step_count
 
+
+    game_over = False
+    time_period = "day"
+    step_count = 0
     if death_count == 1:
         write_creepy_desktop_file(1)
     elif death_count == 3:
@@ -6027,7 +6033,7 @@ def menu():
             print('Please answer the question.')
 # main
 def main():
-    global have_list, game_over, light, hp, l, k, n, s, f, w, p, sc, secret_unlocked, map_unlocked, amulet, turn_count, chain1, chain2, diary_read, legacy_unlocked, new_game_plus, ng_amulet, ng_compass, ng_diary, current_room, torch, no_light_run, all_collected, rune1, rune2, rune3, faith, sky, moon, trap_protect, rune, grandmother, gate_unlock, old_diary_readed, grave_diary_read, force_over, game_back, play_count, tomb_unlocked, old_note_readed,cleared_ending,time_period,step_count,death_count,good,evil,death_corpse_item,death_location,has_death_corpse,one_hole_in,two_hole_in,three_hole_in,four_hole_in,no_death_run
+    global have_list, game_over, light, hp, l, k, n, s, f, w, p, sc, secret_unlocked, map_unlocked, amulet, turn_count, chain1, chain2, diary_read, legacy_unlocked, new_game_plus, ng_amulet, ng_compass, ng_diary, current_room, torch, no_light_run, all_collected, rune1, rune2, rune3, faith, sky, moon, trap_protect, rune, grandmother, gate_unlock, old_diary_readed, grave_diary_read, force_over, game_back, play_count, tomb_unlocked, old_note_readed,cleared_ending,time_period,step_count,death_count,good,evil,death_corpse_item,death_location,has_death_corpse,one_hole_in,two_hole_in,three_hole_in,four_hole_in,no_death_run,player_total_score
     today = datetime.date.today()
     m = today.month
     d = today.day
@@ -6951,7 +6957,7 @@ def main():
                 else:
                     have_list = []
                 light = False
-                hp = 5
+                hp = 30
                 l = 'a lamp, '
                 k = 'a key, '
                 n = 'a note, '
@@ -7026,7 +7032,10 @@ def main():
             four_hole_in = False
             death_location = current_room
             has_death_corpse = True
-            have_list = []
+            if args.godmode:
+                pass
+            else:
+                have_list = []
             game_over = False
             light = False
             hp = 5
@@ -7100,9 +7109,10 @@ def main():
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
+            print('You can choose a character again.')
+            character_creation()
             menu()
     if force_over == True:
         return
-
 if __name__ == '__main__':
     main()  
