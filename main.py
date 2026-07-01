@@ -78,7 +78,6 @@ weapon_durability = 5
 weapon_broken = False
 
 # Amulet Durability System
-# Types: none / basic / advanced / super / holy
 current_amulet = "none"
 amulet_durability = 0
 AMULET_BASIC_MAX = 5
@@ -102,6 +101,11 @@ npc_reputation = {
 ng_plus_level = 1
 difficulty_scalar = 1.0
 
+# Score System
+player_total_score = 0
+SCORE_SAVE_FILE = "adventure_score_save.txt"
+no_death_run = True
+
 # Military Fort - Random Password System
 military_password = ""
 password_attempts = 0
@@ -114,6 +118,7 @@ soldier_task_done = False
 lieutenant_task_done = False
 fort_unlocked = False
 has_military_key = False
+orc_in = False
 
 # Orc Tribe
 orc_friend = False
@@ -335,6 +340,54 @@ def survival_tick():
                 main()
                 return
         
+def end_score_rating(base_score, ending_multiplier):
+    global no_death_run,SCORE_SAVE_FILE
+
+    total = base_score
+    if no_death_run:
+        total += 100
+    total = round(total * ending_multiplier)
+
+    if total >= 600:
+        rank = "S RANK, you are so cool~~~"
+    elif total >= 450:
+        rank = "A RANK, very good!"
+    elif total >= 300:
+        rank = "B RANK, OK."
+    elif total >= 150:
+        rank = "C RANK, a little bad."
+    elif total >= 50:
+        rank = "D RANK, so bad!"
+    else:
+        rank = 'E RANK, are you a donkey?'
+
+    print("\n==================== FINAL RESULT ====================")
+    print(f"Total Score: {total}")
+    print(f"Final Rating: {rank}")
+    print("======================================================\n")
+
+    ranking = []
+    try:
+        with open(SCORE_SAVE_FILE, "r") as f:
+            for line in f:
+                line = line.strip()
+                if line.isdigit():
+                    ranking.append(int(line))
+    except FileNotFoundError:
+        ranking = []
+
+    ranking.append(total)
+    ranking = sorted(list(set(ranking)), reverse=True)
+    ranking = ranking[:5]
+
+    with open(SCORE_SAVE_FILE, "w") as f:
+        for i in range(len(ranking)):
+            f.write(f"{ranking[i]}\n")
+
+    print("==== TOP 5 RANKING BOARD ====")
+    for i in range(len(ranking)):
+        print(f"{i+1}. {ranking[i]} Points")
+    print("============================\n")
 
 # Save / Load System
 def save_game():
@@ -592,6 +645,7 @@ def military_fort():
     global colonel_diary_collected, fort_unlocked, military_password
     global has_military_key, trap_protect, have_list
     global password_attempts, fort_password_locked
+    global player_total_score
     global diary_fragment_1, diary_fragment_2, diary_fragment_3
     print("\n==================== ABANDONED MILITARY FORT ====================")
     print("Decades-old outpost built to seal the cursed cave. Rusty weapons and scattered journals lie everywhere.")
@@ -618,6 +672,7 @@ def military_fort():
                         has_military_key = True
                         print("You hand over food. The soldier gives you a bronze key for the armory.")
                         print("Head to the swamp command post and find the lieutenant for the march password.")
+                        player_total_score += 10
                     else:
                         print("You carry no food to offer.")
                 elif sub_cmd == "loot":
@@ -628,6 +683,7 @@ def military_fort():
                     if not diary_fragment_1:
                         diary_fragment_1 = True
                         print("You find a torn journal page: First digit of the march code is " + military_password[0])
+                        player_total_score += 5
                     else:
                         print("You already searched this area.")
                 elif sub_cmd == "leave":
@@ -639,6 +695,7 @@ def military_fort():
             if not diary_fragment_2:
                 diary_fragment_2 = True
                 print("You rummage through old bunks and find a crumpled note: Second digit of the march code is " + military_password[1])
+                player_total_score += 5
             else:
                 print("Empty barracks. Nothing left to find.")
 
@@ -646,6 +703,7 @@ def military_fort():
             if not diary_fragment_3:
                 diary_fragment_3 = True
                 print("Beneath a rusted rifle you find a log slip: Third digit of the march code is " + military_password[2])
+                player_total_score += 5
             else:
                 print("The armory has been picked clean.")
 
@@ -663,6 +721,7 @@ def military_fort():
                     good += 10
                     trap_protect = True
                     print("Password verified. You gain full swamp trap immunity.")
+                    player_total_score += 20
                 else:
                     password_attempts += 1
                     hp -= 4
@@ -671,8 +730,10 @@ def military_fort():
                         fort_password_locked = True
                         print("WRONG. Three failed attempts. The system locks permanently.")
                         print("You will never access the military archives in this run.")
+                        player_total_score -= 30
                     else:
                         print(f"Wrong code. Poison gas leaks. Attempts left: {3 - password_attempts}")
+                        player_total_score -= 10
             else:
                 print("Deliver all three garrison journals to the colonel at headquarters.")
 
@@ -682,8 +743,10 @@ def military_fort():
                 print("Return when you have collected all three garrison journals.")
             else:
                 print("You submit all journals. The colonel recounts the full story of your family's cursed guardianship.")
-                good += 15
-                have_list.append("military archive document")
+                if 'military archive document' not in have_list:
+                    have_list.append("military archive document")
+                    good += 15
+                    player_total_score += 10
                 print("You obtain classified files that unlock the hidden military ending.")
 
         else:
@@ -691,6 +754,7 @@ def military_fort():
         
 def orc_tribe_dungeon():
     global hp, good, evil, orc_friend, orc_totem_found, have_list,game_back,game_over
+    global player_total_score,orc_in
 
     print("\n==================== ORC TRIBE UNDERGROUND DUNGEON ====================")
     print("A primitive orc settlement trapped inside the infinite cave cycle. You can choose to negotiate or raid this tribe.")
@@ -705,6 +769,7 @@ def orc_tribe_dungeon():
                 print("You discover the stolen tribal totem hidden behind loose stone blocks.")
                 orc_totem_found = True
                 have_list.append("orc tribal totem")
+                player_total_score += 40
             else:
                 print("The tribal totem has already been retrieved.")
         elif cmd == "negotiate":
@@ -713,6 +778,8 @@ def orc_tribe_dungeon():
                 good += 18
                 have_list.append("a pickaxe")
                 print("You return the sacred totem. The chieftain gifts you a durable pickaxe and marks all cave traps on your map.")
+                player_total_score += 20
+                orc_in = True
                 return
             else:
                 print("The tribe refuses to communicate until their stolen totem is returned.")
@@ -720,16 +787,20 @@ def orc_tribe_dungeon():
             evil += 30
             hp -= 8
             print("You attack the tribe and seize gold treasures, but gain heavy evil karma.")
+            print('Hp -8')
+            player_total_score -= 80
             if hp <= 0:
                 print('You was killed by the dark evil karma.')
                 game_over = True
                 game_back = True
+            orc_in = True
             return
         else:
             print("Unknown command.")
 
 def titan_guardian_easter():
     global titan_meet, good, evil, hp
+    global player_total_score
     print("\n==================== TITAN ANCIENT GUARDIAN (3RD RUN SECRET) ====================")
     print("A primordial titan sleeps deep inside the illusion tunnel, witnessing the birth of the ancient sealing curse.")
     if not titan_meet:
@@ -739,11 +810,14 @@ def titan_guardian_easter():
             good += 30
             hp = 99
             print("The titan grants you full vitality and pure spiritual alignment.")
+            player_total_score += 15
         elif choice == "confess_sins":
             evil = 0
             print("All your accumulated evil karma is completely cleansed by ancient holy light.")
+            player_total_score += 10
         elif choice == "depart":
             print("You leave the titan's resting place without receiving any blessing.")
+            player_total_score -= 30
     else:
         print("The titan remains in eternal slumber and refuses to interact again.")
 
@@ -751,6 +825,7 @@ def titan_guardian_easter():
 def forgotten_archive():
     global hp, have_list, good, evil, faith, game_over, game_back
     global has_death_corpse, death_location, death_corpse_item,current_room,one_hole_in,light,torch,trap_protect,gnome_hole_in
+    global player_total_score
 
     current_room = 'forgotten_achive'
     print("\n=== FORGOTTEN ARCHIVE ===")
@@ -834,6 +909,7 @@ def forgotten_archive():
                     mistake_streak = 0
                     if rune_step == 4:
                         print("The stone door rumbles open. You enter the mirror corridor.")
+                        player_total_score += 10
                         current_room = "mirror_hall"
                         rune_step = 0
                 else:
@@ -841,6 +917,7 @@ def forgotten_archive():
                     damage = 1 if mistake_streak < 3 else 3
                     hp -= damage
                     print(f"Wrong order. Arcane energy shocks you. HP -{damage}")
+                    player_total_score -= 10
                     jump_scare_face()
                     rune_step = 0
                     if hp <= 0:
@@ -889,6 +966,7 @@ def forgotten_archive():
                     print("Bryn: Sit. I'll tell you everything he never wrote in the diaries.")
                     forgotten_archive.gnome_met = 2
                     faith += 5
+                    player_total_score += 5
                 else:
                     print("Bryn looks up from his work. What do you want to know?")
                     print("You can ask: wizard / curse / himself / outside / dwarf / hints / upgrade / help him leave / steal from him")
@@ -924,8 +1002,8 @@ def forgotten_archive():
                 print("runes / mirrors / scale / final lock")
 
             elif cmd == "hint runes" and forgotten_archive.gnome_met >= 2:
-                if faith >= 2:
-                    faith -= 2
+                if faith >= 10:
+                    faith -= 10
                     print("Bryn: Think about the sky. What comes first, what comes after?")
                     print("Bryn: Sun wakes the world, moon guards the night, star leads the lost, void ends all.")
                 else:
@@ -935,7 +1013,7 @@ def forgotten_archive():
                 if "a lamp" in have_list and good >= 10:
                     have_list.remove("a lamp")
                     have_list.append("eternal rune lantern")
-                    light = True
+                    light = False
                     torch = True
                     print("Bryn takes your lamp, scribes tiny runes on the glass.")
                     print("Bryn: There. Won't run out of oil anymore. Don't break it.")
@@ -957,6 +1035,7 @@ def forgotten_archive():
                     trap_protect = True
                     gnome_hole_in = True
                     have_list.append('gnome master toolkit')
+                    player_total_score += 20
                     forgotten_archive.gnome_met = 3
                 else:
                     print("Bryn: The seal only responds to a pure heart. You still carry too much darkness.")
@@ -972,12 +1051,14 @@ def forgotten_archive():
                     evil += 20
                     forgotten_archive.gnome_met = 0
                     gnome_hole_in = True
+                    player_total_score += 10
                     current_room = "balance_hall_clear"
                 else:
                     print("You don't see any tools to steal yet.")
 
             elif cmd == "attack gnome" or cmd == "kill bryn":
                 print('Bryn: Really? Attack a poor old gnome? You are so evil!')
+                player_total_score -= 5
                 evil += 5
             elif cmd == "joke" and forgotten_archive.gnome_met >= 2:
                 print("You tell him a silly joke about ghosts.")
@@ -993,6 +1074,7 @@ def forgotten_archive():
                     print("He eats slowly, very slowly. His eyes soften.")
                     print("Bryn: Alright. Ask me anything. I'll give you one free hint.")
                     forgotten_archive.free_hint = True
+                    player_total_score += 10
                 else:
                     print("You have no food to give him.")
 
@@ -1037,6 +1119,7 @@ def forgotten_archive():
                 if mirror_angles == correct:
                     print("Light travels through all mirrors and hits the receiver.")
                     print("A hidden passage opens to the balance chamber.")
+                    player_total_score += 10
                     current_room = "balance_hall"
                 else:
                     mistake_streak += 1
@@ -1134,6 +1217,7 @@ def forgotten_archive():
                     faith -= faith_cost
                     print("A soft voice whispers: 'Four runes pressed, three mirrors turned, seven stones weighed.'")
                     print("Hint: first digit = number of correct runes.")
+                    player_total_score -= 20
                 else:
                     print("You lack enough faith to receive guidance.")
 
@@ -1142,17 +1226,19 @@ def forgotten_archive():
                 if code == final_code:
                     print("The lock clicks. The core chamber opens before you.")
                     print("Warm light flows out, filling the archive.")
-                    print('Hp +99!!!')
-                    hp += 99
+                    print('Hp +20!!!')
+                    hp += 20
                     one_hole_in = True
+                    player_total_score += 50
                     gamestart()
                     return
                 else:
                     mistake_streak += 1
                     damage = 2 if mistake_streak < 3 else 4
                     hp -= damage
-                    print(f"Wrong code. Poison gas fills the room. HP -{damage}")
                     jump_scare_face('flash')
+                    print(f"Wrong code. Poison gas fills the room. HP -{damage}")
+                    player_total_score -= 15
                     if hp <= 0:
                         print("You choke and fall unconscious.")
                         game_over = True
@@ -1174,6 +1260,7 @@ def forgotten_archive():
 def child_tomb():
     global hp, have_list, good, evil, faith, game_over, game_back, current_room
     global has_death_corpse, death_location, death_corpse_item,child_hole_in
+    global player_total_score
     current_room = "child_tomb"
 
     print("\n=== CHILDREN'S CHAMBER ===")
@@ -1229,12 +1316,14 @@ def child_tomb():
                 if len(toys_placed) == 4:
                     print("\nAll toys glow silver. A small boy appears before you.")
                     print("He looks about seven years old, pale and quiet.")
+                    player_total_score += 5
                     question_stage = 1
             else:
                 wrong_count += 1
                 dmg = 1 if wrong_count < 3 else 3
                 hp -= dmg
                 print(f"The toy turns cold and burns your hand. HP -{dmg}")
+                player_total_score -= 10
                 toys_placed.clear()
                 print("All toys fall off the altar.")
                 if hp <= 0:
@@ -1250,10 +1339,12 @@ def child_tomb():
         elif question_stage == 1:
             if cmd == "yes":
                 print("Boy: 'Then answer my questions. If you lie... I will know.'")
+                player_total_score += 5
                 question_stage = 2
             elif cmd == "no":
                 print("Boy: 'Then why are you here? To steal from me too?'")
                 print("The room goes dark. Something pushes you hard.")
+                player_total_score -= 10
                 hp -= 3
                 print("HP -3")
                 if hp <= 0:
@@ -1276,6 +1367,7 @@ def child_tomb():
             elif cmd == "no" or cmd == "i cant":
                 print("Boy: 'I knew it. Everyone leaves.'")
                 print("He looks down, sad but not angry.")
+                player_total_score += 5
                 question_stage = 3
             else:
                 print("Boy: 'Will you stay with me forever?'")
@@ -1291,6 +1383,7 @@ def child_tomb():
                 faith += 15
                 good += 20
                 hp += 10
+                player_total_score += 20
                 print("You got CHILD RUNE SHARD. Faith +15, Good +20, HP +10")
                 print("The small door opens. You may leave.")
                 question_stage = 4
@@ -1301,6 +1394,7 @@ def child_tomb():
 
         elif question_stage == 4 and cmd == "leave":
             print("You walk out of the small chamber quietly.")
+            player_total_score += 5
             child_hole_in = True
             pendulum_mortuary()
             return
@@ -1308,6 +1402,7 @@ def child_tomb():
         elif cmd == "attack boy" or cmd == "kill boy":
             print("You lunge at the child. He screams.")
             print("The whole tomb shakes. Dark energy crushes you.")
+            player_total_score -= 30
             hp -= 10
             evil += 30
             print("HP -10 | Evil +30")
@@ -1543,7 +1638,7 @@ def full_moon_maze():
     global hp, have_list, good, evil, faith, game_over, game_back, festival_mode
     global two_hole_in
     global current_room,has_death_corpse,death_corpse_item,death_location
-
+    global player_total_score
     current_room = 'maze'
     if not festival_mode:
         print("The maze only appears under full moonlight.")
@@ -1597,6 +1692,7 @@ def full_moon_maze():
                     mistake = 0
                     if phase_progress == 3:
                         print("Stone door slides open. You enter the phase chamber.")
+                        player_total_score += 5
                         room = "phase_chamber"
                         phase_progress = 0
                 else:
@@ -1627,6 +1723,7 @@ def full_moon_maze():
                     mistake = 0
                     if phase_progress == 5:
                         print("All phases align. Final door reveals itself.")
+                        player_total_score += 10
                         room = "moon_core"
                         phase_progress = 0
                 else:
@@ -1651,9 +1748,10 @@ def full_moon_maze():
                 print("Type 'enter [code]' to try. Type 'pray' for a hint.")
 
             elif cmd == "pray":
-                if faith >= 3:
-                    faith -= 3
+                if faith >= 10:
+                    faith -= 10
                     print("Moonlight whispers: 'Five shapes, three stones, two souls.'")
+                    player_total_score -= 5
                 else:
                     print("Not enough faith.")
 
@@ -1663,6 +1761,7 @@ def full_moon_maze():
                     print("Lock clicks. Crystal blooms with silver light.")
                     print("The core chamber opens before you.")
                     print('You go back to the road.')
+                    player_total_score += 20
                     good += 10
                     evil -= 5
                     hp += 20
@@ -1695,6 +1794,7 @@ def full_moon_maze():
 def wax_chamber():
     global hp, have_list, good, evil, faith, game_over, game_back,three_hole_in
     global current_room,has_death_corpse,death_corpse_item,death_location
+    global player_total_score
 
     jump_scare_face('flash')
     current_room = 'chamber'
@@ -1764,6 +1864,7 @@ def wax_chamber():
                     print("The first guardian smiles and fades into dust.")
                     print("A stone door behind him opens slowly.")
                     print('You go back to the tomb.')
+                    player_total_score += 15
                     hp += 10
                     faith = 100
                     good += 10
@@ -1775,15 +1876,18 @@ def wax_chamber():
                     tried += 1
                     dmg = 2 if tried < 3 else 10
                     hp -= dmg
-                    print(f"The wax figure lurches at you! HP -{dmg}")
-                    print("All candles blow out for a second.")
                     jump_scare_face()
+                    print(f"The wax figure lurches at you! HP -{dmg}")
+                    player_total_score -= 20
+                    print("All candles blow out for a second.")
                     if hp <= 0:
                         print("Wax hands drag you into the row.")
                         print("You become the eighth figure.")
                         print('You can not be birth forever!')
                         print('')
+                        player_total_score = 0
                         print('Goodbye!')
+                        end_score_rating()
                         print("=== Death Adventure v1.3 - Official Release ===")
                         print("Thank you for playing!")
                         exit()
@@ -1796,7 +1900,7 @@ def wax_chamber():
 def pendulum_mortuary():
     global hp, have_list, good, evil, faith, game_over, game_back,four_hole_in
     global current_room,has_death_corpse,death_corpse_item,death_location
-
+    global player_total_score
 
     jump_scare_face('flash')
     current_room = 'mortuary'
@@ -1843,7 +1947,7 @@ def pendulum_mortuary():
             print("Tick... Tock... Tick... Tock...")
             print(f"You count {swing_count} swings so far.")
             if swing_count >= 3:
-                print("The pendulum slows at the 4th coffin.")
+                print("The pendulum slows at the 4th coffin. And moving fast at 5th coffin, then slows at 6th coffine.")
         elif cmd == "open" or cmd == "child coffin" or cmd == 'down':
             if child_hole_in == False:
                 print("The small coffin slides aside, revealing a narrow passage down.")
@@ -1869,6 +1973,7 @@ def pendulum_mortuary():
             if faith >= 5:
                 faith -= 5
                 print("Warm light guides your eyes to the bronze ring mark.")
+                player_total_score -= 5
             else:
                 print("Not enough faith. The dead do not listen.")
         elif cmd == "examine corpse" or cmd == 'corpse' or cmd == 'search corpse' or cmd == 'find corpse':
@@ -1893,6 +1998,7 @@ def pendulum_mortuary():
                     print("'Free us both. That is the only way.'")
                     print("The body fades into dust. A heavy stone door rumbles open behind.")
                     print("Deep, heavy breathing comes from the darkness beyond.")
+                    player_total_score += 5
                     hp += 10
                     faith += 10
                     good += 10
@@ -1903,15 +2009,18 @@ def pendulum_mortuary():
                     tried += 1
                     dmg = 2 if tried < 3 else 8
                     hp -= dmg
+                    jump_scare_face()
                     print(f"Dead hands reach out and scratch you! HP -{dmg}")
                     print("You hear faint gnawing sounds from inside.")
-                    jump_scare_face()
+                    player_total_score += 5
                     if hp <= 0:
                         print("The dead drag you into the coffin.")
                         print("You become the seventh.")
                         print('You can not be rebirth.')
                         print('')
                         print('Goodbye!')
+                        player_total_score = 0
+                        end_score_rating()
                         print("=== Death Adventure v1.3 - Official Release ===")
                         print("Thank you for playing!")
                         exit()
@@ -1941,6 +2050,7 @@ def pendulum_mortuary():
                     print("Gimble: Tell him ... I'm sorry. For everything.")
                     print("He steps aside, revealing the passage behind him.")
                     print("Gimble: Go. End this. Before I wake up again.")
+                    player_total_score += 10
                     current_room = "dwarf_chamber_clear"
                 else:
                     print("You have nothing that he would recognize.")
@@ -1954,6 +2064,7 @@ def pendulum_mortuary():
                     print("Gimble: Take this. It was meant for the heir.")
                     print("He fades into motes of light, smiling at last.")
                     print('You then go away.')
+                    player_total_score += 10
                     have_list.append("rune-forged hammer")
                     if evil >= 10:
                         evil = 0
@@ -1969,6 +2080,7 @@ def pendulum_mortuary():
 
             elif cmd == "attack dwarf" or cmd == "fight gimble":
                 print("You charge at the dwarf. He roars and swings his hammer!")
+                player_total_score -= 10
                 dwarf_hp = 8
                 while dwarf_hp > 0 and hp > 0:
                     print(f"\nDwarf HP: {dwarf_hp} | Your HP: {hp}")
@@ -1996,6 +2108,7 @@ def pendulum_mortuary():
                     print("The dwarf collapses with a heavy thud.")
                     print("You take his warhammer from his hands. It still hums with dark power.")
                     print('Then you leave.')
+                    player_total_score += 15
                     have_list.append("corrupted warhammer")
                     evil += 30
                     four_hole_in = True
@@ -2021,6 +2134,7 @@ def pendulum_mortuary():
 
 def dwarven_forge_vault():
     global hp, have_list, orc_friend
+    global player_total_score
 
     attempts_left = 2
     correct_recipe = {
@@ -2048,7 +2162,6 @@ def dwarven_forge_vault():
             if attempts_left <= 0:
                 print("All materials are exhausted. No more attempts this run.")
                 break
-
             try:
                 iron = int(input("Iron parts: ").strip())
                 copper = int(input("Copper parts: ").strip())
@@ -2056,6 +2169,7 @@ def dwarven_forge_vault():
             except ValueError:
                 attempts_left -= 1
                 hp -= 2
+                player_total_score -= 5
                 print(f"Invalid input. The batch is ruined. Attempts left: {attempts_left}")
                 continue
 
@@ -2068,12 +2182,14 @@ def dwarven_forge_vault():
                 temp == correct_recipe["temp"] and
                 rune_input == correct_recipe["runes"]):
                 print("\nFORGE SUCCESS. A blessed rune blade takes shape.")
+                player_total_score += 20
                 have_list.append("rune forged blade")
                 break
             else:
                 attempts_left -= 1
                 hp -= 3
                 print(f"Forging failed. The batch is ruined. Attempts left: {attempts_left}")
+                player_total_score -= 10
         else:
             print("Unknown command.")
 
@@ -2082,8 +2198,8 @@ def tomb():
     global game_over, hp, have_list, play_count, tomb_unlocked, game_back,cleared_ending
     global one_hole_in,two_hole_in,three_hole_in
     global tomb_pray_used
+    global player_total_score
     
-    jump_scare_face('flash')
     print("\n=== FORGOTTEN TOMB (NG+ ONLY) ===")
     print("You step into a dark, ancient tomb.")
     print("The air is cold. Carvings on walls show your ancestors.")
@@ -2122,7 +2238,7 @@ def tomb():
         elif cmd == "challenge guardian":
             if play_count == 2:
                 print("Ancestor guardian appears!")
-                guard_hp = 5
+                guard_hp = 15
                 while guard_hp > 0 and hp > 0:
                     print(f"Guardian HP: {guard_hp} | Your HP: {hp}")
                     fight = input("strike / defend: ")
@@ -2137,6 +2253,7 @@ def tomb():
                 if guard_hp <= 0:
                     print("Guardian smiles: 'You are worthy.'")
                     have_list.append("guardian shield")
+                    player_total_score += 10
                 else:
                     print("Guardian spares you.")
                     hp = 5
@@ -2151,16 +2268,19 @@ def tomb():
                 if trial_choice == "choose inherit":
                     print("You decide to carry on the duty of guardians.")
                     print("All spirits salute you. Your power rises greatly.")
-                    hp = 90
+                    hp += 10
+                    player_total_score += 10
                     print("===== INHERITOR SIDE ENDING =====")
                 elif trial_choice == "choose refuse":
                     print("You refuse the old fate and wish to end the cycle.")
                     print("Ancestors send their blessings to you.")
+                    player_total_score += 10
                     print("===== FREEDOM SIDE ENDING =====")
                 elif trial_choice == "choose listen":
                     print("You listen to stories of the past.")
                     print("You fully understand the pain of the ancient demon.")
                     print("Your mind becomes calm and clear.")
+                    player_total_score += 10
                 else:
                     print("Invalid choice.")
             else:
@@ -2250,12 +2370,14 @@ def tomb():
             print("It holds an old locket and a final diary.")
             if "family locket" not in have_list:
                 print("You take the locket.")
+                player_total_score += 5
                 have_list.append("family locket")
             if "final diary" not in have_list:
                 print("You read the final diary:")
                 print("'We are all bound here. The cycle ends only when we accept who we are.'")
                 print("'You are not a treasure hunter. You are the heir.'")
                 print("'Free us, and free yourself.'")
+                player_total_score += 5
                 have_list.append("final diary")
         elif cmd == "pray":
             if not tomb_pray_used:
@@ -2265,6 +2387,7 @@ def tomb():
                 hp += 5
                 print("HP +5!")
                 print("===== ANCESTOR'S BLESSING =====")
+                player_total_score -= 10
                 tomb_pray_used = True
             else:
                 print("The ancestors have already given their blessing.")
@@ -2278,6 +2401,7 @@ def tomb():
             if 'a magic key' not in have_list:
                 have_list.append('a magic key')
                 print('You take away the magic key.')
+                player_total_score += 10
         elif cmd == "leave" or cmd == "back":
             print("You leave the tomb and return to the end of road.")
             gamestart()
@@ -2324,6 +2448,7 @@ def tomb():
 def misty_swamp():
     global game_over, hp, have_list, time_period, good, evil, rune2, game_back, swamp_quest, swamp_visited, lily_count,cleared_ending,swamp_spirit_story,misty_end,has_death_corpse,death_corpse_item,death_location,four_hole_in,night
     global swamp_quest_done
+    global player_total_score
 
     print("\n=== MISTY SWAMP ===")
     print("Thick fog covers the marsh. Every step is dangerous.")
@@ -2378,7 +2503,11 @@ def misty_swamp():
                 print("The spirit has already found peace.")
         elif scmd == "find lily" and swamp_quest:
             rnd = random.randint(1,6)
-            if rnd <= 3:
+            if rnd == 1:
+                print('A bad sprit hit you, then hide away.')
+                print('Evil +10')
+                evil += 10
+            if rnd == 3:
                 lily_count += 1
                 print("You found a pure white lily. It emits soft light.")
             elif rnd == 4:
@@ -2406,6 +2535,7 @@ def misty_swamp():
             print('The ghost gives you a swamp pendant.')
             print('Now, you can choose an ending of swamp. Type swamp ending / peace leave / drain spirit to choose an ending.')
             lily_count = 0
+            player_total_score += 10
             swamp_quest = False
         elif scmd == "progress" and swamp_quest:
             print(f"Lily collected: {lily_count} / 3. Keep going!")
@@ -2417,6 +2547,7 @@ def misty_swamp():
             print("The swamp is purified! All toxins fade away.")
             print('A voice booms: Thank you, mortal. I will give you a gift.')
             print('You receive a magic key.')
+            player_total_score += 10
             have_list.append('a magic key')
             hp += 20
             print('HP +20')
@@ -2431,6 +2562,7 @@ def misty_swamp():
             print("The swamp calms. You leave without curse or harm.")
             print('HP +5')
             hp += 5
+            player_total_score += 10
             good += 5
             misty_end = True
             gamestart()
@@ -2451,6 +2583,7 @@ def misty_swamp():
             evil += 25
             hp += 5
             print("A shadow follows you...")
+            player_total_score += 5
             misty_end = True
             gamestart
 
@@ -2462,9 +2595,13 @@ def misty_swamp():
             else:
                 print("You find nothing but mud.")
         elif scmd == "help soul":
-            print("You aid a trapped swamp spirit.")
-            good += 15
-            have_list.append("healing potion")
+            if 'some water in the bottle' in have_list:
+                have_list.remove('some water in the bottle')
+                print("You aid a trapped swamp spirit.")
+                good += 15
+                have_list.append("healing potion")
+            else:
+                print('You do not have water to help soul.')
         elif scmd == "steal soul":
             print("You drain power from the spirit.")
             evil += 20
@@ -2486,9 +2623,6 @@ def misty_swamp():
             print("I knew the guardian of the cave, your ancestors. We were old friends.")
             print("I chose to stay here, guarding this misty land, so no one else gets trapped.")
             print("The lilies you collect are flowers I loved when I was alive.")
-            good += 10
-            hp += 4
-            print("Your kindness soothes the spirit. Good +10, HP +4")
             if festival_mode:
                 print("Under the full moon, old memories become warm.")
                 print("The spirit shares a wisp of moonlight with you. HP +3")
@@ -2514,6 +2648,7 @@ def misty_swamp():
                 good += 10
                 faith += 10
                 swamp_spirit_story = 3
+                player_total_score += 5
             else:
                 print("The spirit floats silently among the lilies.")
         else:
@@ -2536,6 +2671,7 @@ def misty_swamp():
 def developer_room():
     global hp, have_list, good, evil, rune1, rune2, rune3, trap_protect, festival_mode
     global meta_file_tier
+    global player_total_score
 
     write_creepy_desktop_file(3)
     print("\n" + "="*60)
@@ -2548,18 +2684,21 @@ def developer_room():
     while True:
         cmd = input("dev> ")
         if cmd == "heal":
-            hp = 10
-            print("HP restored to 10!")
+            hp += 10
+            print("HP +10!")
+            player_total_score -= 30
         elif cmd == "max":
-            hp = 10
-            good = 10
+            hp += 10
+            good += 10
             evil = 0
             print("HALF MAX STATS!")
+            player_total_score -= 50
         elif cmd == "godmode":
             trap_protect = True
             festival_mode = True
-            hp = 10
+            hp += 10
             print("GOD MODE ACTIVATED!")
+            player_total_score -= 45
         elif cmd == "leave" or cmd == "back":
             print('')
             print("You left the dev room.")
@@ -2575,6 +2714,7 @@ def developer_room():
 # watchtower
 def watchtower():
     global hp, have_list, good, evil, game_over, game_back,map_unlocked,cleared_ending
+    global player_total_score
 
     print("\n=== ABANDONED WATCHTOWER ===")
     print("A crumbling stone tower stands here. Climb steps to reach the top.")
@@ -2647,6 +2787,7 @@ def watchtower():
             elif tower_ghost_story == 2:
                 print("Ghost: He was not a bad man. He was just too scared to lose her.")
                 print("Ghost: Don't judge him too harshly.\n")
+                player_total_score += 10
                 faith += 5
                 good += 5
                 tower_ghost_story = 3
@@ -2658,6 +2799,7 @@ def watchtower():
             if "a bird feather" in have_list:
                 print("The ghost smiles. It slowly fades away in peace.")
                 have_list.remove("bird feather")
+                player_total_score += 5
                 good += 10
                 hp += 3
                 print("HP +3 | Good +10")
@@ -2680,6 +2822,7 @@ def watchtower():
 
 # ===================== PRINT VERSION - CELESTIAL REALM =====================
 def print_heaven():
+    global player_total_score
     print("="*60)
     print("               CELESTIAL REALM")
     print("="*60)
@@ -2734,9 +2877,9 @@ def print_heaven():
             print("The source of all light and life.")
             print("You see the Creator sitting on a throne of stars.")
             print("'You have done well, my child. Now, what will you do?'")
-            print("Choose: become a god / return to earth / create a new world")
+            print("Choose: 1.become a god / 2.return to earth / 3.create a new world")
             choice = input()
-            if choice == "become a god":
+            if choice == "become a god" or choice == '1':
                 print("\n✨ GODHOOD ENDING ✨")
                 print("You become a god, watching over all worlds.")
                 print("You ensure that no one ever suffers like your family did.")
@@ -2753,10 +2896,12 @@ def print_heaven():
                 print("  -c, -C, -cheat      Enable cheat mode (all items)")
                 print("  -h, -help           Show help")
                 print("=============================")
+                player_total_score += 250
+                end_score_rating()
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
-            elif choice == "return to earth":
+            elif choice == "return to earth" or choice == '2':
                 print("\n🌍 MORTAL ENDING 🌍")
                 print("You choose to return to earth and live a normal life.")
                 print("You marry, have children, and die peacefully.")
@@ -2774,10 +2919,12 @@ def print_heaven():
                 print("  -c, -C, -cheat      Enable cheat mode (all items)")
                 print("  -h, -help           Show help")
                 print("=============================")
+                player_total_score += 250
+                end_score_rating()
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
-            elif choice == "create a new world":
+            elif choice == "create a new world" or choice == '3':
                 print("\n🌌 CREATOR ENDING 🌌")
                 print("You create a new world where love and peace reign.")
                 print("No more pain, no more suffering, no more cycles.")
@@ -2794,6 +2941,8 @@ def print_heaven():
                 print("  -c, -C, -cheat      Enable cheat mode (all items)")
                 print("  -h, -help           Show help")
                 print("=============================")
+                player_total_score += 250
+                end_score_rating()
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
@@ -2807,19 +2956,19 @@ def print_heaven():
             print("\n===== FINAL JUDGEMENT =====")
             print("All souls gather before you.")
             print("You must decide their fate.")
-            print("Choose: judge all / forgive all / let them choose")
+            print("Choose: 1.judge all / 2.forgive all / 3.let them choose")
             choice = input()
-            if choice == "judge all":
+            if choice == "judge all" or choice == '1':
                 print("\n⚖️ JUDGEMENT ENDING ⚖️")
                 print("You judge each soul based on their deeds.")
                 print("Good souls go to heaven, evil souls go to hell.")
                 print("Balance is restored to the universe.")
-            elif choice == "forgive all":
+            elif choice == "forgive all" or choice == '2':
                 print("\n❤️ FORGIVENESS ENDING ❤️")
                 print("You forgive all souls, regardless of their deeds.")
                 print("Everyone is given a second chance.")
                 print("Love conquers all.")
-            elif choice == "let them choose":
+            elif choice == "let them choose" or choice == '3':
                 print("\n🆓 FREEDOM ENDING 🆓")
                 print("You let each soul choose their own fate.")
                 print("Some choose heaven, some choose hell, some choose to reincarnate.")
@@ -2840,8 +2989,8 @@ def print_heaven():
             print("  -c, -C, -cheat      Enable cheat mode (all items)")
             print("  -h, -help           Show help")
             print("=============================")
-            print('And, do you know, when you are at the ng one, you can type garry in the house, then you will win!')
-            print('Also, you can type colin, and woody and garry in the house, then you will pass the ng one.\n')
+            player_total_score += 250
+            end_score_rating()
             print("=== Death Adventure v1.3 - Official Release ===")
             print("Thank you for playing!")
             exit()
@@ -2853,6 +3002,7 @@ def print_heaven():
 
 def time_travel_origin():
     global good, evil, hp, game_over, game_back, cleared_ending
+    global player_total_score
 
     print("\n" + "="*60)
     print("=========== TIME TRAVEL · 100 YEARS AGO ============")
@@ -2874,6 +3024,7 @@ def time_travel_origin():
             elif cmd == "talk":
                 print("You tell them about the future curse.")
                 print("The young wizard looks scared: 'I will never hurt her...'")
+                player_total_score += 30
                 past_phase = 2
             elif cmd == "leave":
                 print("You return to modern time.")
@@ -2887,10 +3038,12 @@ def time_travel_origin():
                 print("Evil men hurt the wizard’s wife. She is dying.")
             elif cmd == "help":
                 print("You save her! The tragedy is avoided!")
+                player_total_score += 30
                 good += 99
                 past_phase = 3
             elif cmd == "watch":
                 print("You do nothing. She turns into a succubus.")
+                player_total_score -= 100
                 evil += 50
                 past_phase = 3
             else:
@@ -2904,16 +3057,19 @@ def time_travel_origin():
                 print("You stop the seal. No curse. No pain.")
                 print("The family cycle is BROKEN FOREVER.")
                 cleared_ending = True
+                player_total_score += 100
                 main()
             elif cmd == "let seal":
                 print("\n⚪ NORMAL ORIGIN ENDING ⚪")
                 print("History remains. Curse continues.")
+                player_total_score += 100
                 main()
                 return
             elif cmd == "unite":
                 print("\n🌟 TRUE TIME ENDING 🌟")
                 print("You unite two souls. Love defeats everything.")
                 print("THIS IS THE ULTIMATE ENDING OF THE GAME.")
+                player_total_score += 100
                 cleared_ending = True
                 main()
                 return
@@ -2976,6 +3132,7 @@ def jump_scare_face(mode="normal"):
 def hill():
     global current_room,hp,evil,good,game_back,game_over,cleared_ending,map_unlocked,hill_diary_read,grandmother
     global defeated_enemies
+    global player_total_score
 
     high = 0
     current_room = 'hill'
@@ -2995,13 +3152,17 @@ def hill():
                 high = 2
                 print('There is still some very old stairs to the top.')
                 print('You climb up the old stairs, you see an arrow shoot at you by it self!')
-                print('It gets you, Hp -5!')
-                hp -= 5
-                if hp <= 0:
-                    print('You was killed by the arrow.')
-                    game_over = True
-                    game_back = True
-                    break
+                x = random.randint(1,2)
+                if x == 1:
+                    print('It gets you, Hp -5!')
+                    hp -= 5
+                    if hp <= 0:
+                        print('You was killed by the arrow.')
+                        game_over = True
+                        game_back = True
+                        break
+                else:
+                    print('It misses!')
                 if 'a book' not in have_list:
                     print('You see here a book, so you pick it up. Type read book to read it.')
                     have_list.append('a book')
@@ -3032,8 +3193,10 @@ def hill():
             print('His wife became a succubus, but she did not kill me, the one who killed me is in fact the wizard!')
             print('Then, he told people to build a statue and the stone in the church just to let people know that he is a good man!\n')
             print('The end of the book.')
+            player_total_score += 10
             if grandmother == True:
                 print('You are extremely confused, which of the note is right!')
+                player_total_score += 10
         elif cmd == 'look' and high == 0:
             print('Just a way back to the campsite.')
         elif cmd == 'look' and high == 1:
@@ -3074,6 +3237,7 @@ def underwater_ruins():
     global underwater_ending_unlocked
     global has_death_corpse, death_location, death_corpse_item
     global sewer_in
+    global player_total_score
 
     current_room = "sunken_temple"
     underwater_visited = True
@@ -3103,6 +3267,7 @@ def underwater_ruins():
                 game_back = True
                 break
             print("You gasp and barely survive. HP -3")
+            player_total_score -= 5
             oxygen = 2
 
         if has_death_corpse and death_location == current_room:
@@ -3170,7 +3335,7 @@ def underwater_ruins():
                 print("A small cave with an air bubble at the top.")
                 print("You can breathe here to restore oxygen.")
                 print("A second rune is carved into the cave ceiling.")
-            elif cmd == "breathe":
+            elif cmd == "breathe" or cmd == 'breath':
                 oxygen = 10
                 print("You take deep breaths. Oxygen restored to full.")
             elif cmd == "examine rune":
@@ -3178,6 +3343,7 @@ def underwater_ruins():
                     water_rune_2 = True
                     print("Second water rune: ABYSS")
                     print("It hums with deep, silent power.")
+                    player_total_score += 10
                 else:
                     print("You already studied this rune.")
             elif cmd == "back":
@@ -3203,6 +3369,7 @@ def underwater_ruins():
                     if rune_order == 3:
                         print("All runes align. A hidden passage opens upward.")
                         print("A glowing pearl rises from the depths.")
+                        player_total_score += 10
                         if not pearl_obtained:
                             have_list.append("water-breathing pearl")
                             pearl_obtained = True
@@ -3214,6 +3381,7 @@ def underwater_ruins():
                 else:
                     hp -= 3
                     print("Wrong rune! Pressurized water slams into you. HP -3")
+                    player_total_score -= 15
                     rune_order = 0
                     if hp <= 0:
                         print("You are knocked unconscious and drown.")
@@ -3235,6 +3403,7 @@ def underwater_ruins():
                     water_rune_3 = True
                     print("Third water rune: STORM")
                     print("It crackles with wild, violent energy.")
+                    player_total_score += 10
                 else:
                     print("You already studied this rune.")
             elif cmd == "search":
@@ -3247,6 +3416,9 @@ def underwater_ruins():
                     have_list.append("sea amulet")
                 else:
                     print("Only rust and coral.")
+                    print('Hp -5')
+                    player_total_score -= 10
+                    hp -= 5
             elif cmd == "back":
                 current_zone = "flooded_corridor"
                 print("You swim back to the corridor.")
@@ -3271,6 +3443,7 @@ def cave():
     global has_death_corpse, death_location, death_corpse_item
     global sewer_treasure_taken, explorer_thank_reward,sewer_in
     global meta_file_tier
+    global player_total_score,orc_in
 
     game_over = False
     while True:
@@ -3316,6 +3489,7 @@ def cave():
                                 have_list.remove('super amulet')
                     else:
                         print('You succeed in unlock the grate. There is a path to the west.')
+                        player_total_score += 10
                         print('You see here a small library, type library to go in.')
                         while True:
                             if has_death_corpse and death_location == current_room:
@@ -3337,6 +3511,7 @@ def cave():
                                         if 'a pick-axe' in have_list:
                                             print("YOU DUG A PATH BACK TO THE HOUSE!")
                                             print("YOU ESCAPED THE CAVE!")
+                                            player_total_score += 10
                                             gamestart()
                                             return
                                         else:
@@ -3444,6 +3619,7 @@ def cave():
                                                         if "rune stone 1" in have_list:
                                                             print("Rune power unlocks the door. You enter the wizard's hidden room.")
                                                             print("Old table, worn staff and a letter on the desk.")
+                                                            player_total_score += 5
                                                         else:
                                                             print("The door is sealed by rune magic.")
                                                     elif deep_cmd == "read letter":
@@ -3471,6 +3647,7 @@ def cave():
                                         print('Suddenly, a bat appears, it wants to kill you!')
                                         if 'bat' not in defeated_enemies:
                                             combat("cave bat swarm", 4, 2, None, 1,enemy_id='bat')
+                                            player_total_score += 10
                                         while True:
                                             if has_death_corpse and death_location == current_room:
                                                 print('You see here a corpse, type corpse to search it.\n')
@@ -3503,7 +3680,9 @@ def cave():
                                                                             if diary_read == True and legacy_unlocked == True:
                                                                                 print('You fulfilled the lost explorer’s last wish.')
                                                                                 print('His soul finally rests in peace.')
+                                                                                player_total_score += 30
                                                                             print('===== RICH ENDING! =====')
+                                                                            player_total_score += 75
                                                                             game_over = True
                                                                             game_back = True
                                                                             cleared_ending = True
@@ -3517,7 +3696,9 @@ def cave():
                                                                                 if diary_read == True and legacy_unlocked == True:
                                                                                     print('You fulfilled the lost explorers last wish.')
                                                                                     print('His soul finally rests in peace.')
+                                                                                    player_total_score += 30
                                                                                 print("===== PERFECT ENDING =====")
+                                                                                player_total_score += 100
                                                                                 game_over = True
                                                                                 game_back = True
                                                                                 cleared_ending = True
@@ -3528,7 +3709,9 @@ def cave():
                                                                                 if diary_read == True and legacy_unlocked == True:
                                                                                     print('You fulfilled the lost explorers last wish.')
                                                                                     print('His soul finally rests in peace.')
+                                                                                    player_total_score += 30
                                                                                 print("===== YOU WIN ! =====")
+                                                                                player_total_score += 50
                                                                                 game_over = True
                                                                                 game_back = True
                                                                                 cleared_ending = True
@@ -3537,6 +3720,7 @@ def cave():
                                                                             print("You have treasure but can't escape... you starve.")
                                                                             print('But you can still go to the next play count.')
                                                                             print('Game over!')
+                                                                            player_total_score += 30
                                                                             game_over = True
                                                                             game_back = True
                                                                             cleared_ending = True
@@ -3557,7 +3741,10 @@ def cave():
                                                                     else:
                                                                         print("Invalid command!")
                                                             elif west3 == "orc":
-                                                                orc_tribe_dungeon()
+                                                                if orc_in == False:
+                                                                    orc_tribe_dungeon()
+                                                                else:
+                                                                    print('YOu have already been to it!')
                                                             elif west3 == "hug ghost":
                                                                 print("You hug the ghost! It panics: 'WHAT ARE YOU DOING?!'")
                                                                 have_list.append("ghost hug")
@@ -3744,15 +3931,18 @@ def cave():
                                                                 print('You go back to a room.')
                                                                 break
                                                             elif west3 == 'touch corpse':
-                                                                print('You found an old amulet!')
-                                                                amulet = True
-                                                                have_list.append('an amulet')
+                                                                if 'an amulet' not in have_list:
+                                                                    print('You found an old amulet!')
+                                                                    amulet = True
+                                                                    have_list.append('an amulet')
+                                                                    player_total_score += 25
                                                             elif west3 == 'room':
                                                                 print("YOU ENTERED A DEADLY TRAP CHAMBER!")
                                                                 trap = random.randint(1,4)
                                                                 if trap != 1:
                                                                     print("YOU AVOIDED ALL TRAPS!")
                                                                     print("YOUR PICKAXE BECOMES UNBREAKABLE!")
+                                                                    player_total_score += 30
                                                                 else:
                                                                     print("TRAPS ACTIVATED! YOU DIED!")
                                                                     game_over = True
@@ -3770,6 +3960,7 @@ def cave():
                                                             elif west3 == 'colin woody':
                                                                 print('DIAMOND VAULT! You found the ultimate treasure!')
                                                                 print('You take diamond vault away.')
+                                                                player_total_score += 5
                                                                 have_list.append('diamond vault')
                                                             elif west3 == 'bag':
                                                                 for i in range(len(have_list)):
@@ -3824,7 +4015,6 @@ def cave():
                                                         print('The bright path is a lie. The dark path is true.')
                                                         print('If you read this… please bury my corpse.')
                                                         print('I will not make it home.')
-                                                        hp += 1
                                                         diary_read = True
                                                     elif west2 == 'east':
                                                         print('You walk back to a room.')
@@ -3955,16 +4145,11 @@ def cave():
                         return
                     
             else:
-                if festival_mode:
-                    print('You do not have a key, you unleashed a ghost.')
-                    print("Ghost smiles: Happy full moon! Here's a gift!")
-                    hp += 2
-                else:
-                    print('You do not have a key, you unleashed a ghost, the ghost kill you.')
-                    print('If you have an amulet, you still have to be killed(laugh)')
-                    print('Game over!')
-                    game_over = True
-                    game_back = True
+                print('You do not have a key, you unleashed a ghost, the ghost kill you.')
+                print('If you have an amulet, you still have to be killed(laugh)')
+                print('Game over!')
+                game_over = True
+                game_back = True
             if game_over == True:
                 print("=== END ===")
                 print("Type 'menu' to return main menu")
@@ -4013,7 +4198,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
     global hp, good, evil, have_list, game_over, game_back
     global base_attack_bonus, base_defense_bonus, escape_bonus
     global player_weapon_damage, player_armor_reduction
-    global difficulty_scalar, defeated_enemies,weapon_broken,weapon_durability,weather_duration
+    global difficulty_scalar, defeated_enemies,weapon_broken,weapon_durability,weather_duration,player_total_score
 
     enemy_hp = int(base_enemy_hp * difficulty_scalar)
     enemy_max_dmg = int(base_enemy_dmg * difficulty_scalar)
@@ -4034,6 +4219,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
                 evil += loot_evil
             if enemy_id is not None:
                 defeated_enemies.add(enemy_id)
+            player_total_score += 25
             return True
 
         if hp <= 0:
@@ -4121,6 +4307,7 @@ def blood_rift_dungeon():
     global hp, evil, have_list, game_over, game_back
     global blood_dungeon_cleared, blood_rune_hatred, blood_rune_agony, blood_rune_despair
     global blood_lord_seal_obtained
+    global player_total_score
 
     if 'hound' not in defeated_enemies:
         combat("blood hound", 10, 4, "blood fang", 6, enemy_id = "hound")
@@ -4194,12 +4381,14 @@ def blood_rift_dungeon():
                     hp += 10
                     print("You obtained the BLOOD LORD SEAL.")
                     print("Max HP +10, Evil +15")
+                    player_total_score += 20
                 blood_dungeon_cleared = True
                 break
             else:
                 hp -= 3
                 print("\nWrong order! Blood energy explodes in your face!")
                 print("HP -3. The altar resets.")
+                player_total_score -= 10
                 input_order = []
                 if hp <= 0:
                     print("You burn to ash in the blood fire.")
@@ -4350,6 +4539,7 @@ def gamestart():
     global grave_looted, church_purified, church_desecrated
     global x2,blood_moon,defeated_enemies,torch_durability
     global meta_file_tier
+    global player_total_score
 
     altar = False
     if game_back == True and cleared_ending == True:
@@ -4674,6 +4864,7 @@ def gamestart():
                                 print('Rune says: But, if you control the demon, you must be here for all of your life.')
                                 rune = 'nothing' 
                                 rune3 = True
+                                player_total_score += 10
                             else:
                                 print('You have already taken the rune.')
                         else:
@@ -4744,9 +4935,11 @@ def gamestart():
                                                 print('You realised that all explorers were guardians, not treasure hunters.')
                                                 print('They gave up wealth to protect the world.')
                                                 print('====== TRUE GUARDIAN ENDING ======')
+                                                player_total_score += 50
                                             else:
                                                 print('You seal the Evil again.')
                                                 print('===== HERO ENDING =====')
+                                                player_total_score += 50
                                             game_over = True
                                             game_back = True
                                             cleared_ending = True
@@ -4759,6 +4952,7 @@ def gamestart():
                                                 print('You unleash your great-great grandmother, the wizard -- your great-great grandfather appears.')
                                                 print('They are all free!')
                                                 print('====== FREE ENDING ======')
+                                                player_total_score += 50
                                                 game_over = True
                                                 game_back = True
                                                 cleared_ending = True
@@ -4771,12 +4965,14 @@ def gamestart():
                                         if play_count == 2:
                                             print('You leave the cave safetly, and you never come back again.')
                                             print('====== ESCAPE ENDING ======')
+                                            player_total_score += 50
                                             game_over = True
                                             cleared_ending = True
                                             break
                                         elif play_count == 1:
                                             print('You want to leave, but the Evil kills you.')
                                             print('====== DIED ENDING ======')
+                                            player_total_score += 50
                                             game_over = True
                                             game_back = True
                                             cleared_ending = True
@@ -4784,6 +4980,7 @@ def gamestart():
                                     elif c == 'release':
                                         print('Evil awakened! It destroys everything!')
                                         print('====== BAD ENDING ======')
+                                        player_total_score += 50
                                         game_over = True
                                         game_back = True
                                         cleared_ending = True
@@ -4793,6 +4990,7 @@ def gamestart():
                                             print('You say: Hello, great-great grandmother!')
                                             print('The Evil is shocked, then she smiles and hug you!')
                                             print('===== THE BEST ENDING! =====')
+                                            player_total_score += 50
                                             game_over = True
                                             game_back = True
                                             cleared_ending = True
@@ -4803,6 +5001,7 @@ def gamestart():
                                         print('You absorb the Evil power!')
                                         print('You become the immortal ruler of the cave!')
                                         print('===== DEMON LORD ENDING =====')
+                                        player_total_score += 50
                                         amulet = True
                                         hp = 99
                                         game_over = True
@@ -4813,6 +5012,7 @@ def gamestart():
                                         print('You sacrifice your life force to calm the Evil.')
                                         print('You turn to stone, guarding the cave forever.')
                                         print('===== SACRIFICE ENDING =====')
+                                        player_total_score += 50
                                         game_over = True
                                         game_back = True
                                         cleared_ending = True
@@ -4822,6 +5022,7 @@ def gamestart():
                                             print('You make a pact with the Evil.')
                                             print('You gain power but can never leave the cave.')
                                             print('===== SYMBIOSIS ENDING =====')
+                                            player_total_score += 50
                                             game_over = True
                                             game_back = True
                                             cleared_ending = True
@@ -4835,9 +5036,15 @@ def gamestart():
                                                 print("The curse is broken. The cave is finally free.")
                                                 print("You have escaped the cycle of death.")
                                                 print("===== TRUTH ENDING =====")
+                                                player_total_score += 100
                                             else:
                                                 print('You do not have a magic key, so you can not end the curse.')
                                                 print('====== NORMAL ENDING ======')
+                                                game_over = True
+                                                game_back = True
+                                                cleared_ending = True
+                                                player_total_score += 50
+                                                break
                                         elif play_count == 1:
                                             print('You do not know the truth.')
                                         game_over = True
@@ -4851,6 +5058,7 @@ def gamestart():
                                                 print('Your great-great grandfather and his wife, and your great grandfather and his wife, and your grandfather and his wife, and you father and you mum, all appears.')
                                                 print('You celebrate together.')
                                                 print('====== THAT IS THE REAL ENDING ======')
+                                                player_total_score += 50
                                                 game_over = True
                                                 game_back = True
                                                 cleared_ending = True
@@ -4999,6 +5207,7 @@ def gamestart():
                 have_list.remove("some water in the bottle")
                 hp += 2
                 print("You drink water. HP +2")
+                player_total_score += 10
             else:
                 print("No water.")
         elif go == 'north':
@@ -5097,6 +5306,7 @@ def gamestart():
                                     have_list.append("stone rune1")
                                     rune1 = True
                                     print("You got a rune!")
+                                player_total_score += 20
                                 if evil >= 0:
                                     evil = 0
                                 else:
@@ -5176,6 +5386,7 @@ def gamestart():
                     print('Ghost: My husband disappears with your great grand father!')
                     if grave_diary_read == True or old_diary_readed == True:
                         print('You: Ok, I see.')
+                        player_total_score += 10
                     else:
                         print('You: Who is my great grand father?')
                 elif h == 'give diary':
@@ -5196,7 +5407,6 @@ def gamestart():
                     if old_diary_readed and grave_diary_read:
                         print("You tell her you understand her long loneliness.")
                         print("The ghost bursts into tears of relief.")
-                        hp += 4
                         print("Max HP increased permanently!")
                     else:
                         print("The ghost just stares at you silently.")
@@ -5206,6 +5416,7 @@ def gamestart():
                         print("Two ancient spirits meet after hundreds of years.")
                         print("They wave goodbye to you, their souls rest in peace.")
                         print("===== SPIRIT PEACE SIDE ENDING =====")
+                        player_total_score += 10
                         trap_protect = True
                     else:
                         print("A strange force blocks the way. Can't do this now.")
@@ -5216,7 +5427,6 @@ def gamestart():
                     if good >= 20:
                         print("The ghost cries and forgives everyone.")
                         print("Her soul finally finds peace.")
-                        good += 20
                 elif h == 'west':
                     print('You find an ABANDONED CHURCH. There is a stone with something write on it.')
                     print('You can read stone, purify or desecrate.')
@@ -5252,6 +5462,7 @@ def gamestart():
                                 have_list.append('holy amulet')
                                 amulet = True
                                 church_purified = True
+                                player_total_score += 20
                             else:
                                 print('The statue has already been purified.')
 
@@ -5261,6 +5472,7 @@ def gamestart():
                             if not church_desecrated:
                                 print('Dark power surrounds you.')
                                 have_list.append('demon claw')
+                                player_total_score += 20
                                 church_desecrated = True
                             else:
                                 print('No more dark power lingers here.')
@@ -5355,6 +5567,7 @@ def gamestart():
                         print('The tree fall on your toes.')
                         print('Oach, that hurts! Hp -5')
                         hp -= 5
+                        player_total_score -= 10
                         if hp <= 0:
                             print('You are killed by a tree, hahaha.')
                             game_back = True
@@ -5461,11 +5674,13 @@ def gamestart():
                     if 'flint' not in have_list:
                         print('You open the chest and find a FLINT.')
                         have_list.append('flint')
+                        player_total_score += 10
                     else:
                         print('The chest is already empty.')
                 elif camp_cmd == "tomb" or camp_cmd == 'go to tomb' or camp_cmd == 'go to the tomb':
                     if play_count == 2:
                         print("\n[NG+ ONLY] A hidden stone door slowly opens...")
+                        player_total_score += 10
                         tomb()
                     else:
                         print("The stone door is sealed. Only the returning one may enter.")
@@ -5486,6 +5701,7 @@ def gamestart():
                         print('You find a SUPER AMULET.')
                         print('You put it in your bag and walk back quietly.')
                         have_list.append('super amulet')
+                        player_total_score += 10
                         amulet = True
                     else:
                         print('Nothing there.')
@@ -5518,6 +5734,7 @@ def gamestart():
                         print('You found RUNE STONE 2!')
                         print('Rune text: Three runes control the seal. And someone should cotrol it again with it.')
                         rune2 = True
+                        player_total_score += 25
                         have_list.append('rune stone 2')
                     else:
                         print('You find a hole for a rune, but you may have already took the rune away.')
@@ -5547,6 +5764,7 @@ def gamestart():
                             print('There is still some words, but you can not read them because they are covered by a lot of blood.')
                             print('')
                             grave_diary_read = True
+                            player_total_score -= 30
                         elif choice == 'leave' or choice == 'back':
                             print('You respect the deceased. The spirit approves.')
                             good += 20
@@ -5567,6 +5785,7 @@ def gamestart():
                             print('Then he give up. And he also says that if you see this diary, you will have to choose an answer.')
                             print('There is still some words, but you can not read them because they are covered by a lot of blue ink.')
                             print('')
+                            player_total_score += 20
                             grave_diary_read = True
                         else:
                             print('Sorry, I do not understand that word.')
@@ -5590,6 +5809,7 @@ def gamestart():
 def ng_three():
     global m1, m2, m3,cleared_ending
     global meta_file_tier
+    global player_total_score
 
     m1 = False
     m2 = False
@@ -5666,6 +5886,7 @@ def ng_three():
                 print("FINAL ENDING : SALVATION")
                 print('')
                 print("\nCongratulations! You beat 3rd run!")
+                player_total_score += 75
                 cleared_ending = True
                 main()
                 return
@@ -5676,6 +5897,7 @@ def ng_three():
                 print("FINAL ENDING : COEXISTENCE")
                 print('')
                 print("\nCongratulations! You beat 3rd run!")
+                player_total_score += 75
                 cleared_ending = True
                 main()
                 return
@@ -5686,6 +5908,7 @@ def ng_three():
                 print("FINAL ENDING : ANNIHILATION")
                 print('')
                 print("\nCongratulations! You beat 3rd run!")
+                player_total_score += 75
                 cleared_ending = True
                 main()
                 return
@@ -5697,6 +5920,7 @@ def ng_three():
                 print("FINAL ENDING : TURE FINAL ENDING")
                 print('')
                 print("\nCongratulations! You beat 3rd run!")
+                player_total_score += 75
                 cleared_ending = True
                 main()
                 return
@@ -5738,6 +5962,7 @@ def menu():
             elif start == 'quit' or start == '2':
                 if play_count <= 4:
                     print('')
+                    end_score_rating()
                     print('Goodbye!')
                     print("=== Death Adventure v1.3 - Official Release ===")
                     print("Thank you for playing!")
@@ -5757,6 +5982,7 @@ def menu():
                     print("  -h, -help           Show help")
                     print("=============================")
                     print('And, do you know, when you are at the ng one, you can type Garry in the house, then you will win!')
+                    end_score_rating()
                     print('Also, you can type colin, and woody and garry in the house, then you will pass the ng one.\n')
                     print("=== Death Adventure v1.3 - Official Release ===")
                     print("Thank you for playing!")
@@ -5793,6 +6019,7 @@ def menu():
                 print("  -g, -G, -godmode    Enable god mode (invincible)")
                 print("  -c, -C, -cheat      Enable cheat mode (all items)")
                 print("  -h, -help           Show help")
+                end_score_rating()
                 print("=============================")
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
@@ -5802,7 +6029,7 @@ def menu():
             print('Please answer the question.')
 # main
 def main():
-    global have_list, game_over, light, hp, l, k, n, s, f, w, p, sc, secret_unlocked, map_unlocked, amulet, turn_count, chain1, chain2, diary_read, legacy_unlocked, new_game_plus, ng_amulet, ng_compass, ng_diary, current_room, torch, no_light_run, all_collected, rune1, rune2, rune3, faith, sky, moon, trap_protect, rune, grandmother, gate_unlock, old_diary_readed, grave_diary_read, force_over, game_back, play_count, tomb_unlocked, old_note_readed,cleared_ending,time_period,step_count,death_count,good,evil,death_corpse_item,death_location,has_death_corpse,one_hole_in,two_hole_in,three_hole_in,four_hole_in
+    global have_list, game_over, light, hp, l, k, n, s, f, w, p, sc, secret_unlocked, map_unlocked, amulet, turn_count, chain1, chain2, diary_read, legacy_unlocked, new_game_plus, ng_amulet, ng_compass, ng_diary, current_room, torch, no_light_run, all_collected, rune1, rune2, rune3, faith, sky, moon, trap_protect, rune, grandmother, gate_unlock, old_diary_readed, grave_diary_read, force_over, game_back, play_count, tomb_unlocked, old_note_readed,cleared_ending,time_period,step_count,death_count,good,evil,death_corpse_item,death_location,has_death_corpse,one_hole_in,two_hole_in,three_hole_in,four_hole_in,no_death_run
     today = datetime.date.today()
     m = today.month
     d = today.day
@@ -6785,6 +7012,8 @@ def main():
         else:
             print('So, you died, and you will go back to the menu to choose if you want to challenge again.')
             print('And you have to come to the first turn of the cycle.')
+            player_score = 0
+            no_death_run = False
             if len(have_list) > 0:
                 death_corpse_item = random.choice(have_list)
             else:
@@ -6864,6 +7093,7 @@ def main():
             if death_count >= 10:
                 print('You finally become a ghost, and can not be birth forever.')
                 print('')
+                end_score_rating()
                 print('Goodbye!')
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
