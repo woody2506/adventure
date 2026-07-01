@@ -5791,8 +5791,6 @@ def gamestart():
                             print('Sorry, I do not understand that word.')
                     else:
                         print('You have alrady dig the grave!')
-                else:
-                    print('Unknown command.')
         else:
             print('Unknown command.')
         if game_over == True:
