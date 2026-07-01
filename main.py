@@ -7,6 +7,7 @@ import argparse
 import getpass
 
 
+session_start_time = time.time()
 have_list = []
 game_over = False
 light = False
@@ -220,7 +221,7 @@ def get_real_username():
         return "player"
 
 def write_creepy_desktop_file(tier: int):
-    global meta_file_tier, death_count, session_start_time
+    global meta_file_tier, death_count, session_start_timeglobal
 
     if tier <= meta_file_tier:
         return
