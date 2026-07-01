@@ -2896,7 +2896,7 @@ def print_heaven():
                 print("  -c, -C, -cheat      Enable cheat mode (all items)")
                 print("  -h, -help           Show help")
                 print("=============================")
-                player_total_score += 250
+                player_total_score += 50
                 end_score_rating()
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
@@ -2919,7 +2919,7 @@ def print_heaven():
                 print("  -c, -C, -cheat      Enable cheat mode (all items)")
                 print("  -h, -help           Show help")
                 print("=============================")
-                player_total_score += 250
+                player_total_score += 50
                 end_score_rating()
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
@@ -2941,7 +2941,7 @@ def print_heaven():
                 print("  -c, -C, -cheat      Enable cheat mode (all items)")
                 print("  -h, -help           Show help")
                 print("=============================")
-                player_total_score += 250
+                player_total_score += 50
                 end_score_rating()
                 print("=== Death Adventure v1.3 - Official Release ===")
                 print("Thank you for playing!")
@@ -2989,7 +2989,7 @@ def print_heaven():
             print("  -c, -C, -cheat      Enable cheat mode (all items)")
             print("  -h, -help           Show help")
             print("=============================")
-            player_total_score += 250
+            player_total_score += 50
             end_score_rating()
             print("=== Death Adventure v1.3 - Official Release ===")
             print("Thank you for playing!")
