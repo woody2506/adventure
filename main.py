@@ -4877,6 +4877,7 @@ def gamestart():
                             if light == False and not torch:
                                 print('A Grue appears, it would not die forever, you can just make it turns to flee.')
                                 combat("Grue", 20, 5, None, 7)
+                                force_in_cave = True
                             elif torch == True:
                                 print("Your torch keeps Grue away.")
                                 print('Welcome to death cave!')
