@@ -650,7 +650,7 @@ def military_fort():
     global diary_fragment_1, diary_fragment_2, diary_fragment_3
     print("\n==================== ABANDONED MILITARY FORT ====================")
     print("Decades-old outpost built to seal the cursed cave. Rusty weapons and scattered journals lie everywhere.")
-    print("Available locations: east_sentry = 1 | swamp_command = 2| top_headquarters = 3| barracks = 4| armory = 5| back = 6")
+    print("Available locations: 1.east_sentry | 2.swamp_command | 3.top_headquarters | 4.barracks| 5.armory | 6.back")
 
     while True:
         advance_time()
@@ -664,8 +664,8 @@ def military_fort():
             if not soldier_task_done:
                 print("\n[Soldier (Ghost)]")
                 print("I lost my ration pack in the woods. I cannot hold this post without supplies.")
-                sub_cmd = input("choice: help | loot | search_note | leave\n")
-                if sub_cmd == "help":
+                sub_cmd = input("choice: 1.help | 2.loot | 3.search_note | 4.leave\n")
+                if sub_cmd == "help" or sub_cmd == '1':
                     if "some food" in have_list:
                         have_list.remove("some food")
                         soldier_task_done = True
@@ -673,21 +673,22 @@ def military_fort():
                         has_military_key = True
                         print("You hand over food. The soldier gives you a bronze key for the armory.")
                         print("Head to the swamp command post and find the lieutenant for the march password.")
+                        print('He also says: First digit of the march code is' + military_password[0])
                         player_total_score += 10
                     else:
                         print("You carry no food to offer.")
-                elif sub_cmd == "loot":
+                elif sub_cmd == "loot" or sub_cmd == '2':
                     evil += 12
                     hp -= 3
                     print("You steal supplies and trigger an old trap. The soldier becomes hostile.")
-                elif sub_cmd == "search_note":
+                elif sub_cmd == "search_note" or sub_cmd == '3':
                     if not diary_fragment_1:
                         diary_fragment_1 = True
                         print("You find a torn journal page: First digit of the march code is " + military_password[0])
                         player_total_score += 5
                     else:
                         print("You already searched this area.")
-                elif sub_cmd == "leave":
+                elif sub_cmd == "leave" or sub_cmd == '4':
                     continue
             else:
                 print("The soldier stands guard quietly.")
@@ -3645,8 +3646,8 @@ def cave():
                                     elif gocave == 'west':
                                         print('You walk deeper into the cave. There is still a path to west.')
                                         print('You see old footprints on the ground. Someone came here before.')
-                                        print('Suddenly, a bat appears, it wants to kill you!')
                                         if 'bat' not in defeated_enemies:
+                                            print('Suddenly, a bat appears, it wants to kill you!')
                                             combat("cave bat swarm", 4, 2, None, 1,enemy_id='bat')
                                             player_total_score += 10
                                         while True:
@@ -5495,8 +5496,8 @@ def gamestart():
         elif go == 'east':
             print('You are in the forest.')
             print('An old diary lies on the ground. Further east lies the misty swamp.')
-            print('Sunnenly, a wolf appears.')
             if "forest_wolf" not in defeated_enemies:
+                print('Sunnenly, a wolf appears.')
                 combat("feral forest wolf", 6, 2, "wolf pelt", 2,enemy_id = "forest_wolf")
             while True:
                 advance_time()
