@@ -6348,860 +6348,860 @@ def main():
     today = datetime.date.today()
     m = today.month
     d = today.day
+    if play_count == 1:
+        if m == 1:
+            if d == 1:
+                print("\n=====================================")
+                print("✨ NEW YEAR FESTIVAL ✨")
+                print("New cycle begins, hope fills the cave.")
+                print("=====================================\n")
+                hp += 8
+                good += 8
+            elif d == 3:
+                print("\n=====================================")
+                print("❄️ FROSTBITE CURSE ❄️")
+                print("Freezing wind pierces your bones.")
+                print("=====================================\n")
+                hp -= 3
+                evil += 2
+            elif d == 10:
+                print("\n=====================================")
+                print("🔇 DEAD SILENCE DAY 🔇")
+                print("All spirits fall silent, no one answers.")
+                print("=====================================\n")
+                faith -= 5
+            elif d == 14:
+                print("\n=====================================")
+                print("📖 LEGACY FESTIVAL 📖")
+                print("Ancient records glow, memories stir.")
+                print("=====================================\n")
+                diary_read = True
+                have_list.append("ancient diary")
+            elif d == 18:
+                print("\n=====================================")
+                print("👻 WINTER WHISPER CURSE 👻")
+                print("Cold whispers feed the darkness in your heart.")
+                print("=====================================\n")
+                evil += 6
+            elif d == 25:
+                print("\n=====================================")
+                print("🌑 LONG NIGHT CURSE 🌑")
+                print("Darkness burns twice as fierce tonight.")
+                print("=====================================\n")
+                hp -= 2
+                evil += 3
+            elif d == 26:
+                print("\n=====================================")
+                print("🌞 DAWN FESTIVAL 🌞")
+                print("First light weakens dark power.")
+                print("=====================================\n")
+                evil -= 5
+                torch = True
+            elif d == 31:
+                print("\n=====================================")
+                print("👻 WHISPER FESTIVAL 👻")
+                print("Shadows speak, cave remembers.")
+                print("=====================================\n")
+                have_list.append("shadow whisper")
+                faith += 6
 
-    if m == 1:
-        if d == 1:
-            print("\n=====================================")
-            print("✨ NEW YEAR FESTIVAL ✨")
-            print("New cycle begins, hope fills the cave.")
-            print("=====================================\n")
-            hp += 8
-            good += 8
-        elif d == 3:
-            print("\n=====================================")
-            print("❄️ FROSTBITE CURSE ❄️")
-            print("Freezing wind pierces your bones.")
-            print("=====================================\n")
-            hp -= 3
-            evil += 2
-        elif d == 10:
-            print("\n=====================================")
-            print("🔇 DEAD SILENCE DAY 🔇")
-            print("All spirits fall silent, no one answers.")
-            print("=====================================\n")
-            faith -= 5
-        elif d == 14:
-            print("\n=====================================")
-            print("📖 LEGACY FESTIVAL 📖")
-            print("Ancient records glow, memories stir.")
-            print("=====================================\n")
-            diary_read = True
-            have_list.append("ancient diary")
-        elif d == 18:
-            print("\n=====================================")
-            print("👻 WINTER WHISPER CURSE 👻")
-            print("Cold whispers feed the darkness in your heart.")
-            print("=====================================\n")
-            evil += 6
-        elif d == 25:
-            print("\n=====================================")
-            print("🌑 LONG NIGHT CURSE 🌑")
-            print("Darkness burns twice as fierce tonight.")
-            print("=====================================\n")
-            hp -= 2
-            evil += 3
-        elif d == 26:
-            print("\n=====================================")
-            print("🌞 DAWN FESTIVAL 🌞")
-            print("First light weakens dark power.")
-            print("=====================================\n")
-            evil -= 5
-            torch = True
-        elif d == 31:
-            print("\n=====================================")
-            print("👻 WHISPER FESTIVAL 👻")
-            print("Shadows speak, cave remembers.")
-            print("=====================================\n")
-            have_list.append("shadow whisper")
-            faith += 6
+        elif m == 2:
+            if d == 2:
+                print("\n=====================================")
+                print("🌱 BLOOM FESTIVAL 🌱")
+                print("Soft warmth calms all spirits.")
+                print("=====================================\n")
+                hp += 5
+            elif d == 5:
+                print("\n=====================================")
+                print("🧊 THIN ICE CURSE 🧊")
+                print("Hidden traps lie under thin ice.")
+                print("=====================================\n")
+                trap_protect = False
+            elif d == 9:
+                print("\n=====================================")
+                print("🌫️ MIST ILLUSION DAY 🌫️")
+                print("The map fades, you lose your sense of direction.")
+                print("=====================================\n")
+                map_unlocked = False
+            elif d == 12:
+                print("\n=====================================")
+                print("🦠 SPOILED AIR DAY 🦠")
+                print("Damp foul air makes you weak.")
+                print("=====================================\n")
+                hp -= 2
+            elif d == 14:
+                print("\n=====================================")
+                print("❤️ TENDER FESTIVAL ❤️")
+                print("Gentle hearts heal old wounds.")
+                print("=====================================\n")
+                good += 10
+            elif d == 17:
+                print("\n=====================================")
+                print("🍀 LUCK FESTIVAL 🍀")
+                print("Hidden treasures appear.")
+                print("=====================================\n")
+                have_list.append("lucky clover")
+            elif d == 19:
+                print("\n=====================================")
+                print("💔 VAIN HOPE DAY 💔")
+                print("Kindness dissolves into the fog.")
+                print("=====================================\n")
+                good -= 5
+            elif d == 20:
+                print("\n=====================================")
+                print("💧 MERCY FESTIVAL 💧")
+                print("Kindness purifies dark aura.")
+                print("=====================================\n")
+                evil -= 8
+                good += 5
+            elif d == 22:
+                print("\n=====================================")
+                print("💡 BROKEN LAMP DAY 💡")
+                print("Your lamp flickers and dies.")
+                print("=====================================\n")
+                light = False
+            elif d == 26:
+                print("\n=====================================")
+                print("🌀 ECHO CURSE DAY 🌀")
+                print("Twisted echoes confuse your mind.")
+                print("=====================================\n")
+                faith -= 4
+                evil += 3
+            elif d == 28:
+                print("\n=====================================")
+                print("🕯️ EMBER FESTIVAL 🕯️")
+                print("Flame wards off darkness.")
+                print("=====================================\n")
+                light = True
+                have_list.append("eternal flame")
+            elif d == 29:
+                print("\n=====================================")
+                print('Wow, you enter this game February 29th, the day four year once!')
+                print('I will let you be as well as a god!')
+                print("=====================================\n")
+                hp = 999
+                trap_protect = True
+                rune1 = True
+                rune2 = True
+                rune3 = True
+                diary_read = True
+                old_diary_readed = True
+                old_note_readed = True
+                light = True
+                good = 100
+                grave_diary_read = True
+                have_list.append('rope')
+                have_list.append('ghost sword')
+                have_list.append('gold coins')
+                have_list.append('a pick-axe')
+                have_list.append('super amulet')
+                have_list.append('holy amulet')
+                amulet = True
+                map_unlocked = True
 
-    elif m == 2:
-        if d == 2:
-            print("\n=====================================")
-            print("🌱 BLOOM FESTIVAL 🌱")
-            print("Soft warmth calms all spirits.")
-            print("=====================================\n")
-            hp += 5
-        elif d == 5:
-            print("\n=====================================")
-            print("🧊 THIN ICE CURSE 🧊")
-            print("Hidden traps lie under thin ice.")
-            print("=====================================\n")
-            trap_protect = False
-        elif d == 9:
-            print("\n=====================================")
-            print("🌫️ MIST ILLUSION DAY 🌫️")
-            print("The map fades, you lose your sense of direction.")
-            print("=====================================\n")
-            map_unlocked = False
-        elif d == 12:
-            print("\n=====================================")
-            print("🦠 SPOILED AIR DAY 🦠")
-            print("Damp foul air makes you weak.")
-            print("=====================================\n")
-            hp -= 2
-        elif d == 14:
-            print("\n=====================================")
-            print("❤️ TENDER FESTIVAL ❤️")
-            print("Gentle hearts heal old wounds.")
-            print("=====================================\n")
-            good += 10
-        elif d == 17:
-            print("\n=====================================")
-            print("🍀 LUCK FESTIVAL 🍀")
-            print("Hidden treasures appear.")
-            print("=====================================\n")
-            have_list.append("lucky clover")
-        elif d == 19:
-            print("\n=====================================")
-            print("💔 VAIN HOPE DAY 💔")
-            print("Kindness dissolves into the fog.")
-            print("=====================================\n")
-            good -= 5
-        elif d == 20:
-            print("\n=====================================")
-            print("💧 MERCY FESTIVAL 💧")
-            print("Kindness purifies dark aura.")
-            print("=====================================\n")
-            evil -= 8
-            good += 5
-        elif d == 22:
-            print("\n=====================================")
-            print("💡 BROKEN LAMP DAY 💡")
-            print("Your lamp flickers and dies.")
-            print("=====================================\n")
-            light = False
-        elif d == 26:
-            print("\n=====================================")
-            print("🌀 ECHO CURSE DAY 🌀")
-            print("Twisted echoes confuse your mind.")
-            print("=====================================\n")
-            faith -= 4
-            evil += 3
-        elif d == 28:
-            print("\n=====================================")
-            print("🕯️ EMBER FESTIVAL 🕯️")
-            print("Flame wards off darkness.")
-            print("=====================================\n")
-            light = True
-            have_list.append("eternal flame")
-        elif d == 29:
-            print("\n=====================================")
-            print('Wow, you enter this game February 29th, the day four year once!')
-            print('I will let you be as well as a god!')
-            print("=====================================\n")
-            hp = 999
-            trap_protect = True
-            rune1 = True
-            rune2 = True
-            rune3 = True
-            diary_read = True
-            old_diary_readed = True
-            old_note_readed = True
-            light = True
-            good = 100
-            grave_diary_read = True
-            have_list.append('rope')
-            have_list.append('ghost sword')
-            have_list.append('gold coins')
-            have_list.append('a pick-axe')
-            have_list.append('super amulet')
-            have_list.append('holy amulet')
-            amulet = True
-            map_unlocked = True
+        elif m == 3:
+            if d == 4:
+                print("\n=====================================")
+                print("🌙 LUNAR FESTIVAL 🌙")
+                print("Moonlight reveals forgotten truths.")
+                print("=====================================\n")
+                faith += 7
+            elif d == 6:
+                print("\n=====================================")
+                print("☠️ TOXIC MIST CURSE ☠️")
+                print("Poisonous mist fills the swamp.")
+                print("=====================================\n")
+                hp -= 2
+                evil += 4
+            elif d == 11:
+                print("\n=====================================")
+                print("👻 WRAITH AWAKEN DAY 👻")
+                print("Slumbering evil spirits wake from the earth.")
+                print("=====================================\n")
+                evil += 6
+            elif d == 14:
+                print("\n=====================================")
+                print("🤍 PURE FESTIVAL 🤍")
+                print("Innocence softens malice.")
+                print("=====================================\n")
+                good += 9
+            elif d == 17:
+                print("\n=====================================")
+                print("🌿 NATURE FESTIVAL 🌿")
+                print("Green energy restores vitality.")
+                print("=====================================\n")
+                hp += 6
+            elif d == 20:
+                print("\n=====================================")
+                print("⚖️ BALANCE FESTIVAL ⚖️")
+                print("Light and dark align.")
+                print("=====================================\n")
+                good += 7
+                evil -= 7
+            elif d == 22:
+                print("\n=====================================")
+                print("🌿 THORN GROWTH CURSE 🌿")
+                print("Cursed thorns tear at your skin.")
+                print("=====================================\n")
+                hp -= 3
+            elif d == 27:
+                print("\n=====================================")
+                print("❌ FALSE RUNE DAY ❌")
+                print("Fake runes confuse your memory.")
+                print("=====================================\n")
+                faith -= 6
+            elif d == 29:
+                print("\n=====================================")
+                print("🌧️ COLD RAIN DAY 🌧️")
+                print("Cold rain seeps through your clothes.")
+                print("=====================================\n")
+                hp -= 2
+                evil += 2
+            elif d == 31:
+                print("\n=====================================")
+                print("👻 COMPANION FESTIVAL 👻")
+                print("Ghosts walk beside you.")
+                print("=====================================\n")
+                have_list.append("ghost companion")
 
-    elif m == 3:
-        if d == 4:
-            print("\n=====================================")
-            print("🌙 LUNAR FESTIVAL 🌙")
-            print("Moonlight reveals forgotten truths.")
-            print("=====================================\n")
-            faith += 7
-        elif d == 6:
-            print("\n=====================================")
-            print("☠️ TOXIC MIST CURSE ☠️")
-            print("Poisonous mist fills the swamp.")
-            print("=====================================\n")
-            hp -= 2
-            evil += 4
-        elif d == 11:
-            print("\n=====================================")
-            print("👻 WRAITH AWAKEN DAY 👻")
-            print("Slumbering evil spirits wake from the earth.")
-            print("=====================================\n")
-            evil += 6
-        elif d == 14:
-            print("\n=====================================")
-            print("🤍 PURE FESTIVAL 🤍")
-            print("Innocence softens malice.")
-            print("=====================================\n")
-            good += 9
-        elif d == 17:
-            print("\n=====================================")
-            print("🌿 NATURE FESTIVAL 🌿")
-            print("Green energy restores vitality.")
-            print("=====================================\n")
-            hp += 6
-        elif d == 20:
-            print("\n=====================================")
-            print("⚖️ BALANCE FESTIVAL ⚖️")
-            print("Light and dark align.")
-            print("=====================================\n")
-            good += 7
-            evil -= 7
-        elif d == 22:
-            print("\n=====================================")
-            print("🌿 THORN GROWTH CURSE 🌿")
-            print("Cursed thorns tear at your skin.")
-            print("=====================================\n")
-            hp -= 3
-        elif d == 27:
-            print("\n=====================================")
-            print("❌ FALSE RUNE DAY ❌")
-            print("Fake runes confuse your memory.")
-            print("=====================================\n")
-            faith -= 6
-        elif d == 29:
-            print("\n=====================================")
-            print("🌧️ COLD RAIN DAY 🌧️")
-            print("Cold rain seeps through your clothes.")
-            print("=====================================\n")
-            hp -= 2
-            evil += 2
-        elif d == 31:
-            print("\n=====================================")
-            print("👻 COMPANION FESTIVAL 👻")
-            print("Ghosts walk beside you.")
-            print("=====================================\n")
-            have_list.append("ghost companion")
+        elif m == 4:
+            if d == 1:
+                print("\n=====================================")
+                print("🎭 PRANK FESTIVAL 🎭")
+                print("Mischief fills the halls.")
+                print("=====================================\n")
+                have_list.append("trickster mask")
+            elif d == 8:
+                print("\n=====================================")
+                print("🕳️ MUDDY TRAP DAY 🕳️")
+                print("Hidden mud traps are everywhere.")
+                print("=====================================\n")
+                trap_protect = False
+                hp -= 1
+            elif d == 12:
+                print("\n=====================================")
+                print("🌧️ WRAITH RAIN CURSE 🌧️")
+                print("Rain carries vengeful spirits.")
+                print("=====================================\n")
+                hp -= 3
+            elif d == 14:
+                print("\n=====================================")
+                print("🖤 SHADOW FESTIVAL 🖤")
+                print("Embrace the dark side.")
+                print("=====================================\n")
+                evil += 5
+            elif d == 15:
+                print("\n=====================================")
+                print("🌧️ CLEANSE FESTIVAL 🌧️")
+                print("Rain washes corruption.")
+                print("=====================================\n")
+                evil -= 10
+            elif d == 18:
+                print("\n=====================================")
+                print("🌑 SHADOW GROW DAY 🌑")
+                print("Darkness grows stronger.")
+                print("=====================================\n")
+                evil += 5
+                hp -= 1
+            elif d == 22:
+                print("\n=====================================")
+                print("🌱 GROWTH FESTIVAL 🌱")
+                print("Life force surges.")
+                print("=====================================\n")
+                hp += 7
+            elif d == 27:
+                print("\n=====================================")
+                print("💡 HOLLOW LIGHT DAY 💡")
+                print("Your light grows dim and weak.")
+                print("=====================================\n")
+                hp -= 2
+            elif d == 30:
+                print("\n=====================================")
+                print("👻 AWAKEN FESTIVAL 👻")
+                print("Ancient spirits stir.")
+                print("=====================================\n")
+                have_list.append("ghost essence")
 
-    elif m == 4:
-        if d == 1:
-            print("\n=====================================")
-            print("🎭 PRANK FESTIVAL 🎭")
-            print("Mischief fills the halls.")
-            print("=====================================\n")
-            have_list.append("trickster mask")
-        elif d == 8:
-            print("\n=====================================")
-            print("🕳️ MUDDY TRAP DAY 🕳️")
-            print("Hidden mud traps are everywhere.")
-            print("=====================================\n")
-            trap_protect = False
-            hp -= 1
-        elif d == 12:
-            print("\n=====================================")
-            print("🌧️ WRAITH RAIN CURSE 🌧️")
-            print("Rain carries vengeful spirits.")
-            print("=====================================\n")
-            hp -= 3
-        elif d == 14:
-            print("\n=====================================")
-            print("🖤 SHADOW FESTIVAL 🖤")
-            print("Embrace the dark side.")
-            print("=====================================\n")
-            evil += 5
-        elif d == 15:
-            print("\n=====================================")
-            print("🌧️ CLEANSE FESTIVAL 🌧️")
-            print("Rain washes corruption.")
-            print("=====================================\n")
-            evil -= 10
-        elif d == 18:
-            print("\n=====================================")
-            print("🌑 SHADOW GROW DAY 🌑")
-            print("Darkness grows stronger.")
-            print("=====================================\n")
-            evil += 5
-            hp -= 1
-        elif d == 22:
-            print("\n=====================================")
-            print("🌱 GROWTH FESTIVAL 🌱")
-            print("Life force surges.")
-            print("=====================================\n")
-            hp += 7
-        elif d == 27:
-            print("\n=====================================")
-            print("💡 HOLLOW LIGHT DAY 💡")
-            print("Your light grows dim and weak.")
-            print("=====================================\n")
-            hp -= 2
-        elif d == 30:
-            print("\n=====================================")
-            print("👻 AWAKEN FESTIVAL 👻")
-            print("Ancient spirits stir.")
-            print("=====================================\n")
-            have_list.append("ghost essence")
+        elif m == 5:
+            if d == 5:
+                print("\n=====================================")
+                print("🌸 HOPE FESTIVAL 🌸")
+                print("Bright hopes bloom.")
+                print("=====================================\n")
+                good += 8
+            elif d == 7:
+                print("\n=====================================")
+                print("🔥 SCORCHING HEAT DAY 🔥")
+                print("Scorching heat drains your strength.")
+                print("=====================================\n")
+                hp -= 3
+            elif d == 11:
+                print("\n=====================================")
+                print("🐺 BEAST HUNT DAY 🐺")
+                print("Wild beasts roam the woods.")
+                print("=====================================\n")
+                hp -= 3
+            elif d == 14:
+                print("\n=====================================")
+                print("💛 GOLDEN FESTIVAL 💛")
+                print("Kindness shines bright.")
+                print("=====================================\n")
+                good += 10
+            elif d == 16:
+                print("\n=====================================")
+                print("🩸 BLOOD BUDDING CURSE 🩸")
+                print("Cursed plants bloom with evil.")
+                print("=====================================\n")
+                evil += 7
+            elif d == 20:
+                print("\n=====================================")
+                print("⚡ STORM FESTIVAL ⚡")
+                print("Thunder awakens power.")
+                print("=====================================\n")
+                have_list.append("thunder core")
+            elif d == 21:
+                print("\n=====================================")
+                print("🧠 FRAYED SANITY DAY 🧠")
+                print("Hallucinations cloud your mind.")
+                print("=====================================\n")
+                faith -= 7
+            elif d == 25:
+                print("\n=====================================")
+                print("🌙 SILVER FESTIVAL 🌙")
+                print("Moonlight gathers spirits.")
+                print("=====================================\n")
+                faith += 8
+            elif d == 29:
+                print("\n=====================================")
+                print("🔥 HOT WIND CURSE 🔥")
+                print("Hot wind blows out your torch.")
+                print("=====================================\n")
+                torch = False
+            elif d == 31:
+                print("\n=====================================")
+                print("👻 TIE FESTIVAL 👻")
+                print("Souls connect forever.")
+                print("=====================================\n")
+                have_list.append("spirit bond")
 
-    elif m == 5:
-        if d == 5:
-            print("\n=====================================")
-            print("🌸 HOPE FESTIVAL 🌸")
-            print("Bright hopes bloom.")
-            print("=====================================\n")
-            good += 8
-        elif d == 7:
-            print("\n=====================================")
-            print("🔥 SCORCHING HEAT DAY 🔥")
-            print("Scorching heat drains your strength.")
-            print("=====================================\n")
-            hp -= 3
-        elif d == 11:
-            print("\n=====================================")
-            print("🐺 BEAST HUNT DAY 🐺")
-            print("Wild beasts roam the woods.")
-            print("=====================================\n")
-            hp -= 3
-        elif d == 14:
-            print("\n=====================================")
-            print("💛 GOLDEN FESTIVAL 💛")
-            print("Kindness shines bright.")
-            print("=====================================\n")
-            good += 10
-        elif d == 16:
-            print("\n=====================================")
-            print("🩸 BLOOD BUDDING CURSE 🩸")
-            print("Cursed plants bloom with evil.")
-            print("=====================================\n")
-            evil += 7
-        elif d == 20:
-            print("\n=====================================")
-            print("⚡ STORM FESTIVAL ⚡")
-            print("Thunder awakens power.")
-            print("=====================================\n")
-            have_list.append("thunder core")
-        elif d == 21:
-            print("\n=====================================")
-            print("🧠 FRAYED SANITY DAY 🧠")
-            print("Hallucinations cloud your mind.")
-            print("=====================================\n")
-            faith -= 7
-        elif d == 25:
-            print("\n=====================================")
-            print("🌙 SILVER FESTIVAL 🌙")
-            print("Moonlight gathers spirits.")
-            print("=====================================\n")
-            faith += 8
-        elif d == 29:
-            print("\n=====================================")
-            print("🔥 HOT WIND CURSE 🔥")
-            print("Hot wind blows out your torch.")
-            print("=====================================\n")
-            torch = False
-        elif d == 31:
-            print("\n=====================================")
-            print("👻 TIE FESTIVAL 👻")
-            print("Souls connect forever.")
-            print("=====================================\n")
-            have_list.append("spirit bond")
+        elif m == 6:
+            if d == 1:
+                print('\n=====================================')
+                print('Happy Childrens Day!')
+                print('You receive a silly candy.')
+                have_list.append('silly candy')
+                print("=====================================\n")
+            elif d == 4:
+                print("\n=====================================")
+                print("💧 DEHYDRATION DAY 💧")
+                print("The sun drains all moisture from you.")
+                print("=====================================\n")
+                hp -= 3
+            elif d == 6:
+                print("\n=====================================")
+                print("☀️ SOLAR FESTIVAL ☀️")
+                print("Sunlight dispels shadows.")
+                print("=====================================\n")
+                evil -= 6
+            elif d == 9:
+                print("\n=====================================")
+                print("🔥 SCORCHED TONGUE DAY 🔥")
+                print("No spirit wants to talk to you.")
+                print("=====================================\n")
+                good -= 5
+            elif d == 14:
+                print("\n=====================================")
+                print("💙 CALM FESTIVAL 💙")
+                print("Peace calms chaos.")
+                print("=====================================\n")
+                good += 7
+            elif d == 16:
+                print("\n=====================================")
+                print("☀️ MIDDAY GLARE CURSE ☀️")
+                print("Blinding sunlight makes your map useless.")
+                print("=====================================\n")
+                map_unlocked = False
+            elif d == 20:
+                print("\n=====================================")
+                print('??? XXXXXXXX FESTIVAL ???')
+                print('????????????????????????????????????')
+                print("=====================================\n")
+                hp = 1
+                evil = 30
+                have_list.append('??????')
+            elif d == 21:
+                print("\n=====================================")
+                print("🌞 LONGEST DAY FESTIVAL 🌞")
+                print("Light triumphs over dark.")
+                print("=====================================\n")
+                hp += 8
+            elif d == 23:
+                print("\n=====================================")
+                print("🌿 WITHERED HERB DAY 🌿")
+                print("All healing herbs wither in the heat.")
+                print("=====================================\n")
+                hp -= 2
+            elif d == 24:
+                print("\n=====================================")
+                print("🔥 GUARD FESTIVAL 🔥")
+                print("Flame shields all harm.")
+                print("=====================================\n")
+                torch = True
+            elif d == 27:
+                print("\n=====================================")
+                print("🌪️ DUSK STORM CURSE 🌪️")
+                print("Dusk storm blows out your flame.")
+                print("=====================================\n")
+                torch = False
+                light = False
+            elif d == 29:
+                print("\n=====================================")
+                print("🦗 CICADA CHAOS DAY 🦗")
+                print("Deafening noise breaks your focus.")
+                print("=====================================\n")
+                faith -= 7
+            elif d == 30:
+                print("\n=====================================")
+                print("👻 MEMORY FESTIVAL 👻")
+                print("Past echoes clearly.")
+                print("=====================================\n")
+                diary_read = True
+                old_diary_readed = True
+                old_note_readed = True
 
-    elif m == 6:
-        if d == 1:
-            print('\n=====================================')
-            print('Happy Childrens Day!')
-            print('You receive a silly candy.')
-            have_list.append('silly candy')
-            print("=====================================\n")
-        elif d == 4:
-            print("\n=====================================")
-            print("💧 DEHYDRATION DAY 💧")
-            print("The sun drains all moisture from you.")
-            print("=====================================\n")
-            hp -= 3
-        elif d == 6:
-            print("\n=====================================")
-            print("☀️ SOLAR FESTIVAL ☀️")
-            print("Sunlight dispels shadows.")
-            print("=====================================\n")
-            evil -= 6
-        elif d == 9:
-            print("\n=====================================")
-            print("🔥 SCORCHED TONGUE DAY 🔥")
-            print("No spirit wants to talk to you.")
-            print("=====================================\n")
-            good -= 5
-        elif d == 14:
-            print("\n=====================================")
-            print("💙 CALM FESTIVAL 💙")
-            print("Peace calms chaos.")
-            print("=====================================\n")
-            good += 7
-        elif d == 16:
-            print("\n=====================================")
-            print("☀️ MIDDAY GLARE CURSE ☀️")
-            print("Blinding sunlight makes your map useless.")
-            print("=====================================\n")
-            map_unlocked = False
-        elif d == 20:
-            print("\n=====================================")
-            print('??? XXXXXXXX FESTIVAL ???')
-            print('????????????????????????????????????')
-            print("=====================================\n")
-            hp = 1
-            evil = 30
-            have_list.append('??????')
-        elif d == 21:
-            print("\n=====================================")
-            print("🌞 LONGEST DAY FESTIVAL 🌞")
-            print("Light triumphs over dark.")
-            print("=====================================\n")
-            hp += 8
-        elif d == 23:
-            print("\n=====================================")
-            print("🌿 WITHERED HERB DAY 🌿")
-            print("All healing herbs wither in the heat.")
-            print("=====================================\n")
-            hp -= 2
-        elif d == 24:
-            print("\n=====================================")
-            print("🔥 GUARD FESTIVAL 🔥")
-            print("Flame shields all harm.")
-            print("=====================================\n")
-            torch = True
-        elif d == 27:
-            print("\n=====================================")
-            print("🌪️ DUSK STORM CURSE 🌪️")
-            print("Dusk storm blows out your flame.")
-            print("=====================================\n")
-            torch = False
-            light = False
-        elif d == 29:
-            print("\n=====================================")
-            print("🦗 CICADA CHAOS DAY 🦗")
-            print("Deafening noise breaks your focus.")
-            print("=====================================\n")
-            faith -= 7
-        elif d == 30:
-            print("\n=====================================")
-            print("👻 MEMORY FESTIVAL 👻")
-            print("Past echoes clearly.")
-            print("=====================================\n")
-            diary_read = True
-            old_diary_readed = True
-            old_note_readed = True
+        elif m == 7:
+            if d == 3:
+                print("\n=====================================")
+                print("👻 GHOST HUNT CURSE 👻")
+                print("Hostile ghosts roam the land.")
+                print("=====================================\n")
+                evil += 6
+                hp -= 2
+            elif d == 7:
+                print("\n=====================================")
+                print("🌌 STAR FESTIVAL 🌌")
+                print("Stars reveal fate.")
+                print("=====================================\n")
+                faith += 10
+            elif d == 10:
+                print("\n=====================================")
+                print("🥵 HEAT STROKE DAY 🥵")
+                print("Searing heat drains your strength.")
+                print("=====================================\n")
+                hp -= 4
+            elif d == 13:
+                print("\n=====================================")
+                print("🗡️ CURSED DAGGER DAY 🗡️")
+                print("A cursed blade appears in your bag.")
+                print("=====================================\n")
+                have_list.append("cursed dagger")
+                evil += 3
+            elif d == 15:
+                print("\n=====================================")
+                print("👻 SPIRIT GATE FESTIVAL 👻")
+                print("Ghost world opens.")
+                print("=====================================\n")
+                have_list.append("ancestor blessing")
+                good += 12
+            elif d == 18:
+                print("\n=====================================")
+                print("🏜️ MIRAGE CURSE 🏜️")
+                print("Mirages lead you astray.")
+                print("=====================================\n")
+                map_unlocked = False
+                faith -= 5
+            elif d == 20:
+                print("\n=====================================")
+                print("🌊 WAVE FESTIVAL 🌊")
+                print("Tide cleanses dark.")
+                print("=====================================\n")
+                evil -= 10
+            elif d == 25:
+                print("\n=====================================")
+                print("💎 TRUTH FESTIVAL 💎")
+                print("Light reveals secrets.")
+                print("=====================================\n")
+                have_list.append("crystal light")
+            elif d == 28:
+                print("\n=====================================")
+                print("🌑 BLOOD MOON EVE 🌑")
+                print("Dark power surges before the blood moon.")
+                print("=====================================\n")
+                evil += 8
+            elif d == 30:
+                print("\n=====================================")
+                print("😈 SUCCUBUS WHISPER DAY 😈")
+                print("Her voice whispers in your ear.")
+                print("=====================================\n")
+                faith -= 8
+                evil += 5
+            elif d == 31:
+                print("\n=====================================")
+                print("👻 SHADOWTALE FESTIVAL 👻")
+                print("Stories of old rise.")
+                print("=====================================\n")
+                have_list.append("shadow story")
 
-    elif m == 7:
-        if d == 3:
-            print("\n=====================================")
-            print("👻 GHOST HUNT CURSE 👻")
-            print("Hostile ghosts roam the land.")
-            print("=====================================\n")
-            evil += 6
-            hp -= 2
-        elif d == 7:
-            print("\n=====================================")
-            print("🌌 STAR FESTIVAL 🌌")
-            print("Stars reveal fate.")
-            print("=====================================\n")
-            faith += 10
-        elif d == 10:
-            print("\n=====================================")
-            print("🥵 HEAT STROKE DAY 🥵")
-            print("Searing heat drains your strength.")
-            print("=====================================\n")
-            hp -= 4
-        elif d == 13:
-            print("\n=====================================")
-            print("🗡️ CURSED DAGGER DAY 🗡️")
-            print("A cursed blade appears in your bag.")
-            print("=====================================\n")
-            have_list.append("cursed dagger")
-            evil += 3
-        elif d == 15:
-            print("\n=====================================")
-            print("👻 SPIRIT GATE FESTIVAL 👻")
-            print("Ghost world opens.")
-            print("=====================================\n")
-            have_list.append("ancestor blessing")
-            good += 12
-        elif d == 18:
-            print("\n=====================================")
-            print("🏜️ MIRAGE CURSE 🏜️")
-            print("Mirages lead you astray.")
-            print("=====================================\n")
-            map_unlocked = False
-            faith -= 5
-        elif d == 20:
-            print("\n=====================================")
-            print("🌊 WAVE FESTIVAL 🌊")
-            print("Tide cleanses dark.")
-            print("=====================================\n")
-            evil -= 10
-        elif d == 25:
-            print("\n=====================================")
-            print("💎 TRUTH FESTIVAL 💎")
-            print("Light reveals secrets.")
-            print("=====================================\n")
-            have_list.append("crystal light")
-        elif d == 28:
-            print("\n=====================================")
-            print("🌑 BLOOD MOON EVE 🌑")
-            print("Dark power surges before the blood moon.")
-            print("=====================================\n")
-            evil += 8
-        elif d == 30:
-            print("\n=====================================")
-            print("😈 SUCCUBUS WHISPER DAY 😈")
-            print("Her voice whispers in your ear.")
-            print("=====================================\n")
-            faith -= 8
-            evil += 5
-        elif d == 31:
-            print("\n=====================================")
-            print("👻 SHADOWTALE FESTIVAL 👻")
-            print("Stories of old rise.")
-            print("=====================================\n")
-            have_list.append("shadow story")
+        elif m == 8:
+            if d == 3:
+                print("\n=====================================")
+                print("🍂 WITHERING CURSE 🍂")
+                print("Everything withers and fades.")
+                print("=====================================\n")
+                hp -= 3
+                good -= 4
+            elif d == 6:
+                print("\n=====================================")
+                print("🪞 BROKEN GHOST MIRROR DAY 🪞")
+                print("A shattered mirror appears in your bag.")
+                print("=====================================\n")
+                have_list.append("broken ghost mirror")
+                faith -= 5
+            elif d == 8:
+                print("\n=====================================")
+                print("🌺 PURIFY FESTIVAL 🌺")
+                print("Purity removes greed.")
+                print("=====================================\n")
+                good += 8
+            elif d == 11:
+                print("\n=====================================")
+                print("💀 FAMINE CURSE DAY 💀")
+                print("Hunger drains your willpower.")
+                print("=====================================\n")
+                hp -= 4
+                evil += 5
+            elif d == 15:
+                print("\n=====================================")
+                print("🌕 FULLMOON FESTIVAL 🌕")
+                print("Big moon calms spirits.")
+                print("=====================================\n")
+                hp += 4
+                amulet = True
+            elif d == 17:
+                print("\n=====================================")
+                print("🌑 BLOOD MOON FESTIVAL 🌑")
+                print("The blood moon rises. All darkness grows stronger.")
+                print("=====================================\n")
+                evil += 10
+                hp -= 3
+            elif d == 20:
+                print("\n=====================================")
+                print("🍂 HARVEST FESTIVAL 🍂")
+                print("Bounty appears.")
+                print("=====================================\n")
+                have_list.append("harvest fruit")
+            elif d == 23:
+                print("\n=====================================")
+                print("📿 ROTTEN CHARM DAY 📿")
+                print("A rotten charm slips into your bag.")
+                print("=====================================\n")
+                have_list.append("rotten charm")
+                amulet = False
+            elif d == 25:
+                print("\n=====================================")
+                print("🌙 DUSK FESTIVAL 🌙")
+                print("Day meets night softly.")
+                print("=====================================\n")
+                faith += 7
+            elif d == 27:
+                print("\n=====================================")
+                print("⛓️ SOUL CHAIN DAY ⛓️")
+                print("A cold soul chain wraps around you.")
+                print("=====================================\n")
+                have_list.append("soul chain")
+                evil += 6
+            elif d == 29:
+                print("\n=====================================")
+                print("👻 GHOST RAID DAY 👻")
+                print("Waves of ghosts launch sudden attacks.")
+                print("=====================================\n")
+                hp -= 5
+                evil += 7
+            elif d == 31:
+                print("\n=====================================")
+                print("👻 REST FESTIVAL 👻")
+                print("Ghosts find peace.")
+                print("=====================================\n")
+                good += 6
 
-    elif m == 8:
-        if d == 3:
-            print("\n=====================================")
-            print("🍂 WITHERING CURSE 🍂")
-            print("Everything withers and fades.")
-            print("=====================================\n")
-            hp -= 3
-            good -= 4
-        elif d == 6:
-            print("\n=====================================")
-            print("🪞 BROKEN GHOST MIRROR DAY 🪞")
-            print("A shattered mirror appears in your bag.")
-            print("=====================================\n")
-            have_list.append("broken ghost mirror")
-            faith -= 5
-        elif d == 8:
-            print("\n=====================================")
-            print("🌺 PURIFY FESTIVAL 🌺")
-            print("Purity removes greed.")
-            print("=====================================\n")
-            good += 8
-        elif d == 11:
-            print("\n=====================================")
-            print("💀 FAMINE CURSE DAY 💀")
-            print("Hunger drains your willpower.")
-            print("=====================================\n")
-            hp -= 4
-            evil += 5
-        elif d == 15:
-            print("\n=====================================")
-            print("🌕 FULLMOON FESTIVAL 🌕")
-            print("Big moon calms spirits.")
-            print("=====================================\n")
-            hp += 4
-            amulet = True
-        elif d == 17:
-            print("\n=====================================")
-            print("🌑 BLOOD MOON FESTIVAL 🌑")
-            print("The blood moon rises. All darkness grows stronger.")
-            print("=====================================\n")
-            evil += 10
-            hp -= 3
-        elif d == 20:
-            print("\n=====================================")
-            print("🍂 HARVEST FESTIVAL 🍂")
-            print("Bounty appears.")
-            print("=====================================\n")
-            have_list.append("harvest fruit")
-        elif d == 23:
-            print("\n=====================================")
-            print("📿 ROTTEN CHARM DAY 📿")
-            print("A rotten charm slips into your bag.")
-            print("=====================================\n")
-            have_list.append("rotten charm")
-            amulet = False
-        elif d == 25:
-            print("\n=====================================")
-            print("🌙 DUSK FESTIVAL 🌙")
-            print("Day meets night softly.")
-            print("=====================================\n")
-            faith += 7
-        elif d == 27:
-            print("\n=====================================")
-            print("⛓️ SOUL CHAIN DAY ⛓️")
-            print("A cold soul chain wraps around you.")
-            print("=====================================\n")
-            have_list.append("soul chain")
-            evil += 6
-        elif d == 29:
-            print("\n=====================================")
-            print("👻 GHOST RAID DAY 👻")
-            print("Waves of ghosts launch sudden attacks.")
-            print("=====================================\n")
-            hp -= 5
-            evil += 7
-        elif d == 31:
-            print("\n=====================================")
-            print("👻 REST FESTIVAL 👻")
-            print("Ghosts find peace.")
-            print("=====================================\n")
-            good += 6
+        elif m == 9:
+            if d == 3:
+                print("\n=====================================")
+                print("💨 WAILING WIND CURSE 💨")
+                print("Howling winds shatter your will.")
+                print("=====================================\n")
+                faith -= 7
+            elif d == 7:
+                print("\n=====================================")
+                print("🌫️ MEMORY FOG DAY 🌫️")
+                print("Fog blurs your memories.")
+                print("=====================================\n")
+                faith -= 5
+                evil += 3
+            elif d == 9:
+                print("\n=====================================")
+                print("📜 WISDOM FESTIVAL 📜")
+                print("Ancient knowledge awakens.")
+                print("=====================================\n")
+                have_list.append("ancient scroll")
+            elif d == 12:
+                print("\n=====================================")
+                print("🍂 FALLEN LEAF CURSE 🍂")
+                print("Cursed leaves cut your skin.")
+                print("=====================================\n")
+                hp -= 3
+            elif d == 14:
+                print("\n=====================================")
+                print("💜 COURAGE FESTIVAL 💜")
+                print("Brave hearts stand tall.")
+                print("=====================================\n")
+                good += 8
+            elif d == 19:
+                print("\n=====================================")
+                print("⚔️ OLD GRUDGE AWAKEN DAY ⚔️")
+                print("Ancient grudges rise from the grave.")
+                print("=====================================\n")
+                evil += 8
+            elif d == 22:
+                print("\n=====================================")
+                print("🍁 AUTUMN BALANCE FESTIVAL 🍁")
+                print("Seasons balance.")
+                print("=====================================\n")
+                good += 7
+                evil -= 7
+            elif d == 27:
+                print("\n=====================================")
+                print("🛡️ PROTECT FESTIVAL 🛡️")
+                print("Guardians watch.")
+                print("=====================================\n")
+                amulet = True
+            elif d == 28:
+                print("\n=====================================")
+                print("🌆 TWILIGHT CHAOS DAY 🌆")
+                print("Day and night fall into chaos.")
+                print("=====================================\n")
+                time_period = "night"
+            elif d == 30:
+                print("\n=====================================")
+                print("🌙 ECHO FESTIVAL 🌙")
+                print("Memories return.")
+                print("=====================================\n")
+                faith += 8
 
-    elif m == 9:
-        if d == 3:
-            print("\n=====================================")
-            print("💨 WAILING WIND CURSE 💨")
-            print("Howling winds shatter your will.")
-            print("=====================================\n")
-            faith -= 7
-        elif d == 7:
-            print("\n=====================================")
-            print("🌫️ MEMORY FOG DAY 🌫️")
-            print("Fog blurs your memories.")
-            print("=====================================\n")
-            faith -= 5
-            evil += 3
-        elif d == 9:
-            print("\n=====================================")
-            print("📜 WISDOM FESTIVAL 📜")
-            print("Ancient knowledge awakens.")
-            print("=====================================\n")
-            have_list.append("ancient scroll")
-        elif d == 12:
-            print("\n=====================================")
-            print("🍂 FALLEN LEAF CURSE 🍂")
-            print("Cursed leaves cut your skin.")
-            print("=====================================\n")
-            hp -= 3
-        elif d == 14:
-            print("\n=====================================")
-            print("💜 COURAGE FESTIVAL 💜")
-            print("Brave hearts stand tall.")
-            print("=====================================\n")
-            good += 8
-        elif d == 19:
-            print("\n=====================================")
-            print("⚔️ OLD GRUDGE AWAKEN DAY ⚔️")
-            print("Ancient grudges rise from the grave.")
-            print("=====================================\n")
-            evil += 8
-        elif d == 22:
-            print("\n=====================================")
-            print("🍁 AUTUMN BALANCE FESTIVAL 🍁")
-            print("Seasons balance.")
-            print("=====================================\n")
-            good += 7
-            evil -= 7
-        elif d == 27:
-            print("\n=====================================")
-            print("🛡️ PROTECT FESTIVAL 🛡️")
-            print("Guardians watch.")
-            print("=====================================\n")
-            amulet = True
-        elif d == 28:
-            print("\n=====================================")
-            print("🌆 TWILIGHT CHAOS DAY 🌆")
-            print("Day and night fall into chaos.")
-            print("=====================================\n")
-            time_period = "night"
-        elif d == 30:
-            print("\n=====================================")
-            print("🌙 ECHO FESTIVAL 🌙")
-            print("Memories return.")
-            print("=====================================\n")
-            faith += 8
+        elif m == 10:
+            if d == 1:
+                print("\n=====================================")
+                print("🍁 RED LEAF FESTIVAL 🍁")
+                print("Cave blazes warm.")
+                print("=====================================\n")
+                hp += 5
+            elif d == 6:
+                print("\n=====================================")
+                print("🧟 DEAD WALK DAY 🧟")
+                print("The dead walk the earth tonight.")
+                print("=====================================\n")
+                trap_protect = False
+                evil += 5
+            elif d == 11:
+                print("\n=====================================")
+                print("🌑 DARKNESS EROSION CURSE 🌑")
+                print("Darkness eats through your light.")
+                print("=====================================\n")
+                hp -= 4
+                light = False
+            elif d == 15:
+                print("\n=====================================")
+                print("👻 GATHER FESTIVAL 👻")
+                print("Ghosts assemble.")
+                print("=====================================\n")
+                have_list.append("shadow dance")
+            elif d == 18:
+                print("\n=====================================")
+                print("☠️ CURSE STRENGTHEN DAY ☠️")
+                print("The ancient curse grows stronger.")
+                print("=====================================\n")
+                evil += 7
+                hp -= 2
+            elif d == 20:
+                print("\n=====================================")
+                print("💀 BONE FESTIVAL 💀")
+                print("Old memories awaken.")
+                print("=====================================\n")
+                diary_read = True
+                old_note_readed = True
+                old_diary_readed = True
+            elif d == 25:
+                print("\n=====================================")
+                print("🕯️ LAMP FESTIVAL 🕯️")
+                print("Light guides lost souls.")
+                print("=====================================\n")
+                light = True
+            elif d == 27:
+                print("\n=====================================")
+                print("👻 GHOST RAID DAY 👻")
+                print("Ghosts launch a sudden attack.")
+                print("=====================================\n")
+                hp -= 4
+            elif d == 29:
+                print("\n=====================================")
+                print("⛪ FALSE SALVATION DAY ⛪")
+                print("Fake hope twists your kindness.")
+                print("=====================================\n")
+                good -= 8
+            elif d == 31:
+                print("\n=====================================")
+                print("🎃 ALLHALLOWS FESTIVAL 🎃")
+                print("Ghosts play, treats fall.")
+                print("=====================================\n")
+                hp += 3
+                good += 5
+                evil -= 3
 
-    elif m == 10:
-        if d == 1:
-            print("\n=====================================")
-            print("🍁 RED LEAF FESTIVAL 🍁")
-            print("Cave blazes warm.")
-            print("=====================================\n")
-            hp += 5
-        elif d == 6:
-            print("\n=====================================")
-            print("🧟 DEAD WALK DAY 🧟")
-            print("The dead walk the earth tonight.")
-            print("=====================================\n")
-            trap_protect = False
-            evil += 5
-        elif d == 11:
-            print("\n=====================================")
-            print("🌑 DARKNESS EROSION CURSE 🌑")
-            print("Darkness eats through your light.")
-            print("=====================================\n")
-            hp -= 4
-            light = False
-        elif d == 15:
-            print("\n=====================================")
-            print("👻 GATHER FESTIVAL 👻")
-            print("Ghosts assemble.")
-            print("=====================================\n")
-            have_list.append("shadow dance")
-        elif d == 18:
-            print("\n=====================================")
-            print("☠️ CURSE STRENGTHEN DAY ☠️")
-            print("The ancient curse grows stronger.")
-            print("=====================================\n")
-            evil += 7
-            hp -= 2
-        elif d == 20:
-            print("\n=====================================")
-            print("💀 BONE FESTIVAL 💀")
-            print("Old memories awaken.")
-            print("=====================================\n")
-            diary_read = True
-            old_note_readed = True
-            old_diary_readed = True
-        elif d == 25:
-            print("\n=====================================")
-            print("🕯️ LAMP FESTIVAL 🕯️")
-            print("Light guides lost souls.")
-            print("=====================================\n")
-            light = True
-        elif d == 27:
-            print("\n=====================================")
-            print("👻 GHOST RAID DAY 👻")
-            print("Ghosts launch a sudden attack.")
-            print("=====================================\n")
-            hp -= 4
-        elif d == 29:
-            print("\n=====================================")
-            print("⛪ FALSE SALVATION DAY ⛪")
-            print("Fake hope twists your kindness.")
-            print("=====================================\n")
-            good -= 8
-        elif d == 31:
-            print("\n=====================================")
-            print("🎃 ALLHALLOWS FESTIVAL 🎃")
-            print("Ghosts play, treats fall.")
-            print("=====================================\n")
-            hp += 3
-            good += 5
-            evil -= 3
+        elif m == 11:
+            if d == 1:
+                print("\n=====================================")
+                print("👧 INNOCENCE FESTIVAL 👧")
+                print("Pure hearts return.")
+                print("=====================================\n")
+                good += 10
+            elif d == 2:
+                print("\n=====================================")
+                print("👻 LEGEND FESTIVAL 👻")
+                print("Ancient tales live.")
+                print("=====================================\n")
+                faith += 10
+            elif d == 5:
+                print("\n=====================================")
+                print("🌫️ THICK FOG LOST DAY 🌫️")
+                print("Thick fog makes you lose your way.")
+                print("=====================================\n")
+                map_unlocked = False
+            elif d == 9:
+                print("\n=====================================")
+                print("🥶 BITTER COLD DAY 🥶")
+                print("Bitter cold freezes your bones.")
+                print("=====================================\n")
+                hp -= 4
+            elif d == 11:
+                print("\n=====================================")
+                print("⚔️ VALOR FESTIVAL ⚔️")
+                print("Fears fade away.")
+                print("=====================================\n")
+                hp += 7
+            elif d == 15:
+                print("\n=====================================")
+                print("🤫 SILENCE CURSE DAY 🤫")
+                print("No spirit will speak to you today.")
+                print("=====================================\n")
+                faith -= 6
+            elif d == 20:
+                print("\n=====================================")
+                print("🌫️ VEIL FESTIVAL 🌫️")
+                print("Masks hide truths.")
+                print("=====================================\n")
+                have_list.append("misty veil")
+            elif d == 22:
+                print("\n=====================================")
+                print("⚙️ FROZEN GEAR DAY ⚙️")
+                print("All your tools freeze and fail.")
+                print("=====================================\n")
+                trap_protect = False
+            elif d == 26:
+                print("\n=====================================")
+                print("👻 HOMELESS GHOST DAY 👻")
+                print("Wandering ghosts cling to you.")
+                print("=====================================\n")
+                evil += 7
+            elif d == 28:
+                print("\n=====================================")
+                print("⭐ FAINT STAR DAY ⭐")
+                print("Stars fade, you lose your guidance.")
+                print("=====================================\n")
+                faith -= 8
+            elif d == 30:
+                print("\n=====================================")
+                print("🕊️ PEACE FESTIVAL 🕊️")
+                print("Ghosts rest forever.")
+                print("=====================================\n")
+                good += 8
 
-    elif m == 11:
-        if d == 1:
-            print("\n=====================================")
-            print("👧 INNOCENCE FESTIVAL 👧")
-            print("Pure hearts return.")
-            print("=====================================\n")
-            good += 10
-        elif d == 2:
-            print("\n=====================================")
-            print("👻 LEGEND FESTIVAL 👻")
-            print("Ancient tales live.")
-            print("=====================================\n")
-            faith += 10
-        elif d == 5:
-            print("\n=====================================")
-            print("🌫️ THICK FOG LOST DAY 🌫️")
-            print("Thick fog makes you lose your way.")
-            print("=====================================\n")
-            map_unlocked = False
-        elif d == 9:
-            print("\n=====================================")
-            print("🥶 BITTER COLD DAY 🥶")
-            print("Bitter cold freezes your bones.")
-            print("=====================================\n")
-            hp -= 4
-        elif d == 11:
-            print("\n=====================================")
-            print("⚔️ VALOR FESTIVAL ⚔️")
-            print("Fears fade away.")
-            print("=====================================\n")
-            hp += 7
-        elif d == 15:
-            print("\n=====================================")
-            print("🤫 SILENCE CURSE DAY 🤫")
-            print("No spirit will speak to you today.")
-            print("=====================================\n")
-            faith -= 6
-        elif d == 20:
-            print("\n=====================================")
-            print("🌫️ VEIL FESTIVAL 🌫️")
-            print("Masks hide truths.")
-            print("=====================================\n")
-            have_list.append("misty veil")
-        elif d == 22:
-            print("\n=====================================")
-            print("⚙️ FROZEN GEAR DAY ⚙️")
-            print("All your tools freeze and fail.")
-            print("=====================================\n")
-            trap_protect = False
-        elif d == 26:
-            print("\n=====================================")
-            print("👻 HOMELESS GHOST DAY 👻")
-            print("Wandering ghosts cling to you.")
-            print("=====================================\n")
-            evil += 7
-        elif d == 28:
-            print("\n=====================================")
-            print("⭐ FAINT STAR DAY ⭐")
-            print("Stars fade, you lose your guidance.")
-            print("=====================================\n")
-            faith -= 8
-        elif d == 30:
-            print("\n=====================================")
-            print("🕊️ PEACE FESTIVAL 🕊️")
-            print("Ghosts rest forever.")
-            print("=====================================\n")
-            good += 8
-
-    elif m == 12:
-        if d == 3:
-            print("\n=====================================")
-            print("🌑 POLAR NIGHT CURSE 🌑")
-            print("Endless night falls over the valley.")
-            print("=====================================\n")
-            time_period = "night"
-            evil += 4
-        elif d == 5:
-            print("\n=====================================")
-            print("❄️ FROST FESTIVAL ❄️")
-            print("Calm quiet wraps cave.")
-            print("=====================================\n")
-            hp += 4
-        elif d == 8:
-            print("\n=====================================")
-            print("🥶 FROSTBITE WEATHER DAY 🥶")
-            print("Freezing weather weakens you.")
-            print("=====================================\n")
-            hp -= 3
-        elif d == 14:
-            print("\n=====================================")
-            print("😔 DESPAIR EVE 😔")
-            print("The weight of the cycle crushes hope.")
-            print("=====================================\n")
-            good -= 7
-            evil += 5
-        elif d == 15:
-            print("\n=====================================")
-            print("🌟 HOPESTAR FESTIVAL 🌟")
-            print("Hope never fades.")
-            print("=====================================\n")
-            faith += 10
-        elif d == 19:
-            print("\n=====================================")
-            print("🧊 FROZEN AMULET DAY 🧊")
-            print("Ice freezes your amulet powerless.")
-            print("=====================================\n")
-            amulet = False
-        elif d == 22:
-            print("\n=====================================")
-            print("❄️ SHORTEST DAY FESTIVAL ❄️")
-            print("Light returns.")
-            print("=====================================\n")
-            hp += 6
-        elif d == 25:
-            print("\n=====================================")
-            print("🎄 WARMTH FESTIVAL 🎄")
-            print("Ghosts feel cozy.")
-            print("=====================================\n")
-            hp += 5
-            have_list.append("christmas candy")
-        elif d == 27:
-            print("\n=====================================")
-            print("👻 WINTER WRAITH DAY 👻")
-            print("Frost wraiths strike from the cold.")
-            print("=====================================\n")
-            hp -= 4
-        elif d == 29:
-            print("\n=====================================")
-            print("🔁 CYCLE CLOSE DAY 🔁")
-            print("The loop tightens around you.")
-            print("=====================================\n")
-            hp -= 3
-            evil += 4
-        elif d == 31:
-            print("\n=====================================")
-            print("✨ FAREWELL FESTIVAL ✨")
-            print("Old ends, new begins.")
-            print("=====================================\n")
-            hp = 15
-            good += 10
-            evil -= 5
-            diary_read = True
-            old_diary_readed = True
-            old_note_readed = True
+        elif m == 12:
+            if d == 3:
+                print("\n=====================================")
+                print("🌑 POLAR NIGHT CURSE 🌑")
+                print("Endless night falls over the valley.")
+                print("=====================================\n")
+                time_period = "night"
+                evil += 4
+            elif d == 5:
+                print("\n=====================================")
+                print("❄️ FROST FESTIVAL ❄️")
+                print("Calm quiet wraps cave.")
+                print("=====================================\n")
+                hp += 4
+            elif d == 8:
+                print("\n=====================================")
+                print("🥶 FROSTBITE WEATHER DAY 🥶")
+                print("Freezing weather weakens you.")
+                print("=====================================\n")
+                hp -= 3
+            elif d == 14:
+                print("\n=====================================")
+                print("😔 DESPAIR EVE 😔")
+                print("The weight of the cycle crushes hope.")
+                print("=====================================\n")
+                good -= 7
+                evil += 5
+            elif d == 15:
+                print("\n=====================================")
+                print("🌟 HOPESTAR FESTIVAL 🌟")
+                print("Hope never fades.")
+                print("=====================================\n")
+                faith += 10
+            elif d == 19:
+                print("\n=====================================")
+                print("🧊 FROZEN AMULET DAY 🧊")
+                print("Ice freezes your amulet powerless.")
+                print("=====================================\n")
+                amulet = False
+            elif d == 22:
+                print("\n=====================================")
+                print("❄️ SHORTEST DAY FESTIVAL ❄️")
+                print("Light returns.")
+                print("=====================================\n")
+                hp += 6
+            elif d == 25:
+                print("\n=====================================")
+                print("🎄 WARMTH FESTIVAL 🎄")
+                print("Ghosts feel cozy.")
+                print("=====================================\n")
+                hp += 5
+                have_list.append("christmas candy")
+            elif d == 27:
+                print("\n=====================================")
+                print("👻 WINTER WRAITH DAY 👻")
+                print("Frost wraiths strike from the cold.")
+                print("=====================================\n")
+                hp -= 4
+            elif d == 29:
+                print("\n=====================================")
+                print("🔁 CYCLE CLOSE DAY 🔁")
+                print("The loop tightens around you.")
+                print("=====================================\n")
+                hp -= 3
+                evil += 4
+            elif d == 31:
+                print("\n=====================================")
+                print("✨ FAREWELL FESTIVAL ✨")
+                print("Old ends, new begins.")
+                print("=====================================\n")
+                hp = 15
+                good += 10
+                evil -= 5
+                diary_read = True
+                old_diary_readed = True
+                old_note_readed = True
 
     game_over = False
     force_over = False
