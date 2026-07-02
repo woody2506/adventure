@@ -740,9 +740,9 @@ def military_fort():
                 print("Deliver all three garrison journals to the colonel at headquarters.")
 
         elif cmd == "top_headquarters" or cmd == '3':
-            if colonel_diary_collected < 3:
+            if good < 10:
                 print("\n[Colonel (Ghost)]")
-                print("Return when you have collected all three garrison journals.")
+                print("Go away, evil man.")
             else:
                 print("You submit all journals. The colonel recounts the full story of your family's cursed guardianship.")
                 if 'military archive document' not in have_list:
