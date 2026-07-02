@@ -5141,9 +5141,10 @@ def gamestart():
                                     }
                                 ]
                                 boss_fight("Ancient Seal Guardian", 60, 7, guardian_phases, "guardian core", "seal_guardian")
+                                print('Wow, amazing, you defeat the last boss of this game!')
                                 good = good - evil
                                 write_creepy_desktop_file(5)
-                                print('All runes glow! The ancient seal trembles!')
+                                print('The ancient seal trembles!')
                                 if play_count == 1:
                                     print('Choose: seal (good > 10) / release / absorb / sacrifice / symbiosis (good > 5) / leave ')
                                 elif play_count == 2:
