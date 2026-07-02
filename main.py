@@ -351,7 +351,6 @@ def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
         print_colored("\nYou have been slain by the boss...", Colors.RED)
         game_over = True
         game_back = True
-        return False
     else:
         print_colored(f"\nVICTORY! You defeated the {boss_name}!", Colors.GREEN + Colors.BOLD)
         print(f"You obtained: {loot_item}")
@@ -359,6 +358,14 @@ def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
         player_total_score += current_phase.get("score_reward", 30)
         defeated_enemies.add(boss_id)
         return True
+    if game_over:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input().strip().lower()
+            if c == "menu":
+                main()
+                return
 
 def write_creepy_desktop_file(tier: int):
     global meta_file_tier, death_count, session_start_time
@@ -815,7 +822,7 @@ def military_fort():
                         has_military_key = True
                         print("You hand over food. The soldier gives you a bronze key for the armory.")
                         print("Head to the swamp command post and find the lieutenant for the march password.")
-                        print('He also says: First digit of the march code is' + military_password[0])
+                        print('He also says: First digit of the march code is ' + military_password[0])
                         player_total_score += 10
                     else:
                         print("You carry no food to offer.")
