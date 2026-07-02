@@ -6228,6 +6228,7 @@ def ng_three():
         elif opt == "5":
             print("You leave the tunnel.")
             break
+
 # main menu
 def menu():
     global meta_file_tier
@@ -7198,11 +7199,13 @@ def main():
     game_over = False
     force_over = False
     if play_count == 1 and cleared_ending == True:
-        play_count == 2
+        play_count = 2
+        cleared_ending = False
     if play_count == 3:
         play_count = 4
     if play_count == 2 and cleared_ending == True:
         play_count = 3
+        cleared_ending = False
     if play_count == 4:
         print('A voice booms: Mortol, you final break the cycle, you pass my exam, so I will let you go to the heaven and meet me.\n')
         print('Game developer: PLayer, you have already done the main game, you can quit now or go to the last part.')
