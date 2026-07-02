@@ -348,7 +348,7 @@ def end_score_rating():
     if no_death_run:
         total += 100
     if total >= 1000:
-        rank = 'Wow, you are wonderful!'
+        rank = '? RANK, Wow, you are wonderful!'
     if total >= 600:
         rank = "S RANK, you are so cool~~~"
     elif total >= 450:
@@ -1890,7 +1890,7 @@ def wax_chamber():
                         player_total_score = 0
                         print('Goodbye!')
                         end_score_rating()
-                        print("=== Death Adventure v1.3 - Official Release ===")
+                        print("=== Death Adventure v1.4 - Official Release ===")
                         print("Thank you for playing!")
                         exit()
             except:
@@ -2023,7 +2023,7 @@ def pendulum_mortuary():
                         print('Goodbye!')
                         player_total_score = 0
                         end_score_rating()
-                        print("=== Death Adventure v1.3 - Official Release ===")
+                        print("=== Death Adventure v1.4 - Official Release ===")
                         print("Thank you for playing!")
                         exit()
             except:
@@ -2900,7 +2900,7 @@ def print_heaven():
                 print("=============================")
                 player_total_score += 50
                 end_score_rating()
-                print("=== Death Adventure v1.3 - Official Release ===")
+                print("=== Death Adventure v1.4 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
             elif choice == "return to earth" or choice == '2':
@@ -2923,7 +2923,7 @@ def print_heaven():
                 print("=============================")
                 player_total_score += 50
                 end_score_rating()
-                print("=== Death Adventure v1.3 - Official Release ===")
+                print("=== Death Adventure v1.4 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
             elif choice == "create a new world" or choice == '3':
@@ -2945,7 +2945,7 @@ def print_heaven():
                 print("=============================")
                 player_total_score += 50
                 end_score_rating()
-                print("=== Death Adventure v1.3 - Official Release ===")
+                print("=== Death Adventure v1.4 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
 
@@ -2993,7 +2993,7 @@ def print_heaven():
             print("=============================")
             player_total_score += 50
             end_score_rating()
-            print("=== Death Adventure v1.3 - Official Release ===")
+            print("=== Death Adventure v1.4 - Official Release ===")
             print("Thank you for playing!")
             exit()
         elif opt == "6":
@@ -5973,7 +5973,7 @@ def menu():
                     print('')
                     end_score_rating()
                     print('Goodbye!')
-                    print("=== Death Adventure v1.3 - Official Release ===")
+                    print("=== Death Adventure v1.4 - Official Release ===")
                     print("Thank you for playing!")
                     exit()
                 else:
@@ -5993,7 +5993,7 @@ def menu():
                     print('And, do you know, when you are at the ng one, you can type Garry in the house, then you will win!')
                     end_score_rating()
                     print('Also, you can type colin, and woody and garry in the house, then you will pass the ng one.\n')
-                    print("=== Death Adventure v1.3 - Official Release ===")
+                    print("=== Death Adventure v1.4 - Official Release ===")
                     print("Thank you for playing!")
                     exit()   
             elif start == "time" or start == 'time travel' or start == '4':
@@ -6030,7 +6030,7 @@ def menu():
                 print("  -h, -help           Show help")
                 end_score_rating()
                 print("=============================")
-                print("=== Death Adventure v1.3 - Official Release ===")
+                print("=== Death Adventure v1.4 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
             
@@ -6908,13 +6908,13 @@ def main():
         print('Game developer: PLayer, you have already done the main game, you can quit now or go to the last part.')
     if game_back == False:
         if not args.godmode:
-            print('=== Death Adventure v1.3 - Official Release ===')
+            print('=== Death Adventure v1.4 - Official Release ===')
             print('Welcome to death adventure! You are a poor adventure, dream of rich and treasure. I will be your eyes and hands. You can say west or east north and south to control.')
             print('Your family always have somebody disappears. Your father said that he will go on a holiday, but he never came back.\n')
             character_creation()
             good += 5
         else:
-            print('=== Death Adventure v1.3 - Official Release ===')
+            print('=== Death Adventure v1.4 - Official Release ===')
             print('Welcome to death adventure! You are a god who go to the mortol world. I will be your eyes and hands. You can say west or east north and south to control.')
             print('You go to mortol world beacause you see a family which have a curse. But unfortunately, you become a part of the curse too!')
             print('Then, you become a mortol who has the power as a god.')
@@ -7111,7 +7111,7 @@ def main():
                 print('')
                 end_score_rating()
                 print('Goodbye!')
-                print("=== Death Adventure v1.3 - Official Release ===")
+                print("=== Death Adventure v1.4 - Official Release ===")
                 print("Thank you for playing!")
                 exit()
             print('You can choose a character again.')
