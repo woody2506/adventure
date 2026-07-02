@@ -3409,7 +3409,7 @@ def hill():
         while True:
             c = input().strip().lower()
             if c == 'menu':
-                menu()
+                main()
                 return
             else:
                 print('Please answer the question.')
@@ -3953,7 +3953,7 @@ def cave():
                                                                     while True:
                                                                         c = input().strip().lower()
                                                                         if c == 'menu':
-                                                                            menu()
+                                                                            main()
                                                                             return
                                                                         else:
                                                                             print('Please answer the question.')
@@ -4209,7 +4209,7 @@ def cave():
                                                                 while True:
                                                                     c = input().strip().lower()
                                                                     if c == 'menu':
-                                                                        menu()
+                                                                        main()
                                                                         return
                                                                     else:
                                                                         print('Please answer the question.')
@@ -4247,7 +4247,7 @@ def cave():
                                                         while True:
                                                             c = input().strip().lower()
                                                             if c == 'menu':
-                                                                menu()
+                                                                main()
                                                                 return
                                                             else:
                                                                 print('Please answer the question.')
@@ -4277,7 +4277,7 @@ def cave():
                                                 while True:
                                                     c = input().strip().lower()
                                                     if c == 'menu':
-                                                        menu()
+                                                        main()
                                                         return
                                                     else:
                                                         print('Please answer the question.')
@@ -4292,7 +4292,7 @@ def cave():
                                         while True:
                                             c = input().strip().lower()
                                             if c == 'menu':
-                                                menu()
+                                                main()
                                                 return
                                             else:
                                                 print('Please answer the question.')
@@ -4302,7 +4302,7 @@ def cave():
                                     while True:
                                         c = input().strip().lower()
                                         if c == 'menu':
-                                            menu()
+                                            main()
                                             return
                                         else:
                                             print('Please answer the question.')
@@ -4324,7 +4324,7 @@ def cave():
                                 while True:
                                     c = input().strip().lower()
                                     if c == 'menu':
-                                        menu()
+                                        main()
                                         return
                                     else:
                                         print('Please answer the question.')
@@ -4334,7 +4334,7 @@ def cave():
                             while True:
                                 c = input().strip().lower()
                                 if c == 'menu':
-                                    menu()
+                                    main()
                                     return
                     if game_over == True:
                         print("=== END ===")
@@ -4342,7 +4342,7 @@ def cave():
                         while True:
                             c = input().strip().lower()
                             if c == 'menu':
-                                menu()
+                                main()
                                 return
                 if game_over == True:
                     print("=== END ===")
@@ -4350,7 +4350,7 @@ def cave():
                     while True:
                         c = input().strip().lower()
                         if c == 'menu':
-                            menu()
+                            main()
                             return
             if game_over == True:
                 print("=== END ===")
@@ -4358,7 +4358,7 @@ def cave():
                 while True:
                     c = input().strip().lower()
                     if c == 'menu':
-                        menu()
+                        main()
                         return
                     
             else:
@@ -4373,7 +4373,7 @@ def cave():
                 while True:
                     c = input().strip().lower()
                     if c == 'menu':
-                        menu()
+                        main()
                         return
         elif op == 'south':
             print('There is no way to go to this direction.')
@@ -4408,7 +4408,7 @@ def cave():
             while True:
                 c = input().strip().lower()
                 if c == 'menu':
-                    menu()
+                    main()
                     return
 
 def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evil = 0, enemy_id = None):
@@ -4703,7 +4703,7 @@ def advance_time():
             while True:
                 c = input().strip().lower()
                 if c == 'menu':
-                    menu()
+                    main()
                     return
     elif time_period == 'night' and torch or time_period == 'night' and light:
         print('Your light protects you from the darkness.')
@@ -4727,7 +4727,7 @@ def advance_time():
                     while True:
                         c = input().strip().lower()
                         if c == 'menu':
-                            menu()
+                            main()
                             return
         else:
             print('Your amulet protects you from the harsh weather.')
@@ -4740,7 +4740,7 @@ def advance_time():
         while True:
             c = input().strip().lower()
             if c == 'menu':
-                menu()
+                main()
                 return
 
 #game
@@ -5113,7 +5113,7 @@ def gamestart():
                                     while True:
                                         c = input().strip().lower()
                                         if c == 'menu':
-                                            menu()
+                                            main()
                                             return
                             elif light == True or force_in_cave:
                                 print('Welcome to death cave!')
@@ -5126,7 +5126,7 @@ def gamestart():
                                     while True:
                                         c = input().strip().lower()
                                         if c == 'menu':
-                                            menu()
+                                            main()
                                             return  
                         else:
                             print('You can not go in again, try to collect three runes to pass ng2.')
@@ -5304,6 +5304,10 @@ def gamestart():
                                                 print("You have escaped the cycle of death.")
                                                 print("===== TRUTH ENDING =====")
                                                 player_total_score += 100
+                                                game_over = True
+                                                game_back = True
+                                                cleared_ending = True
+                                                break
                                             else:
                                                 print('You do not have a magic key, so you can not end the curse.')
                                                 print('====== NORMAL ENDING ======')
@@ -5344,7 +5348,7 @@ def gamestart():
                                 while True:
                                     c = input().strip().lower()
                                     if c == 'menu':
-                                        menu()
+                                        main()
                                         return
                             else:
                                 print('Not enough runes!')
@@ -5819,7 +5823,7 @@ def gamestart():
                             while True:
                                 c = input().strip().lower()
                                 if c == 'menu':
-                                    menu()
+                                    main()
                                     return
                     else:
                         print('You have already end the misty swamp, you do not have to go in again.')
@@ -6005,7 +6009,7 @@ def gamestart():
                             while True:
                                 c = input().strip().lower()
                                 if c == 'menu':
-                                    menu()
+                                    main()
                                     return
                     else:
                         print("You need a rope to climb down.")
@@ -6105,7 +6109,7 @@ def gamestart():
             while True:
                 c = input().strip().lower()
                 if c == 'menu':
-                    menu()
+                    main()
                     return
         if force_over == True:
             break
