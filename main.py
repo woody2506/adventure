@@ -2407,7 +2407,7 @@ def tomb():
                     player_total_score += 10
                 else:
                     print("Guardian spares you.")
-                    hp = 5
+                    hp = 15
             else:
                 print("The guardian ignores you.")
         elif cmd == "trial":
@@ -4763,7 +4763,6 @@ def gamestart():
     altar = False
     if game_back == True and cleared_ending == True:
         play_count = 2
-        hp = 10
         torch = True
         light = True
         print("=== NEW GAME+ ===")
