@@ -4383,7 +4383,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
 
     print(f"\n=== {enemy_name.upper()} ===")
     print(f"A {enemy_name} blocks your path.")
-    print("Commands: attack | defend | flee | use potion | bag | hp")
+    print("Commands: 1.attack | 2.defend | 3.flee | 4.use potion | 5.bag | 6.hp")
 
     while True:
         if enemy_hp <= 0:
@@ -4407,7 +4407,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
 
         cmd = input("combat> ").strip().lower()
 
-        if cmd == "attack":
+        if cmd == "attack" or cmd == '1':
             player_dmg = random.randint(1, player_weapon_damage) + base_attack_bonus
             enemy_hp -= player_dmg
             print(f"You strike! Deal {player_dmg} damage.")
@@ -4426,7 +4426,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
                 hp -= final_dmg
                 print(f"{enemy_name.title()} attacks! You take {final_dmg} damage.")
 
-        elif cmd == "defend":
+        elif cmd == "defend" or cmd == '2':
             enemy_dmg = random.randint(enemy_min_dmg, enemy_max_dmg)
             final_dmg = max(0, enemy_dmg // 2 - base_defense_bonus - player_armor_reduction)
             hp -= final_dmg
@@ -4434,7 +4434,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
             print('You then hit again and deal 1 damage.')
             enemy_hp -= 1
 
-        elif cmd == "flee":
+        elif cmd == "flee" or cmd == '3':
             escape_chance = 3 + escape_bonus
             if enemy_hp <= 5:
                 if random.randint(1, 10) <= escape_chance:
@@ -4449,7 +4449,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
                 print('The enemy is strong enough so you can not flee.')
                 print('You then take 1 damage from the enemy.')
                 hp -= 1
-        elif cmd == "use potion":
+        elif cmd == "use potion" or cmd == '4':
             if "healing potion" in have_list:
                 have_list.remove("healing potion")
                 heal = random.randint(5, 10)
@@ -4458,11 +4458,11 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
             else:
                 print("You have no healing potion.")
 
-        elif cmd == "bag":
+        elif cmd == "bag" or cmd == '5':
             for item in have_list:
                 print(item)
 
-        elif cmd == "hp":
+        elif cmd == "hp" or cmd == '6':
             print(f"Your HP: {hp}")
             print(f"Enemy HP: {enemy_hp}")
 
