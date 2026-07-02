@@ -3846,6 +3846,29 @@ def cave():
                                                             consume_step_durability()
                                                             west3 = input().strip().lower()
                                                             if west3 == 'west':
+                                                                cave_horror_phases = [
+                                                                    {
+                                                                    "hp_threshold": 20,
+                                                                    "dialogue": "Something large drops from the cave ceiling. A pale, twisted creature blocks the path.",
+                                                                    "attacks": [
+                                                                        {"name": "Claw Maul", "description": "Long sharp claws tear at your flesh."},
+                                                                        {"name": "Bellowing Roar", "description": "Deafening scream echoes through the cave.", "stun": True}
+                                                                    ],
+                                                                    "enrage": False,
+                                                                    "score_reward": 45
+                                                                    },
+                                                                    {
+                                                                    "hp_threshold": 8,
+                                                                    "dialogue": "The creature's jaw unhinges at an impossible angle. It is about to devour you!",
+                                                                    "attacks": [
+                                                                        {"name": "Devour Bite", "description": "It lunges forward, trying to swallow you whole.", "lifesteal": True},
+                                                                        {"name": "Tail Sweep", "description": "Thick tail slams horizontally across the cave."}
+                                                                    ],
+                                                                    "enrage": True,
+                                                                    "score_reward": 70
+                                                                    }
+                                                                    ]
+                                                                boss_fight("Cave Horror", 20, 5, cave_horror_phases, None, "cave_horror")
                                                                 while True:
                                                                     print("Two paths appear in front of you!")
                                                                     print("One is BRIGHT, one is DARK")
