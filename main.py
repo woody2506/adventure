@@ -2551,7 +2551,7 @@ def tomb():
                             {"name": "Time Distortion", "description": "Your movements slow to a crawl.", "stun": True}
                         ],
                         "enrage": False,
-                        "score_reward": 50
+                        "score_reward": 20
                     },
                     {
                         "hp_threshold": 20,
@@ -2561,7 +2561,7 @@ def tomb():
                             {"name": "Soul Burst", "description": "Raw spiritual power detonates around you."}
                         ],
                         "enrage": True,
-                        "score_reward": 90
+                        "score_reward": 30
                     },
                     {
                         "hp_threshold": 8,
@@ -2571,7 +2571,7 @@ def tomb():
                             {"name": "Bloodline Strike", "description": "Your very blood resonates with the attack."}
                         ],
                         "enrage": True,
-                        "score_reward": 120
+                        "score_reward": 50
                     }
                 ]
                 boss_fight("Ancestral Wizard Spirit", 35, 5, wizard_phases, None, "final_wizard")
@@ -5115,7 +5115,7 @@ def gamestart():
                                             {"name": "Crushing Slam", "description": "It lifts its fist and strikes the ground with full force."}
                                         ],
                                         "enrage": False,
-                                        "score_reward": 40
+                                        "score_reward": 10
                                     },
                                     {
                                         "hp_threshold": 35,
@@ -5126,7 +5126,7 @@ def gamestart():
                                             {"name": "Seal Burst", "description": "Concentrated sealing power explodes at your feet.", "curse": True}
                                         ],
                                         "enrage": False,
-                                        "score_reward": 60
+                                        "score_reward": 30
                                     },
                                     {
                                         "hp_threshold": 15,
@@ -5137,7 +5137,7 @@ def gamestart():
                                             {"name": "Final Judgment", "description": "The guardian channels all remaining power for a killing blow."}
                                         ],
                                         "enrage": True,
-                                        "score_reward": 80
+                                        "score_reward": 60
                                     }
                                 ]
                                 boss_fight("Ancient Seal Guardian", 60, 7, guardian_phases, "guardian core", "seal_guardian")
@@ -5693,7 +5693,7 @@ def gamestart():
                                         {"name": "Soul Siphon", "description": "Dark energy drains your life force.", "lifesteal": True}
                                     ],
                                     "enrage": False,
-                                    "score_reward": 30
+                                    "score_reward": 15
                                 },
                                 {
                                     "hp_threshold": 9,
@@ -5703,7 +5703,7 @@ def gamestart():
                                         {"name": "Curse of Despair", "description": "Hopelessness fills your mind.", "curse": True, "armor_break": True}
                                     ],
                                     "enrage": True,
-                                    "score_reward": 50
+                                    "score_reward": 20
                                 }
                             ]
                             boss_fight("Corrupted Church Phantom", 18, 4, phantom_phases, "demon claw", "phantom")
