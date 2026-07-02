@@ -4527,6 +4527,7 @@ def advance_time():
             if c == 'menu':
                 main()
                 return
+
 #game
 def gamestart():
     global have_list, game_over, light, hp, map_unlocked, secret_unlocked, amulet, take, chain1, chain2, current_room, torch,l,k,n,s,f,w,sc,rune1,rune2,rune3,rune,grandmother,diary_read,old_diary_readed,grave_diary_read, game_back,play_count,trap_protect,cleared_ending,force_in_cave,hill_diary_read
@@ -4840,122 +4841,193 @@ def gamestart():
                     print('')
                 else:
                     print('Sorry, I do not understand that word.')
-            if altar == True:
-                if play_count == 2:
-                    print('You hear a demon talk to you!')
-                    print("This time, you understand every word clearly.")
-                    print("'Descendant... you have returned.'")
-                    print("'Seal me, free me, or join me.'")
-                elif play_count == 1:
-                    print('You hear a demon talk to you! But you do not know what she says.')
-                print('You see here ' + rune)
-                while True:
-                    if rune1 and rune2 and rune3 and x2 == True:
-                        print('You can place the runes now, type place runes to place them.')
-                    consume_step_durability()
-                    tele = input()
-                    if tele == 'light lamp':
-                        if 'a lamp' in have_list:
-                            print('The light is lit. The room bright up!')
-                            light =True
-                        else:
-                            print('You do not have a lamp!')
-                    elif tele == 'take rune':
-                        if play_count == 2:
-                            if rune != 'nothing':
-                                print('Ok')
-                                print('Rune says: But, if you control the demon, you must be here for all of your life.')
-                                rune = 'nothing' 
-                                rune3 = True
-                                player_total_score += 10
-                            else:
-                                print('You have already taken the rune.')
-                        else:
-                            print('You can not get this rune, because some mysterious power force pretents you from taking.')
-                            print('Only enable in ng2, and try to go in the death cave!\n')
-                    elif tele == 'colin':
-                        if play_count == 1:
-                            if light == False and not torch:
-                                print('A Grue appears, it would not die forever, you can just make it turns to flee.')
-                                combat("Grue", 20, 5, None, 7)
-                                force_in_cave = True
-                            elif torch == True:
-                                print("Your torch keeps Grue away.")
-                                print('Welcome to death cave!')
-                                print('You are in a cave, there is a grate. The grate is locked. You must open the grate to go further.')
-                                current_room = "cave"
-                                cave()
-                                if game_over == True:
-                                    print("=== END ===")
-                                    print("Type 'menu' to return main menu")
-                                    while True:
-                                        c = input()
-                                        if c == 'menu':
-                                            main()
-                                            return
-                            elif light == True or force_in_cave:
-                                print('Welcome to death cave!')
-                                print('You are in a cave, there is a grate. The grate is locked. You must open the grate to go further.')
-                                current_room = "cave"
-                                cave()
-                                if game_over == True:
-                                    print("=== END ===")
-                                    print("Type 'menu' to return main menu")
-                                    while True:
-                                        c = input()
-                                        if c == 'menu':
-                                            main()
-                                            return  
-                        else:
-                            print('You can not go in again, try to collect three runes to pass ng2.')
-                    elif tele == 'down':
-                        if 'rope' in have_list:
-                            print('You go down safetly with your rope.')
-                            break
-                        else:
-                            print('You jump down the high altar and break all of your bones!')
-                            print('Game over!')
-                            game_over = True
-                            game_back = True
-                            break
-                    elif tele == 'place runes':
+                if altar == True:
+                    if play_count == 2:
+                        print('You hear a demon talk to you!')
+                        print("This time, you understand every word clearly.")
+                        print("'Descendant... you have returned.'")
+                        print("'Seal me, free me, or join me.'")
+                    elif play_count == 1:
+                        print('You hear a demon talk to you! But you do not know what she says.')
+                    print('You see here ' + rune)
+                    while True:
                         can_enter_altar()
-                        if x2 == True:
-                            if rune1 and rune2 and rune3:
-                                good = good - evil
-                                write_creepy_desktop_file(5)
-                                print('All runes glow! The ancient seal trembles!')
-                                if play_count == 1:
-                                    print('Choose: seal (good > 10) / release / absorb / sacrifice / symbiosis (good > 5) / leave ')
-                                elif play_count == 2:
-                                    print('Choose: seal (good > 10) / release / absorb / sacrifice / symbiosis / unleash (good > 20) / leave / break curse (good > 25) / truth')
-                                while True:
-                                    c = input()
-                                    if c == 'seal':
-                                        if good >= 10:
-                                            print('You sealed the cave Evil FOREVER.')
-                                            print('And then, you stay here until you dead.')
-                                            if grave_diary_read == True:
-                                                print('You realised that all explorers were guardians, not treasure hunters.')
-                                                print('They gave up wealth to protect the world.')
-                                                print('====== TRUE GUARDIAN ENDING ======')
-                                                player_total_score += 50
+                        if rune1 and rune2 and rune3 and x2 == True:
+                            print('You can place the runes now, type place runes to place them.')
+                        consume_step_durability()
+                        tele = input()
+                        if tele == 'light lamp':
+                            if 'a lamp' in have_list:
+                                print('The light is lit. The room bright up!')
+                                light =True
+                            else:
+                                print('You do not have a lamp!')
+                        elif tele == 'take rune':
+                            if play_count == 2:
+                                if rune != 'nothing':
+                                    print('Ok')
+                                    print('Rune says: But, if you control the demon, you must be here for all of your life.')
+                                    rune = 'nothing' 
+                                    rune3 = True
+                                    player_total_score += 10
+                                else:
+                                    print('You have already taken the rune.')
+                            else:
+                                print('You can not get this rune, because some mysterious power force pretents you from taking.')
+                                print('Only enable in ng2, and try to go in the death cave!\n')
+                        elif tele == 'colin':
+                            if play_count == 1:
+                                if light == False and not torch:
+                                    print('A Grue appears, it would not die forever, you can just make it turns to flee.')
+                                    combat("Grue", 20, 5, None, 7)
+                                    force_in_cave = True
+                                elif torch == True:
+                                    print("Your torch keeps Grue away.")
+                                    print('Welcome to death cave!')
+                                    print('You are in a cave, there is a grate. The grate is locked. You must open the grate to go further.')
+                                    current_room = "cave"
+                                    cave()
+                                    if game_over == True:
+                                        print("=== END ===")
+                                        print("Type 'menu' to return main menu")
+                                        while True:
+                                            c = input()
+                                            if c == 'menu':
+                                                main()
+                                                return
+                                elif light == True or force_in_cave:
+                                    print('Welcome to death cave!')
+                                    print('You are in a cave, there is a grate. The grate is locked. You must open the grate to go further.')
+                                    current_room = "cave"
+                                    cave()
+                                    if game_over == True:
+                                        print("=== END ===")
+                                        print("Type 'menu' to return main menu")
+                                        while True:
+                                            c = input()
+                                            if c == 'menu':
+                                                main()
+                                                return  
+                            else:
+                                print('You can not go in again, try to collect three runes to pass ng2.')
+                        elif tele == 'down':
+                            if 'rope' in have_list:
+                                print('You go down safetly with your rope.')
+                                break
+                            else:
+                                print('You jump down the high altar and break all of your bones!')
+                                print('Game over!')
+                                game_over = True
+                                game_back = True
+                                break
+                        elif tele == 'place runes':
+                            can_enter_altar()
+                            if x2 == True:
+                                if rune1 and rune2 and rune3:
+                                    good = good - evil
+                                    write_creepy_desktop_file(5)
+                                    print('All runes glow! The ancient seal trembles!')
+                                    if play_count == 1:
+                                        print('Choose: seal (good > 10) / release / absorb / sacrifice / symbiosis (good > 5) / leave ')
+                                    elif play_count == 2:
+                                        print('Choose: seal (good > 10) / release / absorb / sacrifice / symbiosis / unleash (good > 20) / leave / break curse (good > 25) / truth')
+                                    while True:
+                                        c = input()
+                                        if c == 'seal':
+                                            if good >= 10:
+                                                print('You sealed the cave Evil FOREVER.')
+                                                print('And then, you stay here until you dead.')
+                                                if grave_diary_read == True:
+                                                    print('You realised that all explorers were guardians, not treasure hunters.')
+                                                    print('They gave up wealth to protect the world.')
+                                                    print('====== TRUE GUARDIAN ENDING ======')
+                                                    player_total_score += 50
+                                                else:
+                                                    print('You seal the Evil again.')
+                                                    print('===== HERO ENDING =====')
+                                                    player_total_score += 50
+                                                game_over = True
+                                                game_back = True
+                                                cleared_ending = True
+                                                break
                                             else:
-                                                print('You seal the Evil again.')
-                                                print('===== HERO ENDING =====')
+                                                print('You are not good enough.')
+                                        elif c == 'unleash':
+                                            if play_count == 2:
+                                                if good >= 20:
+                                                    print('You unleash your great-great grandmother, the wizard -- your great-great grandfather appears.')
+                                                    print('They are all free!')
+                                                    print('====== FREE ENDING ======')
+                                                    player_total_score += 50
+                                                    game_over = True
+                                                    game_back = True
+                                                    cleared_ending = True
+                                                    break
+                                                else:
+                                                    print('You are not good enough.')
+                                            elif play_count == 1:
+                                                print('You do not know how to unleash, because the curse.')
+                                        elif c == 'leave':
+                                            if play_count == 2:
+                                                print('You leave the cave safetly, and you never come back again.')
+                                                print('====== ESCAPE ENDING ======')
                                                 player_total_score += 50
+                                                game_over = True
+                                                cleared_ending = True
+                                                break
+                                            elif play_count == 1:
+                                                print('You want to leave, but the Evil kills you.')
+                                                print('====== DIED ENDING ======')
+                                                player_total_score += 50
+                                                game_over = True
+                                                game_back = True
+                                                cleared_ending = True
+                                                break
+                                        elif c == 'release':
+                                            print('Evil awakened! It destroys everything!')
+                                            print('====== BAD ENDING ======')
+                                            player_total_score += 50
                                             game_over = True
                                             game_back = True
                                             cleared_ending = True
                                             break
-                                        else:
-                                            print('You are not good enough.')
-                                    elif c == 'unleash':
-                                        if play_count == 2:
-                                            if good >= 20:
-                                                print('You unleash your great-great grandmother, the wizard -- your great-great grandfather appears.')
-                                                print('They are all free!')
-                                                print('====== FREE ENDING ======')
+                                        elif c == 'talk':
+                                            if grave_diary_read == True and old_diary_readed == True and good >= 20:
+                                                print('You say: Hello, great-great grandmother!')
+                                                print('The Evil is shocked, then she smiles and hug you!')
+                                                print('===== THE BEST ENDING! =====')
+                                                player_total_score += 50
+                                                game_over = True
+                                                game_back = True
+                                                cleared_ending = True
+                                                break
+                                            else:
+                                                print('The Evil do not want to talk to you.')
+                                        elif c == 'absorb':
+                                            print('You absorb the Evil power!')
+                                            print('You become the immortal ruler of the cave!')
+                                            print('===== DEMON LORD ENDING =====')
+                                            player_total_score += 50
+                                            amulet = True
+                                            hp = 99
+                                            game_over = True
+                                            game_back = True
+                                            cleared_ending = True
+                                            break
+                                        elif c == 'sacrifice':
+                                            print('You sacrifice your life force to calm the Evil.')
+                                            print('You turn to stone, guarding the cave forever.')
+                                            print('===== SACRIFICE ENDING =====')
+                                            player_total_score += 50
+                                            game_over = True
+                                            game_back = True
+                                            cleared_ending = True
+                                            break
+                                        elif c == 'symbiosis':
+                                            if good >= 5:
+                                                print('You make a pact with the Evil.')
+                                                print('You gain power but can never leave the cave.')
+                                                print('===== SYMBIOSIS ENDING =====')
                                                 player_total_score += 50
                                                 game_over = True
                                                 game_back = True
@@ -4963,147 +5035,77 @@ def gamestart():
                                                 break
                                             else:
                                                 print('You are not good enough.')
-                                        elif play_count == 1:
-                                            print('You do not know how to unleash, because the curse.')
-                                    elif c == 'leave':
-                                        if play_count == 2:
-                                            print('You leave the cave safetly, and you never come back again.')
-                                            print('====== ESCAPE ENDING ======')
-                                            player_total_score += 50
-                                            game_over = True
-                                            cleared_ending = True
-                                            break
-                                        elif play_count == 1:
-                                            print('You want to leave, but the Evil kills you.')
-                                            print('====== DIED ENDING ======')
-                                            player_total_score += 50
-                                            game_over = True
-                                            game_back = True
-                                            cleared_ending = True
-                                            break
-                                    elif c == 'release':
-                                        print('Evil awakened! It destroys everything!')
-                                        print('====== BAD ENDING ======')
-                                        player_total_score += 50
-                                        game_over = True
-                                        game_back = True
-                                        cleared_ending = True
-                                        break
-                                    elif c == 'talk':
-                                        if grave_diary_read == True and old_diary_readed == True and good >= 20:
-                                            print('You say: Hello, great-great grandmother!')
-                                            print('The Evil is shocked, then she smiles and hug you!')
-                                            print('===== THE BEST ENDING! =====')
-                                            player_total_score += 50
+                                        elif c == 'truth':
+                                            if play_count == 2:
+                                                if 'a magic key' in have_list:
+                                                    print("You place all runes and speak the ancient words.")
+                                                    print("The curse is broken. The cave is finally free.")
+                                                    print("You have escaped the cycle of death.")
+                                                    print("===== TRUTH ENDING =====")
+                                                    player_total_score += 100
+                                                else:
+                                                    print('You do not have a magic key, so you can not end the curse.')
+                                                    print('====== NORMAL ENDING ======')
+                                                    game_over = True
+                                                    game_back = True
+                                                    cleared_ending = True
+                                                    player_total_score += 50
+                                                    break
+                                            elif play_count == 1:
+                                                print('You do not know the truth.')
                                             game_over = True
                                             game_back = True
                                             cleared_ending = True
                                             break
-                                        else:
-                                            print('The Evil do not want to talk to you.')
-                                    elif c == 'absorb':
-                                        print('You absorb the Evil power!')
-                                        print('You become the immortal ruler of the cave!')
-                                        print('===== DEMON LORD ENDING =====')
-                                        player_total_score += 50
-                                        amulet = True
-                                        hp = 99
-                                        game_over = True
-                                        game_back = True
-                                        cleared_ending = True
-                                        break
-                                    elif c == 'sacrifice':
-                                        print('You sacrifice your life force to calm the Evil.')
-                                        print('You turn to stone, guarding the cave forever.')
-                                        print('===== SACRIFICE ENDING =====')
-                                        player_total_score += 50
-                                        game_over = True
-                                        game_back = True
-                                        cleared_ending = True
-                                        break
-                                    elif c == 'symbiosis':
-                                        if good >= 5:
-                                            print('You make a pact with the Evil.')
-                                            print('You gain power but can never leave the cave.')
-                                            print('===== SYMBIOSIS ENDING =====')
-                                            player_total_score += 50
-                                            game_over = True
-                                            game_back = True
-                                            cleared_ending = True
-                                            break
-                                        else:
-                                            print('You are not good enough.')
-                                    elif c == 'truth':
-                                        if play_count == 2:
-                                            if 'a magic key' in have_list:
-                                                print("You place all runes and speak the ancient words.")
-                                                print("The curse is broken. The cave is finally free.")
-                                                print("You have escaped the cycle of death.")
-                                                print("===== TRUTH ENDING =====")
-                                                player_total_score += 100
+                                        elif c == 'break curse':
+                                            if 'a magic key' in have_list and play_count == 2:
+                                                if good >= 25:
+                                                    print('You use the magic key to break the curse.')
+                                                    print('Your great-great grandfather and his wife, and your great grandfather and his wife, and your grandfather and his wife, and you father and you mum, all appears.')
+                                                    print('You celebrate together.')
+                                                    print('====== THAT IS THE REAL ENDING ======')
+                                                    player_total_score += 50
+                                                    game_over = True
+                                                    game_back = True
+                                                    cleared_ending = True
+                                                    break
+                                                else:
+                                                    print('You are not good enough')
                                             else:
-                                                print('You do not have a magic key, so you can not end the curse.')
-                                                print('====== NORMAL ENDING ======')
-                                                game_over = True
-                                                game_back = True
-                                                cleared_ending = True
-                                                player_total_score += 50
-                                                break
-                                        elif play_count == 1:
-                                            print('You do not know the truth.')
-                                        game_over = True
-                                        game_back = True
-                                        cleared_ending = True
-                                        break
-                                    elif c == 'break curse':
-                                        if 'a magic key' in have_list and play_count == 2:
-                                            if good >= 25:
-                                                print('You use the magic key to break the curse.')
-                                                print('Your great-great grandfather and his wife, and your great grandfather and his wife, and your grandfather and his wife, and you father and you mum, all appears.')
-                                                print('You celebrate together.')
-                                                print('====== THAT IS THE REAL ENDING ======')
-                                                player_total_score += 50
-                                                game_over = True
-                                                game_back = True
-                                                cleared_ending = True
-                                                break
-                                            else:
-                                                print('You are not good enough')
+                                                print('You do not have a magic key.(Or you can not do it now.)')
                                         else:
-                                            print('You do not have a magic key.(Or you can not do it now.)')
-                                    else:
-                                        print('Invalid choice!')
+                                            print('Invalid choice!')
+                                    if force_over == True:
+                                        break
+                                if game_over:
+                                    print("=== END ===")
+                                    print("Type 'menu' to return main menu")
+                                    while True:
+                                        c = input()
+                                        if c == 'menu':
+                                            main()
+                                            return
+                                else:
+                                    print('Not enough runes!')
                                 if force_over == True:
                                     break
-                            if game_over:
-                                print("=== END ===")
-                                print("Type 'menu' to return main menu")
-                                while True:
-                                    c = input()
-                                    if c == 'menu':
-                                        main()
-                                        return
                             else:
-                                print('Not enough runes!')
-                            if force_over == True:
-                                break
-                        else:
-                            if play_count == 2:
-                                print('\nYou should done the soldier and lieutenant task and then read the grave diary and the old diary in the forest.')
-                                print('Also, you should have at least 6 items in your bag. Also, of course, three runes.\n')
+                                if play_count == 2:
+                                    print('\nYou should done the soldier and lieutenant task and then read the grave diary and the old diary in the forest.')
+                                    print('Also, you should have at least 6 items in your bag. Also, of course, three runes.\n')
+                                else:
+                                    print('Only avalible in ng2, try to go to the death cave!')
+                        elif tele == 'woody':
+                            if light == True:
+                                print('A secret power surrounds you!')
+                                secret_unlocked = True
                             else:
-                                print('Only avalible in ng2, try to go to the death cave!')
-                    elif tele == 'woody':
-                        if light == True:
-                            print('A secret power surrounds you!')
-                            secret_unlocked = True
+                                print('Nothing happens.')
+                        elif tele == 'bag':
+                            for i in range(len(have_list)):
+                                print(have_list[i])
                         else:
-                            print('Nothing happens.')
-                    elif tele == 'bag':
-                        for i in range(len(have_list)):
-                            print(have_list[i])
-                    else:
-                        print('Sorry, I do not understand that word.')
+                            print('Sorry, I do not understand that word.')
                     if force_over == True:
                         break
                 if force_over == True:
@@ -5502,8 +5504,8 @@ def gamestart():
             while True:
                 advance_time()
                 consume_step_durability()
-                forest_take = input("read diary / east / leave: ")
-                if forest_take == 'read diary' or forest_take == 'take diary':
+                forest_take = input("1.read diary / 2.east / 3.leave: ")
+                if forest_take == 'read diary' or forest_take == 'take diary' or forest_take == '1':
                     print('You read this old diary. It says:')
                     print('')
                     print('diary page 1:')
@@ -5531,7 +5533,7 @@ def gamestart():
                         print('You: Who is the man?')
                         print('Then, you leave.')
                         break
-                elif forest_take == 'east' or forest_take == 'go to swamp' or forest_take == 'go to misty swamp':
+                elif forest_take == 'east' or forest_take == 'go to swamp' or forest_take == 'go to misty swamp' or forest_take == '2':
                     if misty_end == False:
                         misty_swamp()
                         if game_over:
@@ -5545,7 +5547,7 @@ def gamestart():
                     else:
                         print('You have already end the misty swamp, you do not have to go in again.')
                     break
-                elif forest_take == 'leave' or forest_take == 'back' or forest_take == 'west':
+                elif forest_take == 'leave' or forest_take == 'back' or forest_take == 'west' or forest_take == '3':
                     print('You go back to the road.')
                     break
                 elif forest_take == 'climb tree':
@@ -5946,6 +5948,8 @@ def menu():
     print('You can type start or quit or task for tasks.')
     if play_count == 3:
         print('You can try to type time to do a time travel and avoid the trady.')
+    if play_count == 2:
+        print('There are some new things, since you heard that there the curse is for you.')
     while True:
         print('')
         if play_count == 3:
