@@ -6981,11 +6981,15 @@ def main():
             hp += 6
         elif d == 25:
             print("\n=====================================")
-            print("🎄 WARMTH FESTIVAL 🎄")
-            print("Ghosts feel cozy.")
+            print("🎄 CHRISTMAS 🎄")
+            print("Warmth and hope pierce the darkness.")
+            print('Do you think the father Christmas will give you a gift?')
             print("=====================================\n")
-            hp += 5
-            have_list.append("christmas candy")
+            hp += 10
+            good += 15
+            evil -= 10
+            have_list.append("holy gift")
+            trap_protect = True
         elif d == 27:
             print("\n=====================================")
             print("👻 WINTER WRAITH DAY 👻")
