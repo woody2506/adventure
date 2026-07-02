@@ -5144,14 +5144,7 @@ def gamestart():
                 developer_room()
             else:
                 print('Do not cheat! You are alredy have many things! For example, three runes in your memory.')
-        desktop_path = os.path.expanduser("~/Desktop")
-        try:
-            real_files = os.listdir(desktop_path)
-            real_item = random.choice(real_files) if real_files else "unknown_file.txt"
-        except:
-            real_item = "a file from your desktop"
-
-        if go == "bag" and death_count >= 2 and random.randint(1, 2) == 1:
+        elif go == "bag" and death_count >= 2 and random.randint(1, 2) == 1:
             for item in have_list:
                 print(item)
             print(real_item)
@@ -5799,6 +5792,12 @@ def gamestart():
                         print('You have alrady dig the grave!')
         else:
             print('Unknown command.')
+        desktop_path = os.path.expanduser("~/Desktop")
+        try:
+            real_files = os.listdir(desktop_path)
+            real_item = random.choice(real_files) if real_files else "unknown_file.txt"
+        except:
+            real_item = "a file from your desktop"
         if game_over == True:
             print("=== END ===")
             print("Type 'menu' to return main menu")
