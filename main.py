@@ -5146,7 +5146,7 @@ def gamestart():
                             if rune1 and rune2 and rune3:
                                 guardian_phases = [
                                     {
-                                        "hp_threshold": 60,
+                                        "hp_threshold": 50,
                                         "dialogue": "Stone armor rises from the altar. The ancient seal guardian awakens to test the heir.",
                                         "attacks": [
                                             {"name": "Stone Fist", "description": "Heavy rocky fist slams down with crushing force."},
@@ -5179,7 +5179,7 @@ def gamestart():
                                         "score_reward": 60
                                     }
                                 ]
-                                boss_fight("Ancient Seal Guardian", 60, 7, guardian_phases, "guardian core", "seal_guardian")
+                                boss_fight("Ancient Seal Guardian", 50, 7, guardian_phases, "guardian core", "seal_guardian")
                                 print('Wow, amazing, you defeat the last boss of this game!')
                                 good = good - evil
                                 write_creepy_desktop_file(5)
@@ -5199,6 +5199,10 @@ def gamestart():
                                                 print('They gave up wealth to protect the world.')
                                                 print('====== TRUE GUARDIAN ENDING ======')
                                                 player_total_score += 50
+                                                game_over = True
+                                                game_back = True
+                                                cleared_ending = True
+                                                break
                                             else:
                                                 print('You seal the Evil again.')
                                                 print('===== HERO ENDING =====')
@@ -5253,7 +5257,7 @@ def gamestart():
                                             print('You say: Hello, great-great grandmother!')
                                             print('The Evil is shocked, then she smiles and hug you!')
                                             print('===== THE BEST ENDING! =====')
-                                            player_total_score += 50
+                                            player_total_score += 60
                                             game_over = True
                                             game_back = True
                                             cleared_ending = True
@@ -5321,7 +5325,7 @@ def gamestart():
                                                 print('Your great-great grandfather and his wife, and your great grandfather and his wife, and your grandfather and his wife, and you father and you mum, all appears.')
                                                 print('You celebrate together.')
                                                 print('====== THAT IS THE REAL ENDING ======')
-                                                player_total_score += 50
+                                                player_total_score += 100
                                                 game_over = True
                                                 game_back = True
                                                 cleared_ending = True
