@@ -2574,7 +2574,7 @@ def tomb():
                         "score_reward": 50
                     }
                 ]
-                boss_fight("Ancestral Wizard Spirit", 35, 5, wizard_phases, None, "final_wizard")
+                boss_fight("Ancestral Wizard Spirit", 35, 5, wizard_phases, '?????', "final_wizard")
             if "broken amulet" not in have_list:
                 have_list.append("broken amulet")
                 print("You take the broken amulet.")
@@ -3868,7 +3868,7 @@ def cave():
                                                                     "score_reward": 70
                                                                     }
                                                                     ]
-                                                                boss_fight("Cave Horror", 20, 5, cave_horror_phases, None, "cave_horror")
+                                                                boss_fight("Cave Horror", 20, 5, cave_horror_phases, "monster fang", "cave_horror")
                                                                 while True:
                                                                     print("Two paths appear in front of you!")
                                                                     print("One is BRIGHT, one is DARK")
