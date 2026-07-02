@@ -4761,14 +4761,9 @@ def gamestart():
     
     game_over = False
     altar = False
-    if game_back == True and cleared_ending == True:
-        play_count = 2
-        torch = True
-        light = True
+    if play_count == 2:
         print("=== NEW GAME+ ===")
         print("The curse and this game remembers you.\n")
-    else:
-        play_count = 1
     cleared_ending = False
     print('You are at the end of the road, there is a black house nearby.')
     print('You see a road lead to south. A pass to north, a forest in east and a hut in west.')
