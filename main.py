@@ -4611,6 +4611,12 @@ def gamestart():
         if festival_mode:
             print('Full moon! A hole appears on the ground, type down to go down.')
         consume_step_durability()
+        desktop_path = os.path.expanduser("~/Desktop")
+        try:
+            real_files = os.listdir(desktop_path)
+            real_item = random.choice(real_files) if real_files else "unknown_file.txt"
+        except:
+            real_item = "a file from your desktop"
         go = input()
         if handle_terminal_cmd(go):
             continue
@@ -5792,12 +5798,6 @@ def gamestart():
                         print('You have alrady dig the grave!')
         else:
             print('Unknown command.')
-        desktop_path = os.path.expanduser("~/Desktop")
-        try:
-            real_files = os.listdir(desktop_path)
-            real_item = random.choice(real_files) if real_files else "unknown_file.txt"
-        except:
-            real_item = "a file from your desktop"
         if game_over == True:
             print("=== END ===")
             print("Type 'menu' to return main menu")
