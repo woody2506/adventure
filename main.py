@@ -336,7 +336,7 @@ def survival_tick():
         print("=== END ===")
         print("Type 'menu' to return main menu")
         while True:
-            c = input()
+            c = input().strip().lower()
             if c == "menu":
                 main()
                 return
@@ -655,7 +655,7 @@ def military_fort():
     while True:
         advance_time()
         consume_step_durability()
-        cmd = input("fort> ")
+        cmd = input("fort> ").strip().lower()
         if cmd == "back" or cmd == '6':
             print("You leave the military fort and return to the northern road.")
             break
@@ -664,7 +664,7 @@ def military_fort():
             if not soldier_task_done:
                 print("\n[Soldier (Ghost)]")
                 print("I lost my ration pack in the woods. I cannot hold this post without supplies.")
-                sub_cmd = input("choice: 1.help | 2.loot | 3.search_note | 4.leave\n")
+                sub_cmd = input("choice: 1.help | 2.loot | 3.search_note | 4.leave\n").strip().lower()
                 if sub_cmd == "help" or sub_cmd == '1':
                     if "some food" in have_list:
                         have_list.remove("some food")
@@ -717,7 +717,7 @@ def military_fort():
                 print("\n[Lieutenant (Ghost)]")
                 print("The march password is split across three journal fragments scattered around the fort.")
                 print("Enter the full 3-digit code to unlock trap immunity and access to archives.")
-                ans = input("input password: ")
+                ans = input("input password: ").strip().lower()
                 if ans == military_password:
                     lieutenant_task_done = True
                     good += 10
@@ -762,7 +762,7 @@ def orc_tribe_dungeon():
     print("A primitive orc settlement trapped inside the infinite cave cycle. You can choose to negotiate or raid this tribe.")
     while True:
         consume_step_durability()
-        cmd = input("orc> negotiate | raid | search_totem | back: ")
+        cmd = input("orc> negotiate | raid | search_totem | back: ").strip().lower()
         if cmd == "back":
             print("You leave the orc dungeon area.")
             return
@@ -807,7 +807,7 @@ def titan_guardian_easter():
     print("A primordial titan sleeps deep inside the illusion tunnel, witnessing the birth of the ancient sealing curse.")
     if not titan_meet:
         titan_meet = True
-        choice = input("offer_prayer | confess_sins | depart: ")
+        choice = input("offer_prayer | confess_sins | depart: ").strip().lower()
         if choice == "offer_prayer":
             good += 30
             hp = 99
@@ -1254,7 +1254,7 @@ def forgotten_archive():
         print("=== END ===")
         print("Type 'menu' to return main menu")
         while True:
-            c = input()
+            c = input().strip().lower()
             if c == "menu":
                 main()
                 return
@@ -1437,7 +1437,7 @@ def child_tomb():
         print("=== END ===")
         print("Type 'menu' to return main menu")
         while True:
-            c = input()
+            c = input().strip().lower()
             if c == "menu":
                 main()
                 return
@@ -1445,7 +1445,7 @@ def child_tomb():
 def handle_terminal_cmd(cmd):
     global game_back,game_over,hp
     
-    cmd = cmd.strip().lower()
+    cmd = cmd
     if cmd in ["ls", "dir"]:
         print("dust x9999")
         print("cobweb x42")
@@ -1788,7 +1788,7 @@ def full_moon_maze():
         print("=== END ===")
         print("Type 'menu' to return main menu")
         while True:
-            c = input()
+            c = input().strip().lower()
             if c == "menu":
                 main()
                 return
@@ -2129,7 +2129,7 @@ def pendulum_mortuary():
         print("=== END ===")
         print("Type 'menu' to return main menu")
         while True:
-            c = input()
+            c = input().strip().lower()
             if c == "menu":
                 main()
                 return
@@ -2157,7 +2157,7 @@ def dwarven_forge_vault():
     while True:
         print(f"Materials left for {attempts_left} attempts.")
         consume_step_durability()
-        cmd = input("forge> craft | back\n")
+        cmd = input("forge> craft | back\n").strip().lower()
         if cmd == "back":
             break
         elif cmd == "craft":
@@ -2165,9 +2165,9 @@ def dwarven_forge_vault():
                 print("All materials are exhausted. No more attempts this run.")
                 break
             try:
-                iron = int(input("Iron parts: ").strip())
-                copper = int(input("Copper parts: ").strip())
-                silver = int(input("Silver parts: ").strip())
+                iron = int(input("Iron parts: ").strip()).strip().lower()
+                copper = int(input("Copper parts: ").strip()).strip().lower()
+                silver = int(input("Silver parts: ").strip()).strip().lower()
             except ValueError:
                 attempts_left -= 1
                 hp -= 2
@@ -2176,7 +2176,7 @@ def dwarven_forge_vault():
                 continue
 
             temp = input("Temperature (low / medium / high): ").strip().lower()
-            rune_input = input("Rune order separated by space: ").strip().lower().split()
+            rune_input = input("Rune order separated by space: ").split().strip().lower()
 
             if (iron == correct_recipe["iron"] and
                 copper == correct_recipe["copper"] and
@@ -2215,7 +2215,7 @@ def tomb():
 
     while True:
         consume_step_durability()
-        cmd = input("tomb> ")
+        cmd = input("tomb> ").strip().lower()
         if handle_terminal_cmd(cmd):
             continue
         if cmd == "look" or cmd == 'look around':
@@ -2243,7 +2243,7 @@ def tomb():
                 guard_hp = 15
                 while guard_hp > 0 and hp > 0:
                     print(f"Guardian HP: {guard_hp} | Your HP: {hp}")
-                    fight = input("strike / defend: ")
+                    fight = input("strike / defend: ").strip().lower()
                     if fight == "strike":
                         guard_hp -= 1
                         print("You strike the guardian!")
@@ -2266,7 +2266,7 @@ def tomb():
                 print("Light flows around you. Ancient figures appear.")
                 print("They are your ancestors, guardians of this place.")
                 print("Choose: choose inherit / choose refuse / choose listen")
-                trial_choice = input()
+                trial_choice = input().strip().lower()
                 if trial_choice == "choose inherit":
                     print("You decide to carry on the duty of guardians.")
                     print("All spirits salute you. Your power rises greatly.")
@@ -2441,7 +2441,7 @@ def tomb():
         print("=== END ===")
         print("Type 'menu' to return main menu")
         while True:
-            c = input()
+            c = input().strip().lower()
             if c == "menu":
                 menu()
                 return
@@ -2474,7 +2474,7 @@ def misty_swamp():
             print('You see here a corpse, type corpse to search it.\n')
         advance_time()
         consume_step_durability()
-        scmd = input("swamp> ")
+        scmd = input("swamp> ").strip().lower()
         if handle_terminal_cmd(scmd):
             continue
         if scmd == "west" or scmd == "back" or scmd == "leave":
@@ -2684,7 +2684,7 @@ def developer_room():
     print("="*60)
 
     while True:
-        cmd = input("dev> ")
+        cmd = input("dev> ").strip().lower()
         if cmd == "heal":
             hp += 10
             print("HP +10!")
@@ -2727,7 +2727,7 @@ def watchtower():
     while True:
         advance_time()
         consume_step_durability()
-        cmd = input("tower> ")
+        cmd = input("tower> ").strip().lower()
         if cmd == "climb" or cmd == "up":
             if floor == 1:
                 print("You climb to FLOOR 2. Dust and old ropes cover the walls.")
@@ -2844,7 +2844,7 @@ def print_heaven():
         print("3. CREATION TEMPLE")
         print("4. RETURN TO MORTAL WORLD")
         print("5. FINAL JUDGEMENT")
-        opt = input("> ")
+        opt = input("> ").strip().lower()
 
         if opt == "1":
             print("\n===== ANGEL SQUARE =====")
@@ -2852,7 +2852,7 @@ def print_heaven():
             print("An archangel approaches you.")
             print("'You have proven yourself worthy. What do you seek?'")
             print("Choose: ask for power / ask for peace / ask for forgiveness")
-            choice = input()
+            choice = input().strip().lower()
             if choice == "ask for power":
                 print("The archangel grants you divine power.")
                 print("HP: 999 | Good: +50")
@@ -2880,14 +2880,14 @@ def print_heaven():
             print("You see the Creator sitting on a throne of stars.")
             print("'You have done well, my child. Now, what will you do?'")
             print("Choose: 1.become a god / 2.return to earth / 3.create a new world")
-            choice = input()
+            choice = input().strip().lower()
             if choice == "become a god" or choice == '1':
                 print("\n✨ GODHOOD ENDING ✨")
                 print("You become a god, watching over all worlds.")
                 print("You ensure that no one ever suffers like your family did.")
                 show_message_wall()
-                name = input("Your name: ")
-                msg = input("Your message: ")
+                name = input("Your name: ").strip().lower()
+                msg = input("Your message: ").strip().lower()
                 save_message(name, msg)
                 print('')
                 print('You can final see what you can cheat:')
@@ -2909,8 +2909,8 @@ def print_heaven():
                 print("You marry, have children, and die peacefully.")
                 print("The curse is gone forever.")
                 show_message_wall()
-                name = input("Your name: ")
-                msg = input("Your message: ")
+                name = input("Your name: ").strip().lower()
+                msg = input("Your message: ").strip().lower()
                 save_message(name, msg)
                 print('')
                 print('You can final see what you can cheat:')
@@ -2931,8 +2931,8 @@ def print_heaven():
                 print("You create a new world where love and peace reign.")
                 print("No more pain, no more suffering, no more cycles.")
                 show_message_wall()
-                name = input("Your name: ")
-                msg = input("Your message: ")
+                name = input("Your name: ").strip().lower()
+                msg = input("Your message: ").strip().lower()
                 save_message(name, msg)
                 print('')
                 print('You can final see what you can cheat:')
@@ -2959,7 +2959,7 @@ def print_heaven():
             print("All souls gather before you.")
             print("You must decide their fate.")
             print("Choose: 1.judge all / 2.forgive all / 3.let them choose")
-            choice = input()
+            choice = input().strip().lower()
             if choice == "judge all" or choice == '1':
                 print("\n⚖️ JUDGEMENT ENDING ⚖️")
                 print("You judge each soul based on their deeds.")
@@ -2979,8 +2979,8 @@ def print_heaven():
             print("\n=== END OF THE JOURNEY ===")
             print("You have completed all four runs of Death Adventure.")
             show_message_wall()
-            name = input("Your name: ")
-            msg = input("Your message: ")
+            name = input("Your name: ").strip().lower()
+            msg = input("Your message: ").strip().lower()
             save_message(name, msg)
             print('')
             print('You can final see what you can cheat:')
@@ -3018,7 +3018,7 @@ def time_travel_origin():
 
     while True:
         print(f"\n--- PAST PHASE {past_phase} ---")
-        cmd = input("past> ")
+        cmd = input("past> ").strip().lower()
 
         if past_phase == 1:
             if cmd == "look":
@@ -3082,7 +3082,7 @@ def time_travel_origin():
             print("\n=== TIME TRAVEL END ===")
             print("Type 'menu' to return")
             while True:
-                c = input()
+                c = input().strip().lower()
                 if c == "menu":
                     menu()
                     return
@@ -3145,7 +3145,7 @@ def hill():
     while True:
         advance_time()
         consume_step_durability()
-        cmd = input()
+        cmd = input().strip().lower()
         if cmd == 'climb':
             if high == 0:
                 high = 1
@@ -3225,7 +3225,7 @@ def hill():
         print("=== END ===")
         print("Type 'menu' to return main menu")
         while True:
-            c = input()
+            c = input().strip().lower()
             if c == 'menu':
                 menu()
                 return
@@ -3434,7 +3434,7 @@ def underwater_ruins():
         print("=== END ===")
         print("Type 'menu' to return main menu")
         while True:
-            c = input()
+            c = input().strip().lower()
             if c == "menu":
                 main()
                 return
@@ -3452,7 +3452,7 @@ def cave():
         if has_death_corpse and death_location == current_room:
             print('You see here a corpse, type corpse to search it.\n')
         consume_step_durability()
-        op = input()
+        op = input().strip().lower()
         if handle_terminal_cmd(op):
             continue
         if op == 'unlock':
@@ -3497,7 +3497,7 @@ def cave():
                             if has_death_corpse and death_location == current_room:
                                 print('You see here a corpse, type corpse to search it.\n')
                             consume_step_durability()
-                            west = input()
+                            west = input().strip().lower()
                             if west == 'west':
                                 print('There is a stone path to west.')
                                 print('And there is also a sewer, type sewer to go in.')
@@ -3506,7 +3506,7 @@ def cave():
                                     if has_death_corpse and death_location == current_room:
                                         print('You see here a corpse, type corpse to search it.\n')
                                     consume_step_durability()
-                                    gocave = input()
+                                    gocave = input().strip().lower()
                                     if gocave == 'east':
                                         print("The way back is collapsed! You can't return unless you have a pick-axe.")
                                     elif gocave == 'dig':
@@ -3533,7 +3533,7 @@ def cave():
                                         print('Bookshelves full of diaries, all written by your ancestors.')
                                         while True:
                                             consume_step_durability()
-                                            lib = input('library> ')
+                                            lib = input('library> ').strip().lower()
                                             if lib == 'read':
                                                 print('You read a memory:')
                                                 print('The wizard loved his wife more than anything.')
@@ -3559,7 +3559,7 @@ def cave():
                                             if has_death_corpse and death_location == current_room:
                                                 print('You see here a corpse, type corpse to search it.\n')
                                             consume_step_durability()
-                                            sewer_cmd = input('sewer> ')
+                                            sewer_cmd = input('sewer> ').strip().lower()
                                             if sewer_cmd == 'west' or sewer_cmd == 'back' or sewer_cmd == 'leave':
                                                 print('You climb back to the cave path.')
                                                 break
@@ -3616,7 +3616,7 @@ def cave():
                                                 print("Ancient magic lingers here.")
                                                 while True:
                                                     consume_step_durability()
-                                                    deep_cmd = input("deep> ")
+                                                    deep_cmd = input("deep> ").strip().lower()
                                                     if deep_cmd == "open door":
                                                         if "rune stone 1" in have_list:
                                                             print("Rune power unlocks the door. You enter the wizard's hidden room.")
@@ -3654,7 +3654,7 @@ def cave():
                                             if has_death_corpse and death_location == current_room:
                                                 print('You see here a corpse, type corpse to search it.\n')
                                             consume_step_durability()
-                                            pathwest = input()
+                                            pathwest = input().strip().lower()
                                             if pathwest == 'west':
                                                 print('You see here a note. And a diary. There is still a way to west.')
                                                 print('There is still some old footprints to west.')
@@ -3662,19 +3662,19 @@ def cave():
                                                     if has_death_corpse and death_location == current_room:
                                                         print('You see here a corpse, type corpse to search it.\n')
                                                     consume_step_durability()
-                                                    west2 = input()
+                                                    west2 = input().strip().lower()
                                                     if west2 == 'west':
                                                         while True:
                                                             print('You can see a ghost, but the ghost does not see you!')
                                                             print('You go west, you see here a human corpse, you are shocked! There is still path to west. You see here ' + p)
                                                             print('Try touch corpse or ask about dev or west and you see a orc dungeon, type orc to go in.')
                                                             consume_step_durability()
-                                                            west3 = input()
+                                                            west3 = input().strip().lower()
                                                             if west3 == 'west':
                                                                 while True:
                                                                     print("Two paths appear in front of you!")
                                                                     print("One is BRIGHT, one is DARK")
-                                                                    choice = input("go bright / go dark: ")
+                                                                    choice = input("go bright / go dark: ").strip().lower()
                                                                     if choice == "go dark":
                                                                         print("You found DIAMONDS! You are rich!")
                                                                         if 'a pick-axe' in have_list and 'diamond vault' in have_list:
@@ -3878,7 +3878,7 @@ def cave():
                                                                         ghost_hp = 3
                                                                         while ghost_hp > 0 and hp > 0:
                                                                             print(f"Ghost HP: {ghost_hp} | Your HP: {hp}")
-                                                                            fight = input("attack / run: ")
+                                                                            fight = input("attack / run: ").strip().lower()
                                                                             if fight == "attack":
                                                                                 ghost_hp -= 1
                                                                                 print("You hit the ghost!")
@@ -3992,7 +3992,7 @@ def cave():
                                                                 print("=== END ===")
                                                                 print("Type 'menu' to return main menu")
                                                                 while True:
-                                                                    c = input()
+                                                                    c = input().strip().lower()
                                                                     if c == 'menu':
                                                                         menu()
                                                                         return
@@ -4030,7 +4030,7 @@ def cave():
                                                         print("=== END ===")
                                                         print("Type 'menu' to return main menu")
                                                         while True:
-                                                            c = input()
+                                                            c = input().strip().lower()
                                                             if c == 'menu':
                                                                 menu()
                                                                 return
@@ -4060,7 +4060,7 @@ def cave():
                                                 print("=== END ===")
                                                 print("Type 'menu' to return main menu")
                                                 while True:
-                                                    c = input()
+                                                    c = input().strip().lower()
                                                     if c == 'menu':
                                                         menu()
                                                         return
@@ -4075,7 +4075,7 @@ def cave():
                                         print("=== END ===")
                                         print("Type 'menu' to return main menu")
                                         while True:
-                                            c = input()
+                                            c = input().strip().lower()
                                             if c == 'menu':
                                                 menu()
                                                 return
@@ -4085,7 +4085,7 @@ def cave():
                                     print("=== END ===")
                                     print("Type 'menu' to return main menu")
                                     while True:
-                                        c = input()
+                                        c = input().strip().lower()
                                         if c == 'menu':
                                             menu()
                                             return
@@ -4107,7 +4107,7 @@ def cave():
                                 print("=== END ===")
                                 print("Type 'menu' to return main menu")
                                 while True:
-                                    c = input()
+                                    c = input().strip().lower()
                                     if c == 'menu':
                                         menu()
                                         return
@@ -4117,7 +4117,7 @@ def cave():
                             print("=== END ===")
                             print("Type 'menu' to return main menu")
                             while True:
-                                c = input()
+                                c = input().strip().lower()
                                 if c == 'menu':
                                     main()
                                     return
@@ -4125,7 +4125,7 @@ def cave():
                         print("=== END ===")
                         print("Type 'menu' to return main menu")
                         while True:
-                            c = input()
+                            c = input().strip().lower()
                             if c == 'menu':
                                 main()
                                 return
@@ -4133,7 +4133,7 @@ def cave():
                     print("=== END ===")
                     print("Type 'menu' to return main menu")
                     while True:
-                        c = input()
+                        c = input().strip().lower()
                         if c == 'menu':
                             main()
                             return
@@ -4141,7 +4141,7 @@ def cave():
                 print("=== END ===")
                 print("Type 'menu' to return main menu")
                 while True:
-                    c = input()
+                    c = input().strip().lower()
                     if c == 'menu':
                         main()
                         return
@@ -4156,7 +4156,7 @@ def cave():
                 print("=== END ===")
                 print("Type 'menu' to return main menu")
                 while True:
-                    c = input()
+                    c = input().strip().lower()
                     if c == 'menu':
                         main()
                         return
@@ -4191,7 +4191,7 @@ def cave():
             print("=== END ===")
             print("Type 'menu' to return main menu")
             while True:
-                c = input()
+                c = input().strip().lower()
                 if c == 'menu':
                     main()
                     return
@@ -4298,7 +4298,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
         print("=== END ===")
         print("Type 'menu' to return main menu")
         while True:
-            c = input()
+            c = input().strip().lower()
             if c == "menu":
                 main()
                 return
@@ -4412,7 +4412,7 @@ def blood_rift_dungeon():
         print("=== END ===")
         print("Type 'menu' to return main menu")
         while True:
-            c = input()
+            c = input().strip().lower()
             if c == "menu":
                 main()
                 return
@@ -4486,7 +4486,7 @@ def advance_time():
             print("=== END ===")
             print("Type 'menu' to return main menu")
             while True:
-                c = input()
+                c = input().strip().lower()
                 if c == 'menu':
                     main()
                     return
@@ -4510,7 +4510,7 @@ def advance_time():
                     print("=== END ===")
                     print("Type 'menu' to return main menu")
                     while True:
-                        c = input()
+                        c = input().strip().lower()
                         if c == 'menu':
                             main()
                             return
@@ -4523,7 +4523,7 @@ def advance_time():
         print("=== END ===")
         print("Type 'menu' to return main menu")
         while True:
-            c = input()
+            c = input().strip().lower()
             if c == 'menu':
                 main()
                 return
@@ -4617,7 +4617,7 @@ def gamestart():
             real_item = random.choice(real_files) if real_files else "unknown_file.txt"
         except:
             real_item = "a file from your desktop"
-        go = input()
+        go = input().strip().lower()
         if handle_terminal_cmd(go):
             continue
         if go == 'in':
@@ -4651,7 +4651,7 @@ def gamestart():
                 if has_death_corpse and death_location == current_room:
                     print('You see here a corpse, type corpse to search it.\n')
                 consume_step_durability()
-                take = input()
+                take = input().strip().lower()
                 if handle_terminal_cmd(take):
                     continue
                 elif take == 'take lamp':
@@ -4861,7 +4861,7 @@ def gamestart():
                     if rune1 and rune2 and rune3 and x2 == True:
                         print('You can place the runes now, type place runes to place them.')
                     consume_step_durability()
-                    tele = input()
+                    tele = input().strip().lower()
                     if tele == 'light lamp':
                         if 'a lamp' in have_list:
                             print('The light is lit. The room bright up!')
@@ -4897,7 +4897,7 @@ def gamestart():
                                     print("=== END ===")
                                     print("Type 'menu' to return main menu")
                                     while True:
-                                        c = input()
+                                        c = input().strip().lower()
                                         if c == 'menu':
                                             main()
                                             return
@@ -4910,7 +4910,7 @@ def gamestart():
                                     print("=== END ===")
                                     print("Type 'menu' to return main menu")
                                     while True:
-                                        c = input()
+                                        c = input().strip().lower()
                                         if c == 'menu':
                                             main()
                                             return  
@@ -4938,7 +4938,7 @@ def gamestart():
                                 elif play_count == 2:
                                     print('Choose: seal (good > 10) / release / absorb / sacrifice / symbiosis / unleash (good > 20) / leave / break curse (good > 25) / truth')
                                 while True:
-                                    c = input()
+                                    c = input().strip().lower()
                                     if c == 'seal':
                                         if good >= 10:
                                             print('You sealed the cave Evil FOREVER.')
@@ -5087,7 +5087,7 @@ def gamestart():
                                 print("=== END ===")
                                 print("Type 'menu' to return main menu")
                                 while True:
-                                    c = input()
+                                    c = input().strip().lower()
                                     if c == 'menu':
                                         main()
                                         return
@@ -5216,7 +5216,7 @@ def gamestart():
             else:
                 print("No water.")
         elif go == 'north':
-            tower_check = input("Go to merchant or watchtower or military_fort? (1.merchant / 2.tower / 3.fort): ")
+            tower_check = input("Go to merchant or watchtower or military_fort? (1.merchant / 2.tower / 3.fort): ").strip().lower()
             if tower_check == "fort" or tower_check == '3':
                 military_fort()
                 continue
@@ -5235,7 +5235,7 @@ def gamestart():
                     while True:
                         advance_time()
                         consume_step_durability()
-                        m = input('merchant> ')
+                        m = input('merchant> ').strip().lower()
                         if m == 'trade food':
                             if 'some food' in have_list:
                                 have_list.remove('some food')
@@ -5385,7 +5385,7 @@ def gamestart():
             print('You see there still to west. Type west to go or talk ro talk.')
             while True:
                 consume_step_durability()
-                h = input('hut> ')
+                h = input('hut> ').strip().lower()
                 if h == 'talk':
                     print('Ghost: Bring me my husband’s diary.')
                     print('Ghost: My husband disappears with your great grand father!')
@@ -5437,7 +5437,7 @@ def gamestart():
                     print('You can read stone, purify or desecrate.')
                     while True:
                         consume_step_durability()
-                        ch = input('church> ')
+                        ch = input('church> ').strip().lower()
                         if ch == 'east' or ch == 'back' or ch == 'leave':
                             print('You return to the hut.')
                             break
@@ -5503,7 +5503,7 @@ def gamestart():
             while True:
                 advance_time()
                 consume_step_durability()
-                forest_take = input("1.read diary / 2.east / 3.leave: ")
+                forest_take = input("1.read diary / 2.east / 3.leave: ").strip().lower()
                 if forest_take == 'read diary' or forest_take == 'take diary' or forest_take == '1':
                     print('You read this old diary. It says:')
                     print('')
@@ -5539,7 +5539,7 @@ def gamestart():
                             print("=== END ===")
                             print("Type 'menu' to return main menu")
                             while True:
-                                c = input()
+                                c = input().strip().lower()
                                 if c == 'menu':
                                     main()
                                     return
@@ -5566,7 +5566,7 @@ def gamestart():
                 elif forest_take == 'tree':
                     print('Hmm... the trees are the oak tree which have grown for about fifty years.')
                 elif forest_take == 'cut tree':
-                    cmd = input('really? Cut down a tree? Y/N')
+                    cmd = input('really? Cut down a tree? Y/N').strip().lower()
                     if cmd == 'Y' or cmd == 'y' or cmd == 'yes' or cmd == 'YES':
                         print('You cut down a tree, you are so evil!')
                         print('The tree fall on your toes.')
@@ -5614,7 +5614,7 @@ def gamestart():
                     print('You see here a corpse, type corpse to search it.\n')
                 advance_time()
                 consume_step_durability()
-                camp_cmd = input('camp> ')
+                camp_cmd = input('camp> ').strip().lower()
                 if camp_cmd == 'west':
                     print('You head west into the camp.')
                     print('Old tents, cold firepit, and a chest.')
@@ -5725,7 +5725,7 @@ def gamestart():
                             print("=== END ===")
                             print("Type 'menu' to return main menu")
                             while True:
-                                c = input()
+                                c = input().strip().lower()
                                 if c == 'menu':
                                     main()
                                     return
@@ -5746,7 +5746,7 @@ def gamestart():
                 elif camp_cmd == 'dig grave':
                     if grave_take == False:
                         print('You dig the grave. There is some treasure and a diary. Take treasure or leave it? take / leave (Even you choose any choice, you will read the diary.)')
-                        choice = input()
+                        choice = input().strip().lower()
                         if choice == 'take':
                             print('You take the treasure. The spirit rages.')
                             have_list.append('a diamond')
@@ -5802,7 +5802,7 @@ def gamestart():
             print("=== END ===")
             print("Type 'menu' to return main menu")
             while True:
-                c = input()
+                c = input().strip().lower()
                 if c == 'menu':
                     main()
                     return
@@ -5836,7 +5836,7 @@ def ng_three():
         print("5. EXIT TUNNEL")
         
         consume_step_durability()
-        opt = input(">")
+        opt = input(">").strip().lower()
         
         if opt == "1":
             print("\n===== MEMORY CORRIDOR =====")
@@ -5881,7 +5881,7 @@ def ng_three():
             print("2. STAY WITH HER")
             print("3. END THE CYCLE")
             print("4. REUNITE WITH THE WIZARD")
-            e = input(">")
+            e = input(">").strip().lower()
             if e == "1":
                 print("\nYou break the eternal seal.")
                 print("She smiles and fades into light.")
@@ -5952,11 +5952,11 @@ def menu():
     while True:
         print('')
         if play_count == 3:
-            start = input('1.start/2.quit/3.task/4.time: ')
+            start = input('1.start/2.quit/3.task/4.time: ').strip().lower()
         elif play_count == 4:
-            start = input('1.heaven/2.quit: ')
+            start = input('1.heaven/2.quit: ').strip().lower()
         else:
-            start = input('1.start/2.quit/3.task: ')
+            start = input('1.start/2.quit/3.task: ').strip().lower()
         if play_count != 4:
             if start == 'start' or start == '1':
                 print('')
@@ -5978,8 +5978,8 @@ def menu():
                     exit()
                 else:
                     show_message_wall()
-                    name = input("Your name: ")
-                    msg = input("Your message: ")
+                    name = input("Your name: ").strip().lower()
+                    msg = input("Your message: ").strip().lower()
                     save_message(name, msg)
                     print('')
                     print('You can final see what you can cheat:')
@@ -6017,8 +6017,8 @@ def menu():
             elif start == 'quit' or start == '2':
                 print('You break the circle but refuses to go to the heaven, instead, you live in mortol world forever.')
                 show_message_wall()
-                name = input("Your name: ")
-                msg = input("Your message: ")
+                name = input("Your name: ").strip().lower()
+                msg = input("Your message: ").strip().lower()
                 save_message(name, msg)
                 print('')
                 print('You can final see what you can cheat:')
