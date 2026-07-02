@@ -489,8 +489,10 @@ def end_score_rating():
         total += 100
     if total >= 1000:
         rank = '? RANK, Wow, you are wonderful!'
-    if total >= 600:
+    elif total >= 600:
         rank = "S RANK, you are so cool~~~"
+    elif total >= 500:
+        rank = "A+ RANK, nice!"
     elif total >= 450:
         rank = "A RANK, very good!"
     elif total >= 300:
