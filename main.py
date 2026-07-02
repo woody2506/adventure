@@ -357,7 +357,7 @@ def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
         print(f"You obtained: {loot_item}")
         have_list.append(loot_item)
         player_total_score += current_phase.get("score_reward", 30)
-        defeated_enemies.append(boss_id)
+        defeated_enemies.add(boss_id)
         return True
 
 def write_creepy_desktop_file(tier: int):
