@@ -5,6 +5,7 @@ import time
 import datetime
 import argparse
 import getpass
+import calendar
 
 
 session_start_time = time.time()
@@ -219,6 +220,145 @@ def get_real_username():
         return getpass.getuser()
     except:
         return "player"
+
+class Colors:
+    RESET = '\033[0m'
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    PURPLE = '\033[95m'
+    CYAN = '\033[96m'
+    WHITE = '\033[97m'
+    DARK_GRAY = '\033[90m'
+    BOLD = '\033[1m'
+    BLINK = '\033[5m'
+    BG_RED = '\033[41m'
+    BG_BLACK = '\033[40m'
+
+def print_colored(text, color=Colors.WHITE, end='\n'):
+    print(f"{color}{text}{Colors.RESET}", end=end)
+
+def print_glitch(text, duration=0.5):
+    glitch_chars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`'
+    for _ in range(3):
+        garbled = ''.join(random.choice(glitch_chars) for _ in range(len(text)))
+        print(garbled, end='\r')
+        time.sleep(duration / 3)
+    print(text)
+
+def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
+    global hp, defeated_enemies, player_total_score, amulet,game_back,game_over
+
+    if boss_id in defeated_enemies:
+        print(f"The {boss_name} has already been defeated.")
+        return True
+
+    boss_hp = max_hp
+    phase_index = 0
+    turn = 0
+
+    print_colored(f"\n=== BOSS ENCOUNTER: {boss_name.upper()} ===", Colors.RED + Colors.BOLD)
+    print_colored("A terrifying presence fills the room...", Colors.RED)
+    time.sleep(1.2)
+
+    while boss_hp > 0 and hp > 0:
+        turn += 1
+        print(f"\n--- Turn {turn} ---")
+        print(f"Your HP: {hp}  |  Boss HP: {boss_hp}/{max_hp}")
+
+        # Phase transition check
+        while phase_index < len(phases) - 1 and boss_hp <= phases[phase_index + 1]["hp_threshold"]:
+            phase_index += 1
+            phase = phases[phase_index]
+            print_colored(f"\n{phase['dialogue']}", Colors.PURPLE + Colors.BOLD)
+            if phase.get("enrage"):
+                print_colored("The boss enters berserk rage!", Colors.RED + Colors.BLINK)
+            time.sleep(1.2)
+
+        current_phase = phases[phase_index]
+        dmg_multiplier = 1.5 if current_phase.get("enrage") else 1.0
+
+        # Player action
+        action = input("Action: 1.attack / 2.defend / 3.use item: ").strip().lower()
+
+        if action == "attack" or action == '1':
+            base_dmg = random.randint(3, 6)
+            # Weapon bonuses
+            if "ghost sword" in have_list:
+                base_dmg += 4
+            elif "iron sword" in have_list:
+                base_dmg += 2
+            # Critical hit
+            is_crit = random.randint(1, 10) == 1
+            if is_crit:
+                base_dmg *= 2
+                print_colored("CRITICAL HIT!", Colors.YELLOW + Colors.BOLD)
+            
+            boss_hp -= base_dmg
+            print(f"You deal {base_dmg} damage to the {boss_name}.")
+
+        elif action == "defend" or action == '2':
+            print("You raise your guard. Damage reduced by 50%.")
+            dmg_multiplier *= 0.5
+            print('You then raise your weapon, you deal 2 damage.')
+            boss_hp -= 2
+
+        elif action == "use item" or action == '3':
+            if "some food" in have_list:
+                have_list.remove("some food")
+                hp += 3
+                print("You eat food. HP +3")
+            elif "some water in the bottle" in have_list:
+                have_list.remove("some water in the bottle")
+                hp += 2
+                print("You drink water. HP +2")
+            else:
+                print("No usable items left!")
+            continue
+        else:
+            print("Invalid action. You lose your turn.")
+
+        # Boss attacks if still alive
+        if boss_hp > 0:
+            skill = random.choice(current_phase["attacks"])
+            damage = int(random.randint(base_attack - 1, base_attack + 2) * dmg_multiplier)
+            
+            # Amulet damage reduction
+            if amulet:
+                damage = max(1, damage - 2)
+
+            print_colored(f"{boss_name} uses {skill['name']}!", Colors.RED)
+            if skill.get("description"):
+                print(skill["description"])
+            
+            hp -= damage
+            print(f"You take {damage} damage.")
+
+            # Special skill effects
+            if skill.get("lifesteal"):
+                heal = damage // 2
+                boss_hp = min(max_hp, boss_hp + heal)
+                print(f"The boss drains your life and heals for {heal}.")
+            if skill.get("curse"):
+                evil += 2
+                print("Dark curse corrupts you. Evil +2")
+
+        time.sleep(0.6)
+
+    # Battle conclusion
+    if hp <= 0:
+        print_colored("\nYou have been slain by the boss...", Colors.RED)
+        game_over = True
+        game_back = True
+        return False
+    else:
+        print_colored(f"\nVICTORY! You defeated the {boss_name}!", Colors.GREEN + Colors.BOLD)
+        print(f"You obtained: {loot_item}")
+        have_list.append(loot_item)
+        player_total_score += current_phase.get("score_reward", 30)
+        defeated_enemies.append(boss_id)
+        return True
 
 def write_creepy_desktop_file(tier: int):
     global meta_file_tier, death_count, session_start_time
@@ -507,36 +647,36 @@ def character_creation():
         choice = input("origin> ").strip().lower()
         if choice == "1" or choice == "warrior":
             player_class = "warrior"
-            hp = 20
+            hp = 35
             base_attack_bonus = 2
             base_defense_bonus = 1
             have_list.append("iron sword")
             player_weapon_damage = 3
             print("You choose the path of the Warrior.")
-            print("HP: 20 | ATK Bonus: +2 | DEF Bonus: +1")
+            print("HP: 35 | ATK Bonus: +2 | DEF Bonus: +1")
             print("Starting item: Iron Sword")
             break
         elif choice == "2" or choice == "rogue":
             player_class = "rogue"
-            hp = 15
+            hp = 30
             base_attack_bonus = 1
             escape_bonus = 2
             have_list.append("lockpick")
             have_list.append("rope")
             player_weapon_damage = 2
             print("You choose the path of the Rogue.")
-            print("HP: 15 | ATK Bonus: +1 | Escape Bonus: +2")
+            print("HP: 30 | ATK Bonus: +1 | Escape Bonus: +2")
             print("Starting items: Lockpick, Rope")
             break
         elif choice == "3" or choice == "mage":
             player_class = "mage"
-            hp = 12
+            hp = 27
             base_attack_bonus = 3
             light = True
             have_list.append("magic staff")
             player_weapon_damage = 4
             print("You choose the path of the Mage.")
-            print("HP: 12 | ATK Bonus: +3 | Permanent inner light")
+            print("HP: 27 | ATK Bonus: +3 | Permanent inner light")
             print("Starting item: Magic Staff")
             break
         else:
@@ -2396,7 +2536,43 @@ def tomb():
                 print("No more power comes from further prayer.")
         elif cmd == "open coffin":
             print("You open a stone coffin.")
-            print("Inside: bones and a broken amulet. And a magic key.")
+            if 'broken amulet' not in have_list and 'a magic key' not in have_list:
+                print("Inside: bones and a broken amulet. And a magic key.")
+                print('But as you want to touch them, the wizard sprit(which is evil to you) suddenly appears!')
+                wizard_phases = [
+                    {
+                        "hp_threshold": 40,
+                        "dialogue": "Your great-great grandfather's spirit stands before you, staff raised.(That is beause he forgot everything)",
+                        "attacks": [
+                            {"name": "Arcane Bolt", "description": "Purple magic streaks toward you."},
+                            {"name": "Frost Barrier", "description": "Ice shards explode outward."},
+                            {"name": "Time Distortion", "description": "Your movements slow to a crawl.", "stun": True}
+                        ],
+                        "enrage": False,
+                        "score_reward": 50
+                    },
+                    {
+                        "hp_threshold": 20,
+                        "dialogue": "\"You have grown strong... but you still do not understand the curse.\"",
+                        "attacks": [
+                            {"name": "Ancient Seal", "description": "Glowing runes bind your body.", "armor_break": True, "stun": True},
+                            {"name": "Soul Burst", "description": "Raw spiritual power detonates around you."}
+                        ],
+                        "enrage": True,
+                        "score_reward": 90
+                    },
+                    {
+                        "hp_threshold": 8,
+                        "dialogue": "\"Very well... I will show you my full power!\"",
+                        "attacks": [
+                            {"name": "Final Judgment", "description": "All light fades as pure magic descends.", "lifesteal": True, "curse": True},
+                            {"name": "Bloodline Strike", "description": "Your very blood resonates with the attack."}
+                        ],
+                        "enrage": True,
+                        "score_reward": 120
+                    }
+                ]
+                boss_fight("Ancestral Wizard Spirit", 35, 5, wizard_phases, None, "final_wizard")
             if "broken amulet" not in have_list:
                 have_list.append("broken amulet")
                 print("You take the broken amulet.")
@@ -2548,13 +2724,10 @@ def misty_swamp():
             print("\n===== SWAMP GUARDIAN ENDING =====")
             print("The swamp is purified! All toxins fade away.")
             print('A voice booms: Thank you, mortal. I will give you a gift.')
-            print('You receive a magic key.')
-            player_total_score += 10
-            have_list.append('a magic key')
-            hp += 20
+            print('You receive 30 hp.')
+            player_total_score += 35
+            hp += 30
             print('HP +20')
-            if play_count == 2:
-                print('Mortol, you can break the curse now.')
             misty_end = True
             gamestart()
             return
@@ -4542,7 +4715,7 @@ def gamestart():
     global grave_looted, church_purified, church_desecrated
     global x2,blood_moon,defeated_enemies,torch_durability
     global meta_file_tier
-    global player_total_score
+    global player_total_score,guari
     
     game_over = False
     altar = False
@@ -4930,6 +5103,42 @@ def gamestart():
                         can_enter_altar()
                         if x2 == True:
                             if rune1 and rune2 and rune3:
+                                guardian_phases = [
+                                    {
+                                        "hp_threshold": 60,
+                                        "dialogue": "Stone armor rises from the altar. The ancient seal guardian awakens to test the heir.",
+                                        "attacks": [
+                                            {"name": "Stone Fist", "description": "Heavy rocky fist slams down with crushing force."},
+                                            {"name": "Rune Shockwave", "description": "Glowing runes send a wave of sealing energy outward."},
+                                            {"name": "Crushing Slam", "description": "It lifts its fist and strikes the ground with full force."}
+                                        ],
+                                        "enrage": False,
+                                        "score_reward": 40
+                                    },
+                                    {
+                                        "hp_threshold": 35,
+                                        "dialogue": "Cracks spread across its stone body. Dark power seeps out, strengthening its strikes!",
+                                        "attacks": [
+                                            {"name": "Shadow Crush", "description": "Darkness wraps around its fist and slams into you."},
+                                            {"name": "Soul Drain", "description": "Ancient runes drain your life force.", "lifesteal": True},
+                                            {"name": "Seal Burst", "description": "Concentrated sealing power explodes at your feet.", "curse": True}
+                                        ],
+                                        "enrage": False,
+                                        "score_reward": 60
+                                    },
+                                    {
+                                        "hp_threshold": 15,
+                                        "dialogue": "\"You are not worthy... of breaking the seal.\" The guardian enters berserk final form!",
+                                        "attacks": [
+                                            {"name": "Annihilation Strike", "description": "Full power blow, aimed to shatter you in one hit."},
+                                            {"name": "Eternal Seal", "description": "All runes ignite at once, corrupting your spirit.", "curse": True, "lifesteal": True},
+                                            {"name": "Final Judgment", "description": "The guardian channels all remaining power for a killing blow."}
+                                        ],
+                                        "enrage": True,
+                                        "score_reward": 80
+                                    }
+                                ]
+                                boss_fight("Ancient Seal Guardian", 60, 7, guardian_phases, "guardian core", "seal_guardian")
                                 good = good - evil
                                 write_creepy_desktop_file(5)
                                 print('All runes glow! The ancient seal trembles!')
@@ -5472,6 +5681,29 @@ def gamestart():
                                 print('The statue has already been purified.')
 
                         elif ch == 'desecrate':
+                            phantom_phases = [
+                                {
+                                    "hp_threshold": 18,
+                                    "dialogue": "A twisted phantom emerges from the stained glass, dripping with dark energy.",
+                                    "attacks": [
+                                        {"name": "Ghostly Touch", "description": "Ice-cold hand passes through your chest."},
+                                        {"name": "Soul Siphon", "description": "Dark energy drains your life force.", "lifesteal": True}
+                                    ],
+                                    "enrage": False,
+                                    "score_reward": 30
+                                },
+                                {
+                                    "hp_threshold": 9,
+                                    "dialogue": "The phantom screams and merges with the surrounding shadows!",
+                                    "attacks": [
+                                        {"name": "Shadow Blast", "description": "Wave of pure darkness explodes outward."},
+                                        {"name": "Curse of Despair", "description": "Hopelessness fills your mind.", "curse": True, "armor_break": True}
+                                    ],
+                                    "enrage": True,
+                                    "score_reward": 50
+                                }
+                            ]
+                            boss_fight("Corrupted Church Phantom", 18, 4, phantom_phases, "demon claw", "phantom")
                             if 'phantom' not in defeated_enemies:
                                 combat("corrupted church phantom", 12, 3, "demon claw fragment", 8,enemy_id='phantom')
                             if not church_desecrated:
@@ -5735,6 +5967,29 @@ def gamestart():
                     for i in have_list:
                         print(i)
                 elif camp_cmd == 'search grave':
+                    gravedigger_phases = [
+                        {
+                            "hp_threshold": 14,
+                            "dialogue": "The undead gravedigger rises from the dirt, rusty shovel in hand.",
+                            "attacks": [
+                                {"name": "Shovel Strike", "description": "Heavy metal shovel swings at your head."},
+                                {"name": "Dirt Throw", "description": "Dirt and rocks fly into your face.", "stun": True}
+                            ],
+                            "enrage": False,
+                            "score_reward": 25
+                        },
+                        {
+                            "hp_threshold": 7,
+                            "dialogue": "The gravedigger roars and enters a furious rage!",
+                            "attacks": [
+                                {"name": "Frenzied Swipe", "description": "Wild rapid strikes leave no opening."},
+                                {"name": "Grave Slam", "description": "Shovel slams the ground, shaking your bones."}
+                            ],
+                            "enrage": True,
+                            "score_reward": 35
+                        }
+                    ]
+                    boss_fight("Undead Gravedigger", 14, 3, gravedigger_phases, "gold coins", "grave_boss")
                     if rune2 == False:
                         print('You found RUNE STONE 2!')
                         print('Rune text: Three runes control the seal. And someone should cotrol it again with it.')
@@ -6962,7 +7217,7 @@ def main():
                 else:
                     have_list = []
                 light = False
-                hp = 30
+                hp += 25
                 l = 'a lamp, '
                 k = 'a key, '
                 n = 'a note, '
