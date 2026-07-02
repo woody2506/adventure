@@ -2621,7 +2621,7 @@ def tomb():
         while True:
             c = input().strip().lower()
             if c == "menu":
-                menu()
+                main()
                 return
 
 # misty swamp
@@ -3259,7 +3259,7 @@ def time_travel_origin():
             while True:
                 c = input().strip().lower()
                 if c == "menu":
-                    menu()
+                    main()
                     return
 
 def jump_scare_face(mode="normal"):
@@ -3402,7 +3402,7 @@ def hill():
         while True:
             c = input().strip().lower()
             if c == 'menu':
-                menu()
+                main()
                 return
             else:
                 print('Please answer the question.')
@@ -4169,7 +4169,7 @@ def cave():
                                                                 while True:
                                                                     c = input().strip().lower()
                                                                     if c == 'menu':
-                                                                        menu()
+                                                                        main()
                                                                         return
                                                                     else:
                                                                         print('Please answer the question.')
@@ -4207,7 +4207,7 @@ def cave():
                                                         while True:
                                                             c = input().strip().lower()
                                                             if c == 'menu':
-                                                                menu()
+                                                                main()
                                                                 return
                                                             else:
                                                                 print('Please answer the question.')
@@ -4237,7 +4237,7 @@ def cave():
                                                 while True:
                                                     c = input().strip().lower()
                                                     if c == 'menu':
-                                                        menu()
+                                                        main()
                                                         return
                                                     else:
                                                         print('Please answer the question.')
@@ -4252,7 +4252,7 @@ def cave():
                                         while True:
                                             c = input().strip().lower()
                                             if c == 'menu':
-                                                menu()
+                                                main()
                                                 return
                                             else:
                                                 print('Please answer the question.')
@@ -4262,7 +4262,7 @@ def cave():
                                     while True:
                                         c = input().strip().lower()
                                         if c == 'menu':
-                                            menu()
+                                            main()
                                             return
                                         else:
                                             print('Please answer the question.')
@@ -4284,7 +4284,7 @@ def cave():
                                 while True:
                                     c = input().strip().lower()
                                     if c == 'menu':
-                                        menu()
+                                        main()
                                         return
                                     else:
                                         print('Please answer the question.')
