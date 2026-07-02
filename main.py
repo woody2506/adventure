@@ -3872,8 +3872,8 @@ def cave():
                                                                 while True:
                                                                     print("Two paths appear in front of you!")
                                                                     print("One is BRIGHT, one is DARK")
-                                                                    choice = input("go bright / go dark: ").strip().lower()
-                                                                    if choice == "go dark":
+                                                                    choice = input("1.go bright / 2.go dark: ").strip().lower()
+                                                                    if choice == "go dark" or choice == '2':
                                                                         print("You found DIAMONDS! You are rich!")
                                                                         if 'a pick-axe' in have_list and 'diamond vault' in have_list:
                                                                             print('You take all of the tresures away, you are the richest person in your country!')
@@ -3925,7 +3925,7 @@ def cave():
                                                                             game_back = True
                                                                             cleared_ending = True
                                                                             break
-                                                                    elif choice == "go bright":
+                                                                    elif choice == "go bright" or choice == '1':
                                                                         print("It's a trap! SPIKES KILL YOU!")
                                                                         print('You should try again and go to the dark road.')
                                                                         print('Game over!')
@@ -3940,6 +3940,16 @@ def cave():
                                                                             print(have_list[i])
                                                                     else:
                                                                         print("Invalid command!")
+                                                                if game_over == True:
+                                                                    print("=== END ===")
+                                                                    print("Type 'menu' to return main menu")
+                                                                    while True:
+                                                                        c = input().strip().lower()
+                                                                        if c == 'menu':
+                                                                            main()
+                                                                            return
+                                                                        else:
+                                                                            print('Please answer the question.')
                                                             elif west3 == "orc":
                                                                 if orc_in == False:
                                                                     orc_tribe_dungeon()
