@@ -4491,7 +4491,7 @@ def advance_time():
                     main()
                     return
     elif time_period == 'night' and torch or time_period == 'night' and light:
-        print('\nYour light protects you from the darkness.')
+        print('Your light protects you from the darkness.')
     # Weather
     weather_duration -= 1
     if weather_duration <= 0:
@@ -4515,7 +4515,7 @@ def advance_time():
                             main()
                             return
         else:
-            print('\nYour amulet protects you from the harsh weather.')
+            print('Your amulet protects you from the harsh weather.')
     if current_weather == 'light_rain' and random.randint(1,2) == 1:
         print('You are in the rain, so romantic, luckily, you feel better. Hp +1')
         hp += 1
