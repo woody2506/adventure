@@ -341,8 +341,8 @@ def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
                 boss_hp = min(max_hp, boss_hp + heal)
                 print(f"The boss drains your life and heals for {heal}.")
             if skill.get("curse"):
-                evil += 2
-                print("Dark curse corrupts you. Evil +2")
+                evil += 3
+                print("Dark curse corrupts you. Evil +3")
 
         time.sleep(0.6)
 
