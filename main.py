@@ -248,7 +248,7 @@ def print_glitch(text, duration=0.5):
     print(text)
 
 def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
-    global hp, defeated_enemies, player_total_score, amulet,game_back,game_over
+    global hp, defeated_enemies, player_total_score, amulet,game_back,game_over,good,evil
 
     if boss_id in defeated_enemies:
         print(f"The {boss_name} has already been defeated.")
