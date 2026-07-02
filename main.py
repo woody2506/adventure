@@ -7190,6 +7190,8 @@ def main():
 
     game_over = False
     force_over = False
+    if play_count == 1 and cleared_ending == True:
+        play_count == 2
     if play_count == 3:
         play_count = 4
     if play_count == 2 and cleared_ending == True:
@@ -7313,6 +7315,8 @@ def main():
                 print('So, you will go to the menu.')
                 game_over = False
                 cleared_ending = False
+                menu()
+            menu()
         else:
             print('So, you died, and you will go back to the menu to choose if you want to challenge again.')
             print('And you have to come to the first turn of the cycle.')
