@@ -76,8 +76,8 @@ sanity = 100
 torch_durability = 20
 TORCH_MAX = 20
 
-# Weapon Durability (5 attacks before breaking)
-weapon_durability = 5
+# Weapon Durability (10 attacks before breaking)
+weapon_durability = 10
 weapon_broken = False
 
 # Amulet Durability System
@@ -299,6 +299,16 @@ def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
             if is_crit:
                 base_dmg *= 2
                 print_colored("CRITICAL HIT!", Colors.YELLOW + Colors.BOLD)
+            if not weapon_broken and player_weapon_damage > 1:
+                weapon_durability -= 1
+                if weapon_durability <= 0:
+                    weapon_broken = True
+                    player_weapon_damage = 1
+                    for w in ["iron sword", "cursed greatsword", "captain longsword",'ghost sword']:
+                        if w in have_list:
+                            have_list.remove(w)
+                    print_colored("Your weapon shatters! You fight with bare fists from now on.",Colors.YELLOW)
+                    player_total_score -= 15
             
             boss_hp -= base_dmg
             print(f"You deal {base_dmg} damage to the {boss_name}.")
