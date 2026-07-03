@@ -70,6 +70,7 @@ hut_ghost_story = 0
 death_count = 0
 misty_end = False
 x2 = None
+sanity = 100
 
 # Torch Durability
 torch_durability = 20
@@ -214,6 +215,10 @@ META_FILENAMES = [
     ".i_know_you.txt",
     ".it_is_too_late.txt"
 ]
+
+def adjust_sanity(value):
+    global sanity
+    sanity = max(0, min(100, sanity + value))
 
 def get_real_username():
     try:
@@ -4637,9 +4642,27 @@ def blood_rift_dungeon():
 
 def advance_time():
     global step_count, time_period, festival_steps, festival_mode
-    global weather_duration, weather_damage, amulet, game_over, game_back,good,evil,hp,current_weather,blood_dungeon_cleared,blood_lord_seal_obtained,blood_moon,blood_rune_agony,blood_warrior_alive,blood_warrior_hp
+    global weather_duration, weather_damage, amulet, game_over, game_back,good,evil,hp,current_weather,blood_dungeon_cleared,blood_lord_seal_obtained,blood_moon,blood_rune_agony,blood_warrior_alive,blood_warrior_hp,sanity
 
     consume_step_durability()
+    if not light and not torch:
+        sanity -= 3
+    if time_period == "night" and random.randint(1, 3) == 1:
+        sanity -= 2
+    if sanity <= 0:
+        print("Your mind shatters into endless madness.")
+        game_over = True
+        game_back = True
+
+    if sanity <= 20:
+        if random.randint(1, 3) == 1:
+            print("Hallucinations warp everything you see.")
+            hp -= 3
+            evil += 5
+    elif sanity <= 40:
+        if random.randint(1, 2) == 1:
+            print("Cold dread crawls down your spine.")
+            hp -= 1
     step_count += 1
     if step_count % 4 == 0:
         festival_steps += 1
@@ -6343,7 +6366,8 @@ def menu():
             print('Please answer the question.')
 # main
 def main():
-    global have_list, game_over, light, hp, l, k, n, s, f, w, p, sc, secret_unlocked, map_unlocked, amulet, turn_count, chain1, chain2, diary_read, legacy_unlocked, new_game_plus, ng_amulet, ng_compass, ng_diary, current_room, torch, no_light_run, all_collected, rune1, rune2, rune3, faith, sky, moon, trap_protect, rune, grandmother, gate_unlock, old_diary_readed, grave_diary_read, force_over, game_back, play_count, tomb_unlocked, old_note_readed,cleared_ending,time_period,step_count,death_count,good,evil,death_corpse_item,death_location,has_death_corpse,one_hole_in,two_hole_in,three_hole_in,four_hole_in,no_death_run,player_total_score
+    global have_list, game_over, light, hp, l, k, n, s, f, w, p, sc, secret_unlocked, map_unlocked, amulet, turn_count, chain1, chain2, diary_read, legacy_unlocked, new_game_plus, ng_amulet, ng_compass, ng_diary, current_room, torch, no_light_run, all_collected, rune1, rune2, rune3, faith, sky, moon, trap_protect, rune, grandmother, gate_unlock, old_diary_readed, grave_diary_read, force_over, game_back, play_count, tomb_unlocked, old_note_readed,cleared_ending,time_period,step_count,death_count,good,evil,death_corpse_item,death_location,has_death_corpse,one_hole_in,two_hole_in,three_hole_in,four_hole_in,no_death_run,player_total_score,sanity
+
     today = datetime.date.today()
     m = today.month
     d = today.day
@@ -7308,6 +7332,7 @@ def main():
                 grave_diary_read = False
                 tomb_unlocked = False
                 old_note_readed = False
+                sanity = 100
                 print('')
                 print('Welcome back to the death adventure!')
                 print('The cave remembers you!')
@@ -7346,6 +7371,7 @@ def main():
             four_hole_in = False
             death_location = current_room
             has_death_corpse = True
+            sanity = 100
             if args.godmode:
                 pass
             else:
@@ -7398,6 +7424,7 @@ def main():
             play_count = 1
             time_period = "day"
             step_count = 0
+            sanity = 100
 
             # Morality System
             good = 0
