@@ -427,7 +427,7 @@ def init_military_password():
 init_military_password()
 
 def consume_step_durability():
-    global light, torch_durability,sanity,game_back,game_over
+    global light, torch_durability,sanity,game_back,game_over,hp,evil
 
     if not light and not torch:
         sanity -= 3
