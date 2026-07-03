@@ -427,12 +427,39 @@ def init_military_password():
 init_military_password()
 
 def consume_step_durability():
-    global light, torch_durability
+    global light, torch_durability,sanity,game_back,game_over
+
+    if not light and not torch:
+        sanity -= 3
+    if time_period == "night" and random.randint(1, 3) == 1:
+        sanity -= 2
+    if sanity <= 0:
+        print("Your mind shatters into endless madness.")
+        game_over = True
+        game_back = True
+
+    if sanity <= 20:
+        if random.randint(1, 3) == 1:
+            print("Hallucinations warp everything you see.")
+            hp -= 3
+            evil += 5
+    elif sanity <= 40:
+        if random.randint(1, 2) == 1:
+            print("Cold dread crawls down your spine.")
+            hp -= 1
     if light and torch_durability > 0:
         torch_durability -= 1
         if torch_durability <= 0:
             light = False
             print("Your light burns out completely. Darkness closes in.")
+    if game_over:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input().strip().lower()
+            if c == "menu":
+                main()
+                return
 
 def load_messages():
     if not os.path.exists(MSG_FILE):
@@ -4645,24 +4672,6 @@ def advance_time():
     global weather_duration, weather_damage, amulet, game_over, game_back,good,evil,hp,current_weather,blood_dungeon_cleared,blood_lord_seal_obtained,blood_moon,blood_rune_agony,blood_warrior_alive,blood_warrior_hp,sanity
 
     consume_step_durability()
-    if not light and not torch:
-        sanity -= 3
-    if time_period == "night" and random.randint(1, 3) == 1:
-        sanity -= 2
-    if sanity <= 0:
-        print("Your mind shatters into endless madness.")
-        game_over = True
-        game_back = True
-
-    if sanity <= 20:
-        if random.randint(1, 3) == 1:
-            print("Hallucinations warp everything you see.")
-            hp -= 3
-            evil += 5
-    elif sanity <= 40:
-        if random.randint(1, 2) == 1:
-            print("Cold dread crawls down your spine.")
-            hp -= 1
     step_count += 1
     if step_count % 4 == 0:
         festival_steps += 1
