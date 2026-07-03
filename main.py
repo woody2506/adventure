@@ -362,6 +362,7 @@ def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
         have_list.append(loot_item)
         player_total_score += current_phase.get("score_reward", 30)
         defeated_enemies.add(boss_id)
+        adjust_sanity(-10)
         return True
     if game_over:
         print("=== END ===")
@@ -429,25 +430,27 @@ init_military_password()
 def consume_step_durability():
     global light, torch_durability,sanity,game_back,game_over,hp,evil
 
-    if not light and not torch:
-        sanity -= 3
-    if time_period == "night" and random.randint(1, 3) == 1:
-        sanity -= 2
-    if sanity <= 0:
-        print("Your mind shatters into endless madness.")
-        game_over = True
-        game_back = True
+    if not args.godmode:
+        if not light and not torch:
+            sanity -= 3
+        if time_period == "night" and random.randint(1, 3) == 1:
+            sanity -= 2
+        if sanity <= 0:
+            print("Your mind shatters into endless madness.")
+            game_over = True
+            game_back = True
 
-    if sanity <= 20:
-        if random.randint(1, 3) == 1:
-            print("Hallucinations warp everything you see.")
-            hp -= 3
-            evil += 5
-    elif sanity <= 40:
-        if random.randint(1, 2) == 1:
-            print("Cold dread crawls down your spine.")
-            hp -= 1
-    if light and torch_durability > 0:
+        if sanity <= 20:
+            if random.randint(1, 3) == 1:
+                print("Hallucinations warp everything you see.")
+                hp -= 3
+                evil += 5
+        elif sanity <= 40:
+            if random.randint(1, 2) == 1:
+                print("Cold dread crawls down your spine.")
+                hp -= 1
+    
+    if light and torch_durability <= 0:
         torch_durability -= 1
         if torch_durability <= 0:
             light = False
@@ -521,9 +524,12 @@ def survival_tick():
                 return
         
 def end_score_rating():
-    global no_death_run,SCORE_SAVE_FILE,player_total_score
+    global no_death_run,SCORE_SAVE_FILE,player_total_score,sanity
 
-    total = player_total_score
+    if sanity <= 20:
+        total = player_total_score + 50
+    else:
+        total = player_total_score
     if no_death_run:
         total += 100
     if total >= 1000:
@@ -546,6 +552,8 @@ def end_score_rating():
     print("\n==================== FINAL RESULT ====================")
     print(f"Total Score: {total}")
     print(f"Final Rating: {rank}")
+    if sanity <= 20:
+        print('See how crazy you are, you pass this game with less then 20 sanity, crazy!')
     print("======================================================\n")
 
     ranking = []
@@ -4469,6 +4477,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
             if enemy_id is not None:
                 defeated_enemies.add(enemy_id)
             player_total_score += 25
+            adjust_sanity(-3)
             return True
 
         if hp <= 0:
@@ -5029,6 +5038,7 @@ def gamestart():
                     if "some food" in have_list:
                         have_list.remove("some food")
                         hp += 3
+                        adjust_sanity(30)
                         print("You eat food. HP +3")
                     else:
                         print("You have no food.")
@@ -5038,6 +5048,7 @@ def gamestart():
                         have_list.remove("some water in the bottle")
                         hp += 2
                         print("You drink water. HP +2")
+                        adjust_sanity(20)
                     else:
                         print("You have no water.")
                 elif take == 'bag':
@@ -5542,6 +5553,7 @@ def gamestart():
                             print("You stare at the merchant. He feels awkward.")
                         elif m == 'attack merchant' or m == 'kill merchant' or m == 'attack him' or m == 'kill him' or m == 'fight him' or m == 'fight merchant':
                             print('Merchant: Really? Attack a definess poor merchant? You are so evil!')
+                            adjust_sanity(-5)
                             evil += 5
                         elif m == "wave hand":
                             print("You wave. The merchant waves back lazily.")
@@ -5583,17 +5595,20 @@ def gamestart():
                                 print("Merchant: I came here with my best friend, chasing the diamond legend.\n")
                                 print('You can still type ask more if you want to know more.\n')
                                 good += 5
+                                adjust_sanity(5)
                                 merchant_story_stage = 1
                             elif merchant_story_stage == 1:
                                 print("Merchant: He was the last guardian of this cave. Your grandfather's generation.")
                                 print("Merchant: He chose to stay inside, and I chose to wait outside.\n")
                                 merchant_story_stage = 2
+                                adjust_sanity(5)
                                 good += 5
                             elif merchant_story_stage == 2:
                                 print("Merchant: I've seen hundreds of people walk in. Most never come out.")
                                 print("Merchant: You're the first one with his eyes. The bloodline shows.\n")
                                 good += 5
                                 merchant_story_stage = 3
+                                adjust_sanity(5)
                             elif merchant_story_stage == 3:
                                 print("Merchant: End the cycle. Don't repeat his mistake.")
                                 print("Merchant: Take this. He left it for the heir.\n")
@@ -5601,6 +5616,7 @@ def gamestart():
                                     have_list.append("stone rune1")
                                     rune1 = True
                                     print("You got a rune!")
+                                adjust_sanity(5)
                                 player_total_score += 20
                                 if evil >= 0:
                                     evil = 0
@@ -5669,10 +5685,14 @@ def gamestart():
             print(f"Time: {time_period}")
             print(f"Good: {good} | Evil: {evil}")
             print(f"New Game+: {play_count}")
+            print('Sanity: ?')
         elif go == 'west':
             print('You found a HAUNTED HUT in forest.')
             print('You hear a woman crying: forgive me!')
             print('You see there still to west. Type west to go or talk ro talk.')
+            if festival_mode:
+                print("Ghost smiles: Happy full moon! Here's a gift!")
+                hp += 2
             while True:
                 consume_step_durability()
                 h = input('hut> ').strip().lower()
@@ -5692,9 +5712,6 @@ def gamestart():
                         break
                     else:
                         print('You have no diary.')
-                elif festival_mode:
-                    print("Ghost smiles: Happy full moon! Here's a gift!")
-                    hp += 2
                 elif h == "ask wish":
                     print("Ghost: I only wish to see my husband one last time.")
                     print("He stayed in the cave to watch over me, never left.")
@@ -5711,7 +5728,6 @@ def gamestart():
                         print("Two ancient spirits meet after hundreds of years.")
                         print("They wave goodbye to you, their souls rest in peace.")
                         print("===== SPIRIT PEACE SIDE ENDING =====")
-                        player_total_score += 10
                         trap_protect = True
                     else:
                         print("A strange force blocks the way. Can't do this now.")
@@ -5754,6 +5770,7 @@ def gamestart():
                         elif ch == 'purify':
                             if not church_purified:
                                 print('The statue glows with holy light.')
+                                adjust_sanity(10)
                                 have_list.append('holy amulet')
                                 amulet = True
                                 church_purified = True
@@ -5788,6 +5805,7 @@ def gamestart():
                             if 'phantom' not in defeated_enemies:
                                 combat("corrupted church phantom", 12, 3, "demon claw fragment", 8,enemy_id='phantom')
                             if not church_desecrated:
+                                adjust_sanity(-15)
                                 print('Dark power surrounds you.')
                                 have_list.append('demon claw')
                                 player_total_score += 20
@@ -6081,9 +6099,9 @@ def gamestart():
                         print('You find a hole for a rune, but you may have already took the rune away.')
                 elif camp_cmd == 'dig grave':
                     if grave_take == False:
-                        print('You dig the grave. There is some treasure and a diary. Take treasure or leave it? take / leave (Even you choose any choice, you will read the diary.)')
+                        print('You dig the grave. There is some treasure and a diary. Take treasure or leave it? 1.take / 2.leave (Even you choose any choice, you will read the diary.)')
                         choice = input().strip().lower()
-                        if choice == 'take':
+                        if choice == 'take' or choice == '1':
                             print('You take the treasure. The spirit rages.')
                             have_list.append('a diamond')
                             evil += 15
@@ -6106,9 +6124,10 @@ def gamestart():
                             print('')
                             grave_diary_read = True
                             player_total_score -= 30
+                            adjust_sanity(-10)
                         elif choice == 'leave' or choice == 'back':
                             print('You respect the deceased. The spirit approves.')
-                            good += 20
+                            good += 15
                             print('')
                             print('You read the diary:')
                             print('You found the EXPLORER’S COMPLETE DIARY!')
@@ -6126,6 +6145,7 @@ def gamestart():
                             print('Then he give up. And he also says that if you see this diary, you will have to choose an answer.')
                             print('There is still some words, but you can not read them because they are covered by a lot of blue ink.')
                             print('')
+                            adjust_sanity(10)
                             player_total_score += 20
                             grave_diary_read = True
                         else:
