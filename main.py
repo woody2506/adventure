@@ -5128,6 +5128,7 @@ def gamestart():
                     elif tele == 'down':
                         if 'rope' in have_list:
                             print('You go down safetly with your rope.')
+                            altar = False
                             break
                         else:
                             print('You jump down the high altar and break all of your bones!')
