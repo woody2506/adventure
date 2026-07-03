@@ -4460,6 +4460,7 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
                         if w in have_list:
                             have_list.remove(w)
                     print("Your weapon shatters! You fight with bare fists from now on.")
+                    player_total_score -= 15
             if enemy_hp > 0:
                 enemy_dmg = random.randint(enemy_min_dmg, enemy_max_dmg)
                 final_dmg = max(0, enemy_dmg - base_defense_bonus - player_armor_reduction)
@@ -4479,12 +4480,14 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
             if enemy_hp <= 5:
                 if random.randint(1, 10) <= escape_chance:
                     print("You successfully escape.")
+                    player_total_score -= 30
                     return None
                 else:
                     enemy_dmg = random.randint(enemy_min_dmg, enemy_max_dmg)
                     final_dmg = max(0, enemy_dmg - base_defense_bonus)
                     hp -= final_dmg
                     print(f"Escape failed! You take {final_dmg} damage while running.")
+                    player_total_score -= 10
             else:
                 print('The enemy is strong enough so you can not flee.')
                 print('You then take 1 damage from the enemy.')
