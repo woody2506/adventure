@@ -431,14 +431,21 @@ def consume_step_durability():
     global light, torch_durability,sanity,game_back,game_over,hp,evil
 
     if not args.godmode:
-        if not light and not torch:
+        if not light and not torch and time_period == 'night' or  not light and not torch and time_period == 'dusk':
             sanity -= 3
         if time_period == "night" and random.randint(1, 3) == 1:
             sanity -= 2
         if sanity <= 0:
-            print("Your mind shatters into endless madness.")
-            game_over = True
-            game_back = True
+            if hp > 15:
+                print('You mind shtters.')
+                print('However, you rarely survive.')
+                print('Hp -15')
+                hp -= 15
+                sanity = 30
+            else:
+                print("Your mind shatters into endless madness.")
+                game_over = True
+                game_back = True
 
         if sanity <= 20:
             if random.randint(1, 3) == 1:
