@@ -5941,6 +5941,8 @@ def gamestart():
             print('You find a hidden trail leading to an ABANDONED CAMP. There is a camp in the west. And also a grave in the east. And the path still leads to a hill to south.')
             print('You see a grave, something is written on it: game developer, killed by a lot of bug and error.')
             print('A voice booms: Dig the grave, then you will find me. Or, you can search the grave.')
+            if rune2 == False:
+                print('Hint: Search the grave, and then...(Too low to hear clearly)')
             if blood_moon:
                 print('Bloody moon in the sky, a crimson crack appears on the ground, type down to go down.')
             while True:
