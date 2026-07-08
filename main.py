@@ -575,7 +575,7 @@ def werewolf_encounter():
     print("-------------------------\n")
 
 def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
-    global hp, defeated_enemies, player_total_score, amulet,game_back,game_over,good,evil,weapon_broken,player_armor_reduction,player_weapon_damage,player_class
+    global hp, defeated_enemies, player_total_score, amulet,game_back,game_over,good,evil,weapon_broken,player_armor_reduction,player_weapon_damage,player_class,weapon_durability,weather_duration,weather_damage
 
     if boss_id in defeated_enemies:
         print(f"The {boss_name} has already been defeated.")
