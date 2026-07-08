@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 
 
-skill_uses_remaining = 3
+skill_uses_remaining = 2
 defeated_werewolf = False
 session_start_time = time.time()
 have_list = []
