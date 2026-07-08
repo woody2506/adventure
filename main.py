@@ -4021,37 +4021,11 @@ def cave():
         if op == 'unlock':
             if 'a key' in have_list:
                 x = random.randint(1,5)
-                if x == 1:
-                    jump_scare_face('flash')
-                    print('You see a dart trap. A poisoned dart shoots at you.')
-                    print('It gets you!')
-                    if 'super amulet' not in have_list:
-                        print('Game over!')
-                        game_over = True
-                        game_back = True
-                        break
-                    elif 'super amulet' in have_list:
-                        print('Your amulet protects you!')
-                        have_list.remove('super amulet')
+                if x == 9:
+                    pass
                 else:
-                    fake_key = random.randint(1,10)
-                    if fake_key == 1:
-                        jump_scare_face('flash')
-                        print("The key is fake! It breaks inside the lock.")
-                        print("A ghost wakes up!")
-                        if festival_mode:
-                            print("Ghost smiles: Happy full moon! Here's a gift!")
-                            hp += 2
-                        else:
-                            if 'super amulet' not in have_list:
-                                print('It kills you!')
-                                print('Game over!')
-                                game_over = True
-                                game_back = True
-                                break
-                            elif 'super amulet' in have_list:
-                                print('Your amulet protects you!')
-                                have_list.remove('super amulet')
+                    if x == 8:
+                        pass
                     else:
                         print('You succeed in unlock the grate. There is a path to the west.')
                         player_total_score += 10
