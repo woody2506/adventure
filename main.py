@@ -4192,6 +4192,7 @@ def cave():
                                 print('You succeed in unlock the grate. There is a path to the west.')
                                 player_total_score += 10
                                 print('You see here a small library, type library to go in.')
+                                print('You feel that the way back is collapsed.')
                                 break
                     else:
                         print('You do not have a key, you unleashed a ghost, the ghost kill you.')
@@ -4234,7 +4235,6 @@ def cave():
                     main()
                     return
         if current_room == 'first go':
-            print('You feel that the way back is collapsed.')
             while True:
                 print('You see a sewer, type sewer to go dive into it.')
                 if has_death_corpse and death_location == current_room:
