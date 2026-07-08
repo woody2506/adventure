@@ -540,6 +540,10 @@ def werewolf_encounter():
             continue
 
         if boss_hp > 0:
+            if boss_hp >= 20:
+                atk_roll == random.randint(1,4)
+            else:
+                atk_roll == random.radint(1.5)
             atk_roll = random.randint(1, 5)
             if atk_roll == 1 and not phase_two_triggered:
                 print("The werewolf lunges and bites deep!")
