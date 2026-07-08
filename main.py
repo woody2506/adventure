@@ -6317,11 +6317,16 @@ def gamestart():
                         print("Ghost smiles: Happy full moon! Here's a gift!")
                         hp += 2
                     if amulet == False or ng_amulet == False or has_elf_amulet == False:
-                        print('There is a ghost hidden in the firepit. It kills you!')
-                        print('Game over!')
-                        game_over = True
-                        game_back = True
-                        break
+                        if hp > 3:
+                            print('A ghost hit you then float in the high sky.')
+                            print('Hp -3')
+                            hp -= 3
+                        else:
+                            print('There is a ghost hidden in the firepit. It kills you!')
+                            print('Game over!')
+                            game_over = True
+                            game_back = True
+                            break
                     elif args.godmode:
                         print('The ghost kneels to you.')
                         print('Ghost: Wish you good luck, my god.')
