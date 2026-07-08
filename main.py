@@ -4073,6 +4073,9 @@ def sewer():
         sewer_cmd = input('sewer> ').strip().lower()
         if sewer_cmd == 'west' or sewer_cmd == 'back' or sewer_cmd == 'leave':
             print('You climb back to the cave path.')
+            print('Some magic energy force blow you back to the house.')
+            print('You then go to the cave again.')
+            cave()
             return
         elif sewer_cmd == 'up':
             misty_swamp()
