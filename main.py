@@ -4062,7 +4062,7 @@ def underwater_ruins():
                 return
 
 def sewer():
-    global hp,old_diary_readed,old_note_readed,game_back,game_over
+    global hp,old_diary_readed,old_note_readed,game_back,game_over,has_death_corpse,death_corpse_item,death_location
     print('You crawl into a DARK SEWER TUNNEL.')
     print('You see here something is shinning in the deep.')
     print('TYPE deep or go deep to go deep, and you see a water path to east and a way up.')
