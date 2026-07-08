@@ -372,7 +372,7 @@ def perm_upgrade_menu():
         print('You feel more experienced, choose what way you want to be improved.')
         print("\n=== PERMANENT UPGRADES ===")
         print(f"Available points: {permanent_points}")
-        print("1. +5 Max HP (1 point)")
+        print("1. +10 Max HP (1 point)")
         print("2. +20 Starting Sanity (1 point)")
         print("3. Start with light source (2 points)")
         print("4. Start with rope (2 points)")
@@ -382,8 +382,8 @@ def perm_upgrade_menu():
             c = input("Upgrade: ").strip().lower()
             if c == "1" and permanent_points >= 1:
                 permanent_points -= 1
-                perm_hp_bonus += 5
-                print("Permanent HP +5 unlocked.")
+                perm_hp_bonus += 10
+                print("Permanent HP +10 unlocked.")
             elif c == "2" and permanent_points >= 1:
                 permanent_points -= 1
                 perm_sanity_bonus += 20
