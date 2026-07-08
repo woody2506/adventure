@@ -798,6 +798,7 @@ def consume_step_durability():
         if torch_durability <= 0:
             light = False
             print("Your light burns out completely. Darkness closes in.")
+            print('You shound go back to the black house to light it again.')
     if game_over:
         print("=== END ===")
         print("Type 'menu' to return main menu")
