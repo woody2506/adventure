@@ -6274,6 +6274,8 @@ def gamestart():
             print('You find a hidden trail leading to an ABANDONED CAMP. There is a camp in the west. And also a grave in the east. And the path still leads to a hill to south.')
             print('You see a grave, something is written on it: game developer, killed by a lot of bug and error.')
             print('A voice booms: Dig the grave, then you will find me. Or, you can search the grave.')
+            if 'rope' in have_list:
+                print('You see a cliff, type climb down to climb down with your rope.')
             if rune2 == False:
                 print('Hint: Search the grave, and then...(Too low to hear clearly)')
             if blood_moon:
@@ -6397,7 +6399,7 @@ def gamestart():
                     if 'rope' in have_list:
                         print("You use rope to climb down to cave entrance.")
                         print('Welcome to death cave!')
-                        current_room = "cave"
+                        current_room = "entrance"
                         cave()
                         if game_over:
                             print("=== END ===")
@@ -6412,7 +6414,7 @@ def gamestart():
                 elif camp_cmd == 'bag':
                     for i in have_list:
                         print(i)
-                elif camp_cmd == 'search grave':
+                elif camp_cmd == 'search grave' or camp_cmd == 'search the grave':
                     gravedigger_phases = [
                         {
                             "hp_threshold": 14,
@@ -6444,7 +6446,7 @@ def gamestart():
                         have_list.append('rune stone 2')
                     else:
                         print('You find a hole for a rune, but you may have already took the rune away.')
-                elif camp_cmd == 'dig grave':
+                elif camp_cmd == 'dig grave' or camp_cmd == 'dig the grave':
                     if grave_take == False:
                         mac_horror_whisper("You disturb the dead.", "normal")
                         print('You dig the grave. There is some treasure and a diary. Take treasure or leave it? 1.take / 2.leave (Even you choose any choice, you will read the diary.)')
