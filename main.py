@@ -4349,9 +4349,9 @@ def cave():
                 consume_step_durability()
                 pathwest = input().strip().lower()
                 if pathwest == 'west':
-                    print('You see here a note. And a diary. There is still a way to west.')
-                    print('There is still some old footprints to west.')
                     while True:
+                        print('You see here a note. And a diary. There is still a way to west.')
+                        print('There is still some old footprints to west.')
                         if has_death_corpse and death_location == current_room:
                             print('You see here a corpse, type corpse to search it.\n')
                         consume_step_durability()
