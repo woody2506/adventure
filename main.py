@@ -3076,7 +3076,8 @@ def misty_swamp():
     print("\n=== MISTY SWAMP ===")
     print("Thick fog covers the marsh. Every step is dangerous.")
     print('TYPE ‘quest’ for a quest, and if you are in a quest, type talk to talk to the ghost, ask past to ask past, ask for xxxxxxxx')
-    print('You see a pass full of water, type dive to dive into,')
+    if play_count == 1:
+        print('You see a pass full of water, type dive to dive into,')
     if time_period == "night":
         print("Danger rises at night. Toxins grow stronger.")   
 
@@ -3103,8 +3104,11 @@ def misty_swamp():
             print("You walk out of the swamp and return to the forest.")
             return
         elif scmd == 'dive':
-            print('You dive into a sewer.')
-            sewer()
+            if play_count == 1:
+                print('You dive into a sewer.')
+                sewer()
+            else:
+                print('The sewer had already closed forever.')
         elif scmd == 'down':
             if four_hole_in == False:
                 pendulum_mortuary()
