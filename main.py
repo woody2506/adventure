@@ -618,10 +618,10 @@ def werewolf_encounter():
     print('Its corpse then rots away.')
     have_list.append("moonfang blade")
     have_list.append("some gold coins")
-    player_total_score += 40
+    player_total_score += 50
     good += 5
     defeated_werewolf = True
-    print("+40 score, obtained Moonfang Blade and gold coins.")
+    print("Obtained Moonfang Blade and gold coins.")
     print("-------------------------\n")
 
 def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
