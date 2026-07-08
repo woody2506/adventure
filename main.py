@@ -4169,663 +4169,62 @@ def cave():
     global meta_file_tier
     global player_total_score,orc_in,weapon_broken
 
+    current_room = 'entrance'
     game_over = False
     while True:
-        if has_death_corpse and death_location == current_room:
-            print('You see here a corpse, type corpse to search it.\n')
-        consume_step_durability()
-        op = input().strip().lower()
-        if handle_terminal_cmd(op):
-            continue
-        if op == 'unlock':
-            if 'a key' in have_list:
-                x = random.randint(1,5)
-                if x == 9:
-                    pass
-                else:
-                    if x == 8:
-                        pass
-                    else:
-                        print('You succeed in unlock the grate. There is a path to the west.')
-                        player_total_score += 10
-                        print('You see here a small library, type library to go in.')
-                        while True:
-                            if has_death_corpse and death_location == current_room:
-                                print('You see here a corpse, type corpse to search it.\n')
-                            consume_step_durability()
-                            west = input().strip().lower()
-                            if west == 'west':
-                                print('There is a stone path to west.')
-                                print('And there is also a sewer, type sewer to go in.')
-                                while True:
-                                    print('You feel that the way back is collapsed.')
-                                    if has_death_corpse and death_location == current_room:
-                                        print('You see here a corpse, type corpse to search it.\n')
-                                    consume_step_durability()
-                                    gocave = input().strip().lower()
-                                    if gocave == 'east':
-                                        print("The way back is collapsed! You can't return unless you have a pick-axe.")
-                                    elif gocave == 'dig':
-                                        if 'a pick-axe' in have_list:
-                                            print("YOU DUG A PATH BACK TO THE HOUSE!")
-                                            print("YOU ESCAPED THE CAVE!")
-                                            player_total_score += 10
-                                            gamestart()
-                                            return
-                                        else:
-                                            print("YOU NEED A PICKAXE TO DIG!")
-                                    elif gocave == "examine corpse" or gocave == 'corpse' or gocave == 'search corpse' or gocave == 'find corpse':
-                                        if has_death_corpse and death_location == current_room:
-                                            print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
-                                            if death_corpse_item:
-                                                print(f"You retrieve {death_corpse_item} from its pocket.")
-                                                have_list.append(death_corpse_item)
-                                            else:
-                                                print("Nothing useful left on the body.")
-                                            has_death_corpse = False
-                                        else:
-                                            print("There is not any corpse..")
-                                    elif gocave == 'library':
-                                        print('Bookshelves full of diaries, all written by your ancestors.')
-                                        while True:
-                                            consume_step_durability()
-                                            lib = input('library> ').strip().lower()
-                                            if lib == 'read':
-                                                print('You read a memory:')
-                                                print('The wizard loved his wife more than anything.')
-                                                print('He sealed her to save the world, but hated himself for it.')
-                                                print('Every guardian since has hated their fate.')
-                                            elif lib == 'read all':
-                                                print('You absorb all memories.')
-                                                print('You see every guardian’s life, every pain, every choice.')
-                                                print('You understand everything now.')
-                                                faith += 10
-                                            elif lib == 'take book':
-                                                have_list.append('memory book')
-                                                print('You took a BOOK OF ANCESTOR MEMORIES.')
-                                            elif lib == 'back':
-                                                break
-                                            else:
-                                                print('Unknown command.')
-                                    elif gocave == 'sewer' or gocave == 'go into sewer' or gocave == 'go into the sewer' or gocave == 'go to sewer':
-                                        sewer()
-                                    elif gocave == 'west':
-                                        print('You walk deeper into the cave. There is still a path to west.')
-                                        print('You see old footprints on the ground. Someone came here before.')
-                                        if 'bat' not in defeated_enemies:
-                                            print('Suddenly, a bat appears, it wants to kill you!')
-                                            combat("cave bat swarm", 4, 2, None, 1,enemy_id='bat')
-                                            player_total_score += 10
-                                        while True:
-                                            if has_death_corpse and death_location == current_room:
-                                                print('You see here a corpse, type corpse to search it.\n')
-                                            consume_step_durability()
-                                            pathwest = input().strip().lower()
-                                            if pathwest == 'west':
-                                                print('You see here a note. And a diary. There is still a way to west.')
-                                                print('There is still some old footprints to west.')
-                                                while True:
-                                                    if has_death_corpse and death_location == current_room:
-                                                        print('You see here a corpse, type corpse to search it.\n')
-                                                    consume_step_durability()
-                                                    west2 = input().strip().lower()
-                                                    if west2 == 'west':
-                                                        while True:
-                                                            print('You can see a ghost, but the ghost does not see you!')
-                                                            print('You go west, you see here a human corpse, you are shocked! There is still path to west. You see here ' + p)
-                                                            print('Try touch corpse or ask about dev or west and you see a orc dungeon, type orc to go in.')
-                                                            consume_step_durability()
-                                                            west3 = input().strip().lower()
-                                                            if west3 == 'west':
-                                                                cave_horror_phases = [
-                                                                    {
-                                                                    "hp_threshold": 20,
-                                                                    "dialogue": "Something large drops from the cave ceiling. A pale, twisted creature blocks the path.",
-                                                                    "attacks": [
-                                                                        {"name": "Claw Maul", "description": "Long sharp claws tear at your flesh."},
-                                                                        {"name": "Bellowing Roar", "description": "Deafening scream echoes through the cave.", "stun": True}
-                                                                    ],
-                                                                    "enrage": False,
-                                                                    "score_reward": 45
-                                                                    },
-                                                                    {
-                                                                    "hp_threshold": 8,
-                                                                    "dialogue": "The creature's jaw unhinges at an impossible angle. It is about to devour you!",
-                                                                    "attacks": [
-                                                                        {"name": "Devour Bite", "description": "It lunges forward, trying to swallow you whole.", "lifesteal": True},
-                                                                        {"name": "Tail Sweep", "description": "Thick tail slams horizontally across the cave."}
-                                                                    ],
-                                                                    "enrage": True,
-                                                                    "score_reward": 70
-                                                                    }
-                                                                    ]
-                                                                boss_fight("Cave Horror", 20, 5, cave_horror_phases, "monster fang", "cave_horror")
-                                                                while True:
-                                                                    print("Two paths appear in front of you!")
-                                                                    print("One is BRIGHT, one is DARK")
-                                                                    choice = input("1.go bright / 2.go dark: ").strip().lower()
-                                                                    if choice == "go dark" or choice == '2':
-                                                                        print("You found DIAMONDS! You are rich!")
-                                                                        if 'a pick-axe' in have_list and 'diamond vault' in have_list:
-                                                                            print('You take all of the tresures away, you are the richest person in your country!')
-                                                                            if diary_read == True and legacy_unlocked == True:
-                                                                                print('You fulfilled the lost explorer’s last wish.')
-                                                                                print('His soul finally rests in peace.')
-                                                                                player_total_score += 30
-                                                                            print('===== RICH ENDING! =====')
-                                                                            player_total_score += 75
-                                                                            game_over = True
-                                                                            game_back = True
-                                                                            cleared_ending = True
-                                                                            break
-                                                                        elif "a pick-axe" in have_list:
-                                                                            required_items = {"rope", "flint", "old compass", "an amulet", "diamond vault"}
-                                                                            if required_items.issubset(set(have_list)):
-                                                                                all_collected = True
-                                                                            if all_collected:
-                                                                                print("YOU HAVE COLLECTED EVERYTHING!")
-                                                                                if diary_read == True and legacy_unlocked == True:
-                                                                                    print('You fulfilled the lost explorers last wish.')
-                                                                                    print('His soul finally rests in peace.')
-                                                                                    player_total_score += 30
-                                                                                print("===== PERFECT ENDING =====")
-                                                                                player_total_score += 100
-                                                                                game_over = True
-                                                                                game_back = True
-                                                                                cleared_ending = True
-                                                                                break
-                                                                            else:
-                                                                                print("You use pick-axe to break the wall and ESCAPE!")
-                                                                                print('You take the diamonds away!')
-                                                                                if diary_read == True and legacy_unlocked == True:
-                                                                                    print('You fulfilled the lost explorers last wish.')
-                                                                                    print('His soul finally rests in peace.')
-                                                                                    player_total_score += 30
-                                                                                print("===== YOU WIN ! =====")
-                                                                                player_total_score += 50
-                                                                                game_over = True
-                                                                                game_back = True
-                                                                                cleared_ending = True
-                                                                                break
-                                                                        else:
-                                                                            print("You have treasure but can't escape... you starve.")
-                                                                            print('But you can still go to the next play count.')
-                                                                            print('Game over!')
-                                                                            player_total_score += 30
-                                                                            game_over = True
-                                                                            game_back = True
-                                                                            cleared_ending = True
-                                                                            break
-                                                                    elif choice == "go bright" or choice == '1':
-                                                                        print("It's a trap! SPIKES KILL YOU!")
-                                                                        print('You should try again and go to the dark road.')
-                                                                        print('Game over!')
-                                                                        game_over = True
-                                                                        game_back = True
-                                                                        break
-                                                                    elif choice == 'east':
-                                                                        print('You walk back to a room.')
-                                                                        break
-                                                                    elif choice == 'bag':
-                                                                        for i in range(len(have_list)):
-                                                                            print(have_list[i])
-                                                                    else:
-                                                                        print("Invalid command!")
-                                                                if game_over == True:
-                                                                    print("=== END ===")
-                                                                    print("Type 'menu' to return main menu")
-                                                                    while True:
-                                                                        c = input().strip().lower()
-                                                                        if c == 'menu':
-                                                                            main()
-                                                                            return
-                                                                        else:
-                                                                            print('Please answer the question.')
-                                                            elif west3 == "orc":
-                                                                if orc_in == False:
-                                                                    orc_tribe_dungeon()
-                                                                else:
-                                                                    print('YOu have already been to it!')
-                                                            elif west3 == "hug ghost":
-                                                                print("You hug the ghost! It panics: 'WHAT ARE YOU DOING?!'")
-                                                                have_list.append("ghost hug")
-                                                            elif west3 == "ask about dev":
-                                                                print("Ghost: The one who made this place?")
-                                                                print("Ghost: He trapped us all here with bugs and typos.")
-                                                                print("Ghost: Don't trust his 'perfect ending'.")
-                                                            elif west3 == "find secret wall":
-                                                                if "a pick-axe" in have_list:
-                                                                    print("You break a cracked wall. A small room appears.")
-                                                                    print("Inside: an old dev test note.")
-                                                                    print('Try read read dev test note.')
-                                                                    have_list.append("dev test note")
-                                                                else:
-                                                                    print("You need a pick-axe to break the wall.")
-                                                            elif west3 == "read dev test note":
-                                                                if "dev test note" in have_list:
-                                                                    print("Note: 'If you are reading this, you are too deep.'")
-                                                                    print("Note: 'The real cheat code is in the house.'")
-                                                                    print("Note: 'colin -> woody -> garry. Don't tell anyone.'")
-                                                                else:
-                                                                    print("You don't have the note.")
-                                                            elif west3 == "ghost job":
-                                                                print("You ask what the ghost’s job is.")
-                                                                print("Ghost: 'I just scare people who sing badly. Like you.'")
-                                                            elif west3 == "ghost bored":
-                                                                print("You say: You look really bored.")
-                                                                print("Ghost: 'I’ve been bored for 300 years. Help me.'")
-                                                            elif west3 == "ghost friend":
-                                                                print("You ask: Can we be friends?")
-                                                                print("Ghost: 'Sure! Just don’t sing again, deal?'")
-                                                            elif west3 == "ghost joke":
-                                                                print("You tell a ghost joke: 'Why don't ghosts lie?'")
-                                                                print("Ghost: 'Because you can see right through us!'")
-                                                            elif west3 == "ghost favorite food":
-                                                                print("You ask: What's your favorite snack?")
-                                                                print("Ghost: 'Ice scream! It's always to die for.'")
-                                                            elif west3 == "ghost school":
-                                                                print("You ask if ghosts go to school.")
-                                                                print("Ghost: 'Yeah, to learn how to BOO!'")
-                                                            elif west3 == "ghost rain":
-                                                                print("You ask why ghosts hate rain.")
-                                                                print("Ghost: 'It dampens our spirits!'")
-                                                            elif west3 == "ghost phone":
-                                                                print("You ask if ghosts have phones.")
-                                                                print("Ghost: 'Sure, we use ghostwriters for all our texts.'")
-                                                            elif west3 == "ghost band":
-                                                                print("You ask if ghosts play music.")
-                                                                print("Ghost: 'We love the boo-m bass!'")
-                                                            elif west3 == "ghost pet":
-                                                                print("You ask if ghosts have pets.")
-                                                                print("Ghost: 'Only scare-rows and boo-berries.'")
-                                                            elif west3 == "ghost workout":
-                                                                print("You ask how ghosts exercise.")
-                                                                print("Ghost: 'Spectral-tors, duh!'")
-                                                            elif west3 == "ghost holiday":
-                                                                print("You ask where ghosts go on vacation.")
-                                                                print("Ghost: 'Lake Eerie, always.'")
-                                                            elif festival_mode:
-                                                                print("Ghost smiles: Happy full moon! Here's a gift!")
-                                                                hp += 2
-                                                            elif west3 == "ghost fashion":
-                                                                print("You ask why ghosts wear sheets.")
-                                                                print("Ghost: 'It’s the latest haunting fashion.'")
-                                                            elif west3 == "ghost password":
-                                                                print("You ask the cave’s secret password.")
-                                                                print("Ghost: 'NO SINGING. That’s the only password.'")
-                                                            elif west3 == "tell scary story":
-                                                                print("You tell a scary story. Ghost laughs: 'That can't scare me.'")
-                                                            elif west3 == "wave flashlight":
-                                                                print("You wave light around. Ghost chases the light playfully.")
-                                                            elif west3 == "ask age":
-                                                                print("You ask how old it is. Ghost: 'I lost count hundreds of years ago.'")
-                                                            elif west3 == "ask food":
-                                                                print("You ask what it likes to eat. Ghost: 'Ghosts don't need food, just fun!'")
-                                                            elif west3 == "scare ghost":
-                                                                print("You jump out to scare it. Ghost: 'Nice try, I'm already dead.'")
-                                                            elif west3 == "ask sleep":
-                                                                print("You ask if it ever sleeps. Ghost: 'Sleep is for living people!'")
-                                                            elif west3 == "borrow clothes":
-                                                                print("You joke to borrow its clothes. Ghost: 'I have no real clothes at all!'")
-                                                            elif west3 == "ask travel":
-                                                                print("You ask if it wants to go outside. Ghost: 'Sunshine burns me! No way!'")
-                                                            elif west3 == "sing off key":
-                                                                print("You sing terribly. The ghost covers its ears and spins around.")
-                                                            elif west3 == "play dead":
-                                                                print("You lie down and play dead. The ghost pokes you again and again.")
-                                                            elif west3 == "lift hand":
-                                                                print("You lift your hand up. The ghost floats higher as well.")
-                                                            elif west3 == "walk slow":
-                                                                print("You walk slowly. The ghost drifts beside you quietly.")
-                                                            elif west3 == "lean close":
-                                                                print("You lean close to the ghost. It moves back shyly.")
-                                                            elif west3 == "race on foot" or west3 == 'race':
-                                                                print("You run to compete. The ghost just floats past you in a second.")
-                                                            elif west3 == "blow kiss to ghost":
-                                                                print("You blow a kiss. The ghost pretends to catch it and blushes.")
-                                                            elif west3 == "play tag":
-                                                                print("You play tag. The ghost can go through walls, you never catch it.")
-                                                            elif west3 == "complain cold" or west3 == 'complain':
-                                                                print("You complain about the cold. Ghost laughs: 'I am colder forever.'")
-                                                            elif west3 == "pat ghost":
-                                                                print("You pat the ghost's head. It floats higher shyly.")
-                                                            elif west3 == "wave finger":
-                                                                print("You shake your finger. The ghost acts naughty.")
-                                                            elif west3 == "call" or west3 == 'call ghost':
-                                                                print("You call the ghost. It drifts closer slowly.")
-                                                            elif west3 == "point around":
-                                                                print("You point around. The ghost looks everywhere confused.")
-                                                            elif west3 == "hum song":
-                                                                print("You hum a tune. The ghost sways along with the rhythm.")
-                                                            elif west3 == 'sing':
-                                                                print('You sing a silly song, Ghost: SHUT UP PLEASE!')
-                                                            elif west3 == "selfie":
-                                                                print("You take a selfie with the ghost.")
-                                                                print("The ghost feels cool and waves hand.")
-                                                            elif west3 == "feed":
-                                                                print("You try to feed the ghost.")
-                                                                print("Ghost: 'I don't eat snacks!!!'")
-                                                            elif west3 == "tease ghost":
-                                                                print("You tease the ghost. It pouts like a kid.")
-                                                            elif west3 == "fight ghost":
-                                                                if festival_mode:
-                                                                    print("Ghost smiles: Happy full moon! Here's a gift!")
-                                                                    hp += 2
-                                                                else:
-                                                                    if play_count == 1:
-                                                                        print("The ghost attacks!")
-                                                                        ghost_hp = 3
-                                                                        while ghost_hp > 0 and hp > 0:
-                                                                            print(f"Ghost HP: {ghost_hp} | Your HP: {hp}")
-                                                                            fight = input("attack / run: ").strip().lower()
-                                                                            if fight == "attack":
-                                                                                ghost_hp -= 1
-                                                                                print("You hit the ghost!")
-                                                                                if ghost_hp > 0:
-                                                                                    hp -= 2
-                                                                                    print("Ghost hits you! hp -2")
-                                                                            elif fight == "run":
-                                                                                print("You run away.")
-                                                                                break
-                                                                        if ghost_hp <= 0:
-                                                                            print("The ghost fades. It leaves a ghost sword.")
-                                                                            have_list.append("ghost sword")
-                                                                        elif hp <= 0:
-                                                                            print("You die in battle. Game over!")
-                                                                            game_over = True
-                                                                            game_back = True
-                                                                    else:
-                                                                        print("The ghost bows. It won’t fight you.")    
-                                                            elif west3 == 'take pick-axe':
-                                                                print('You shatter while you touch it.')
-                                                                print('Luckily, you got it.')
-                                                                print('Try find secret wall.')
-                                                                print('Hp -3')
-                                                                hp -= 3
-                                                                if hp <= 0:
-                                                                    print("Your HP is gone!")
-                                                                    print('Game over!')
-                                                                    game_over = True
-                                                                    game_back = True
-                                                                    break
-                                                                print('left hp: ' + str(hp))
-                                                                have_list.append(p)
-                                                                p = 'nothing'
-                                                                if play_count == 2:
-                                                                    print("A CAVE GHOST APPEARS!")
-                                                                    print("The ghost looks straight at you. But do not harm you.")
-                                                                    print("'You came back... to end the cycle?'")
-                                                                elif play_count == 1:
-                                                                    print('A ghost appears!')
-                                                                    if festival_mode:
-                                                                        print("Ghost smiles: Happy full moon! Here's a gift!")
-                                                                        hp += 2
-                                                                    else:
-                                                                        if amulet == True:
-                                                                            print('Amulet protects you!')
-                                                                        else:
-                                                                            combat("ghost fighter", 8, 3, "ghost sword", 8)
-                                                                            game_over = True
-                                                                            game_back = True
-                                                                            break
-                                                            elif west3 == 'east':
-                                                                print('You go back to a room.')
-                                                                break
-                                                            elif west3 == 'touch corpse':
-                                                                if 'an amulet' not in have_list:
-                                                                    print('You found an old amulet!')
-                                                                    amulet = True
-                                                                    have_list.append('an amulet')
-                                                                    player_total_score += 25
-                                                            elif west3 == 'room':
-                                                                print("YOU ENTERED A DEADLY TRAP CHAMBER!")
-                                                                trap = random.randint(1,4)
-                                                                if trap != 1:
-                                                                    print("YOU AVOIDED ALL TRAPS!")
-                                                                    print("YOUR PICKAXE BECOMES UNBREAKABLE!")
-                                                                    player_total_score += 30
-                                                                else:
-                                                                    print("TRAPS ACTIVATED! YOU DIED!")
-                                                                    game_over = True
-                                                                    game_back = True
-                                                                    break
-                                                            elif west3 == 'thank you':
-                                                                if diary_read and not explorer_thank_reward:
-                                                                    print('A warm wind brings you diamonds.')
-                                                                    have_list.append('diamonds')
-                                                                    explorer_thank_reward = True
-                                                                elif diary_read:
-                                                                    print('No more blessings come from the explorer spirit.')
-                                                                else:
-                                                                    print('No one hears you.')
-                                                            elif west3 == 'colin woody':
-                                                                print('DIAMOND VAULT! You found the ultimate treasure!')
-                                                                print('You take diamond vault away.')
-                                                                player_total_score += 5
-                                                                have_list.append('diamond vault')
-                                                            elif west3 == 'bag':
-                                                                for i in range(len(have_list)):
-                                                                    print(have_list[i])
-                                                            elif west3 == 'kill me':
-                                                                print('You give up exploring. Game over!')
-                                                                game_over = True
-                                                                game_back = True
-                                                                break
-                                                            elif west3 == 'search corpse':
-                                                                print('You found a BELONGING of the dead explorer.')
-                                                                print('It is a OLD IRON COMPASS.')
-                                                                have_list.append('old compass')
-                                                                legacy_unlocked = True
-                                                            elif west3 == 'bury corpse':
-                                                                if diary_read == True:
-                                                                    print('You gently cover the corpse with stones.')
-                                                                    print('A warm feeling protects you.')
-                                                                    print('THE EXPLORER SOUL THANKS YOU.')
-                                                                    amulet = True
-                                                                else:
-                                                                    print('You cannot bury what you do not respect.')
-                                                            else:
-                                                                print('Sorry, I do not understand that word.')
-                                                           
-                                                            if game_over == True:
-                                                                print("=== END ===")
-                                                                print("Type 'menu' to return main menu")
-                                                                while True:
-                                                                    c = input().strip().lower()
-                                                                    if c == 'menu':
-                                                                        main()
-                                                                        return
-                                                                    else:
-                                                                        print('Please answer the question.')
-                                                    elif west2 == 'take note':
-                                                        print('A cloud of darkness hurts you. You can not take the note away!')
-                                                        print('So you read the note, it says that a man have came here a lot of years ago. But he never come back again. He went in with a pick-axe. It also says that there is another way that can lead you to some expensive diamonds, and also a way to a fatal trap, but it does not say what way .')
-                                                        hp -= 1
-                                                        if hp <= 0:
-                                                            print("Your HP is gone!")
-                                                            print('Game over!')
-                                                            game_over = True
-                                                            game_back = True
-                                                            break
-                                                    elif west2 == 'read diary':
-                                                        print('You found an OLD EXPLORER DIARY on the ground.')
-                                                        print('It says:')
-                                                        print('"I came here for diamonds. I had a pickaxe, a lamp, and hope.')
-                                                        print('The cave is alive. Ghosts hunt anyone who fears dark.')
-                                                        print('I saw the corpse of my friend. He took the pickaxe and died.')
-                                                        print('The bright path is a lie. The dark path is true.')
-                                                        print('If you read this… please bury my corpse.')
-                                                        print('I will not make it home.')
-                                                        diary_read = True
-                                                    elif west2 == 'east':
-                                                        print('You walk back to a room.')
-                                                        break
-                                                    elif west2 == 'bag':
-                                                        for i in range(len(have_list)):
-                                                            print(have_list[i])
-                                                    else:
-                                                        print('Sorry, I do not understand that word.')
-                                                    if game_over == True:
-                                                        print("=== END ===")
-                                                        print("Type 'menu' to return main menu")
-                                                        while True:
-                                                            c = input().strip().lower()
-                                                            if c == 'menu':
-                                                                main()
-                                                                return
-                                                            else:
-                                                                print('Please answer the question.')
-                                            elif pathwest == 'east':
-                                                print('You walk east and go back to a room.')
-                                                break
-                                            elif pathwest == "examine corpse" or pathwest == 'corpse' or pathwest == 'search corpse' or pathwest == 'find corpse':
-                                                if has_death_corpse and death_location == current_room:
-                                                    print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
-                                                    if death_corpse_item:
-                                                        print(f"You retrieve {death_corpse_item} from its pocket.")
-                                                        have_list.append(death_corpse_item)
-                                                    else:
-                                                        print("Nothing useful left on the body.")
-                                                    has_death_corpse = False
-                                                else:
-                                                    print("There is not any corpse..")
-                                            elif pathwest == 'bag':
-                                                for i in range(len(have_list)):
-                                                    print(have_list[i])
-
-                                            else:
-                                                print('Sorry, I do not understand that word.')
-                                            if game_over == True:
-                                                print("=== END ===")
-                                                print("Type 'menu' to return main menu")
-                                                while True:
-                                                    c = input().strip().lower()
-                                                    if c == 'menu':
-                                                        main()
-                                                        return
-                                                    else:
-                                                        print('Please answer the question.')
-                                    elif gocave == 'bag':
-                                        for i in range(len(have_list)):
-                                            print(have_list[i])
-                                    else:
-                                        print('Sorry, I do not understand that word.')
-                                    if game_over == True:
-                                        print("=== END ===")
-                                        print("Type 'menu' to return main menu")
-                                        while True:
-                                            c = input().strip().lower()
-                                            if c == 'menu':
-                                                main()
-                                                return
-                                            else:
-                                                print('Please answer the question.')
-                                if game_over == True:
-                                    print("=== END ===")
-                                    print("Type 'menu' to return main menu")
-                                    while True:
-                                        c = input().strip().lower()
-                                        if c == 'menu':
-                                            main()
-                                            return
-                                        else:
-                                            print('Please answer the question.')
-                            elif west == 'bag':
-                                for i in range(len(have_list)):
-                                    print(have_list[i])
-                        
-                            elif west == 'north':
-                                print('There is no way to go to this direction.')
-                            elif west == 'south':
-                                print('There is no way to go to this direction.')
-                            elif west == 'east':
-                                print('There is no way to go to this direction.')
+        if current_room == 'entrance':
+            while True:
+                if has_death_corpse and death_location == current_room:
+                    print('You see here a corpse, type corpse to search it.\n')
+                consume_step_durability()
+                op = input().strip().lower()
+                if handle_terminal_cmd(op):
+                    continue
+                if op == 'unlock':
+                    if 'a key' in have_list:
+                        x = random.randint(1,5)
+                        if x == 9:
+                            pass
+                        else:
+                            if x == 8:
+                                pass
                             else:
-                                print('Sorry, I do not understand that word.')
-                            if game_over == True:
-                                print("=== END ===")
-                                print("Type 'menu' to return main menu")
-                                while True:
-                                    c = input().strip().lower()
-                                    if c == 'menu':
-                                        main()
-                                        return
-                                    else:
-                                        print('Please answer the question.')
-                        if game_over == True:
-                            print("=== END ===")
-                            print("Type 'menu' to return main menu")
-                            while True:
-                                c = input().strip().lower()
-                                if c == 'menu':
-                                    main()
-                                    return
-                    if game_over == True:
-                        print("=== END ===")
-                        print("Type 'menu' to return main menu")
-                        while True:
-                            c = input().strip().lower()
-                            if c == 'menu':
-                                main()
-                                return
-                if game_over == True:
-                    print("=== END ===")
-                    print("Type 'menu' to return main menu")
-                    while True:
-                        c = input().strip().lower()
-                        if c == 'menu':
-                            main()
-                            return
-            if game_over == True:
-                print("=== END ===")
-                print("Type 'menu' to return main menu")
-                while True:
-                    c = input().strip().lower()
-                    if c == 'menu':
-                        main()
-                        return
-                    
-            else:
-                print('You do not have a key, you unleashed a ghost, the ghost kill you.')
-                print('If you have an amulet, you still have to be killed(laugh)')
-                print('Game over!')
-                game_over = True
-                game_back = True
-            if game_over == True:
-                print("=== END ===")
-                print("Type 'menu' to return main menu")
-                while True:
-                    c = input().strip().lower()
-                    if c == 'menu':
-                        main()
-                        return
-        elif op == 'south':
-            print('There is no way to go to this direction.')
-        elif op == 'east':
-            print('There is no way to go to this direction.')
-        elif op == 'compass':
-            if 'old compass' in have_list:
-                print("Compass: You are deep in the CAVE. West goes deeper.")
-            else:
-                print("No compass available.")
-            continue
-        elif op == 'colin':
-            print('You go back to the house and then to the road.')
-            gamestart()
-            return
-        elif op == "examine corpse" or op == 'corpse' or op == 'search corpse' or op == 'find corpse':
-            if has_death_corpse and death_location == current_room:
-                print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
-                if death_corpse_item:
-                    print(f"You retrieve {death_corpse_item} from its pocket.")
-                    have_list.append(death_corpse_item)
+                                current_room = 'first go'
+                                print('You succeed in unlock the grate. There is a path to the west.')
+                                player_total_score += 10
+                                print('You see here a small library, type library to go in.')
+                    else:
+                        print('You do not have a key, you unleashed a ghost, the ghost kill you.')
+                        print('If you have an amulet, you still have to be killed(laugh)')
+                        print('Game over!')
+                        game_over = True
+                        game_back = True
+                elif op == 'south':
+                    print('There is no way to go to this direction.')
+                elif op == 'east':
+                    print('There is no way to go to this direction.')
+                elif op == 'compass':
+                    if 'old compass' in have_list:
+                        print("Compass: You are deep in the CAVE. West goes deeper.")
+                    else:
+                        print("No compass available.")
+                elif op == 'colin':
+                    print('You go back to the house and then to the road.')
+                    gamestart()
+                    return
+                elif op == "examine corpse" or op == 'corpse' or op == 'search corpse' or op == 'find corpse':
+                    if has_death_corpse and death_location == current_room:
+                        print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
+                        if death_corpse_item:
+                            print(f"You retrieve {death_corpse_item} from its pocket.")
+                            have_list.append(death_corpse_item)
+                        else:
+                            print("Nothing useful left on the body.")
+                        has_death_corpse = False
+                    else:
+                        print("There is not any corpse..")
                 else:
-                    print("Nothing useful left on the body.")
-                has_death_corpse = False
-            else:
-                print("There is not any corpse..")
-        else:
-            print('Sorry, I do not understand that word.')
+                    print('Sorry, I do not understand that word.')
         if game_over == True:
             print("=== END ===")
             print("Type 'menu' to return main menu")
@@ -4834,6 +4233,540 @@ def cave():
                 if c == 'menu':
                     main()
                     return
+        if current_room == 'first go':
+            print('You feel that the way back is collapsed.')
+            while True:
+                if has_death_corpse and death_location == current_room:
+                    print('You see here a corpse, type corpse to search it.\n')
+                consume_step_durability()
+                gocave = input().strip().lower()
+                if gocave == 'east':
+                    print("The way back is collapsed! You can't return unless you have a pick-axe.")
+                elif gocave == 'dig':
+                    if 'a pick-axe' in have_list:
+                        print("YOU DUG A PATH BACK TO THE HOUSE!")
+                        print("YOU ESCAPED THE CAVE!")
+                        gamestart()
+                        return
+                    else:
+                        print("YOU NEED A PICKAXE TO DIG!")
+                elif gocave == "examine corpse" or gocave == 'corpse' or gocave == 'search corpse' or gocave == 'find corpse':
+                    if has_death_corpse and death_location == current_room:
+                        print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
+                        if death_corpse_item:
+                            print(f"You retrieve {death_corpse_item} from its pocket.")
+                            have_list.append(death_corpse_item)
+                        else:
+                            print("Nothing useful left on the body.")
+                        has_death_corpse = False
+                    else:
+                        print("There is not any corpse..")
+                elif gocave == 'library':
+                    print('Bookshelves full of diaries, all written by your ancestors.')
+                    while True:
+                        consume_step_durability()
+                        lib = input('library> ').strip().lower()
+                        if lib == 'read':
+                            print('You read a memory:')
+                            print('The wizard loved his wife more than anything.')
+                            print('He sealed her to save the world, but hated himself for it.')
+                            print('Every guardian since has hated their fate.')
+                        elif lib == 'read all':
+                            print('You absorb all memories.')
+                            print('You see every guardian’s life, every pain, every choice.')
+                            print('You understand everything now.')
+                            faith += 10
+                        elif lib == 'take book':
+                            have_list.append('memory book')
+                            print('You took a BOOK OF ANCESTOR MEMORIES.')
+                        elif lib == 'back':
+                            break
+                        else:
+                            print('Unknown command.')
+                elif gocave == 'sewer' or gocave == 'go into sewer' or gocave == 'go into the sewer' or gocave == 'go to sewer':
+                    sewer()
+                elif gocave == 'west':
+                    print('You walk deeper into the cave. There is still a path to west.')
+                    print('You see old footprints on the ground. Someone came here before.')
+                    if 'bat' not in defeated_enemies:
+                        print('Suddenly, a bat appears, it wants to kill you!')
+                        combat("cave bat swarm", 4, 2, None, 1,enemy_id='bat')
+                        player_total_score += 10
+                        current_room = 'go west'
+                        break
+                                
+                elif gocave == 'bag':
+                    for i in range(len(have_list)):
+                        print(have_list[i])
+                else:
+                    print('Sorry, I do not understand that word.')
+                if game_over == True:
+                    print("=== END ===")
+                    print("Type 'menu' to return main menu")
+                    while True:
+                        c = input().strip().lower()
+                        if c == 'menu':
+                            main()
+                            return
+                        else:
+                            print('Please answer the question.')
+        if current_room == 'go west':
+            if has_death_corpse and death_location == current_room:
+                    print('You see here a corpse, type corpse to search it.\n')
+            consume_step_durability()
+            west = input().strip().lower()
+            if west == 'west':
+                print('There is a stone path to west.')
+                print('And there is also a sewer, type sewer to go in.')
+                current_room = 'go west2'
+            elif west == 'bag':
+                for i in range(len(have_list)):
+                    print(have_list[i])
+            elif west == 'north':
+                print('There is no way to go to this direction.')
+            elif west == 'south':
+                print('There is no way to go to this direction.')
+            elif west == 'east':
+                print('You go back to a room.')
+                current_room = 'first go'
+            else:
+                print('Sorry, I do not understand that word.')
+            if game_over == True:
+                print("=== END ===")
+                print("Type 'menu' to return main menu")
+                while True:
+                    c = input().strip().lower()
+                    if c == 'menu':
+                        main()
+                        return
+                    else:
+                        print('Please answer the question.')
+        if current_room == 'go west2':                       
+            while True:
+                if has_death_corpse and death_location == current_room:
+                    print('You see here a corpse, type corpse to search it.\n')
+                consume_step_durability()
+                pathwest = input().strip().lower()
+                if pathwest == 'west':
+                    print('You see here a note. And a diary. There is still a way to west.')
+                    print('There is still some old footprints to west.')
+                    while True:
+                        if has_death_corpse and death_location == current_room:
+                            print('You see here a corpse, type corpse to search it.\n')
+                        consume_step_durability()
+                        west2 = input().strip().lower()
+                        if west2 == 'west':
+                            print('You then go west.')
+                            current_room = 'go west3'
+                            break
+                        elif pathwest == 'east':
+                            print('You walk east and go back to a room.')
+                            current_room = 'go west'
+                            break
+                        elif pathwest == "examine corpse" or pathwest == 'corpse' or pathwest == 'search corpse' or pathwest == 'find corpse':
+                            if has_death_corpse and death_location == current_room:
+                                print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
+                                if death_corpse_item:
+                                    print(f"You retrieve {death_corpse_item} from its pocket.")
+                                    have_list.append(death_corpse_item)
+                                else:
+                                    print("Nothing useful left on the body.")
+                                has_death_corpse = False
+                            else:
+                                print("There is not any corpse..")
+                        elif pathwest == 'bag':
+                            for i in range(len(have_list)):
+                                print(have_list[i])
+
+                        else:
+                            print('Sorry, I do not understand that word.')
+                        if game_over == True:
+                            print("=== END ===")
+                            print("Type 'menu' to return main menu")
+                            while True:
+                                c = input().strip().lower()
+                                if c == 'menu':
+                                    main()
+                                    return
+                                else:
+                                    print('Please answer the question.')
+        if current_room == 'go west3':                                          
+            print('You can see a ghost, but the ghost does not see you!')
+            print('You go west, you see here a human corpse, you are shocked! There is still path to west. You see here ' + p)
+            print('Try touch corpse or ask about dev or west and you see a orc dungeon, type orc to go in.')
+            while True:
+                consume_step_durability()
+                west3 = input().strip().lower()
+                if west3 == 'west':
+                    cave_horror_phases = [
+                        {
+                        "hp_threshold": 20,
+                        "dialogue": "Something large drops from the cave ceiling. A pale, twisted creature blocks the path.",
+                        "attacks": [
+                            {"name": "Claw Maul", "description": "Long sharp claws tear at your flesh."},
+                            {"name": "Bellowing Roar", "description": "Deafening scream echoes through the cave.", "stun": True}
+                        ],
+                        "enrage": False,
+                        "score_reward": 45
+                        },
+                        {
+                        "hp_threshold": 8,
+                        "dialogue": "The creature's jaw unhinges at an impossible angle. It is about to devour you!",
+                        "attacks": [
+                            {"name": "Devour Bite", "description": "It lunges forward, trying to swallow you whole.", "lifesteal": True},
+                            {"name": "Tail Sweep", "description": "Thick tail slams horizontally across the cave."}
+                        ],
+                        "enrage": True,
+                        "score_reward": 70
+                        }
+                        ]
+                    boss_fight("Cave Horror", 20, 5, cave_horror_phases, "monster fang", "cave_horror")
+                    while True:
+                        print("Two paths appear in front of you!")
+                        print("One is BRIGHT, one is DARK")
+                        choice = input("1.go bright / 2.go dark: ").strip().lower()
+                        if choice == "go dark" or choice == '2':
+                            print("You found DIAMONDS! You are rich!")
+                            if 'a pick-axe' in have_list and 'diamond vault' in have_list:
+                                print('You take all of the tresures away, you are the richest person in your country!')
+                                if diary_read == True and legacy_unlocked == True:
+                                    print('You fulfilled the lost explorer’s last wish.')
+                                    print('His soul finally rests in peace.')
+                                    player_total_score += 30
+                                print('===== RICH ENDING! =====')
+                                player_total_score += 75
+                                game_over = True
+                                game_back = True
+                                cleared_ending = True
+                                break
+                            elif "a pick-axe" in have_list:
+                                required_items = {"rope", "flint", "old compass", "an amulet", "diamond vault"}
+                                if required_items.issubset(set(have_list)):
+                                    all_collected = True
+                                if all_collected:
+                                    print("YOU HAVE COLLECTED EVERYTHING!")
+                                    if diary_read == True and legacy_unlocked == True:
+                                        print('You fulfilled the lost explorers last wish.')
+                                        print('His soul finally rests in peace.')
+                                        player_total_score += 30
+                                    print("===== PERFECT ENDING =====")
+                                    player_total_score += 100
+                                    game_over = True
+                                    game_back = True
+                                    cleared_ending = True
+                                    break
+                                else:
+                                    print("You use pick-axe to break the wall and ESCAPE!")
+                                    print('You take the diamonds away!')
+                                    if diary_read == True and legacy_unlocked == True:
+                                        print('You fulfilled the lost explorers last wish.')
+                                        print('His soul finally rests in peace.')
+                                        player_total_score += 30
+                                    print("===== YOU WIN ! =====")
+                                    player_total_score += 50
+                                    game_over = True
+                                    game_back = True
+                                    cleared_ending = True
+                                    break
+                            else:
+                                print("You have treasure but can't escape... you starve.")
+                                print('But you can still go to the next play count.')
+                                print('Game over!')
+                                player_total_score += 30
+                                game_over = True
+                                game_back = True
+                                cleared_ending = True
+                                break
+                        elif choice == "go bright" or choice == '1':
+                            print("It's a trap! SPIKES KILL YOU!")
+                            print('You should try again and go to the dark road.')
+                            print('Game over!')
+                            game_over = True
+                            game_back = True
+                            break
+                        elif choice == 'east':
+                            print('You walk back to a room.')
+                            break
+                        elif choice == 'bag':
+                            for i in range(len(have_list)):
+                                print(have_list[i])
+                        else:
+                            print("Invalid command!")
+                    if game_over == True:
+                        print("=== END ===")
+                        print("Type 'menu' to return main menu")
+                        while True:
+                            c = input().strip().lower()
+                            if c == 'menu':
+                                main()
+                                return
+                            else:
+                                print('Please answer the question.')
+                elif west3 == "orc":
+                    if orc_in == False:
+                        orc_tribe_dungeon()
+                    else:
+                        print('YOu have already been to it!')
+                elif west3 == "hug ghost":
+                    print("You hug the ghost! It panics: 'WHAT ARE YOU DOING?!'")
+                    have_list.append("ghost hug")
+                elif west3 == "ask about dev":
+                    print("Ghost: The one who made this place?")
+                    print("Ghost: He trapped us all here with bugs and typos.")
+                    print("Ghost: Don't trust his 'perfect ending'.")
+                elif west3 == "find secret wall":
+                    if "a pick-axe" in have_list:
+                        print("You break a cracked wall. A small room appears.")
+                        print("Inside: an old dev test note.")
+                        print('Try read read dev test note.')
+                        have_list.append("dev test note")
+                    else:
+                        print("You need a pick-axe to break the wall.")
+                elif west3 == "read dev test note":
+                    if "dev test note" in have_list:
+                        print("Note: 'If you are reading this, you are too deep.'")
+                        print("Note: 'The real cheat code is in the house.'")
+                        print("Note: 'colin -> woody -> garry. Don't tell anyone.'")
+                    else:
+                        print("You don't have the note.")
+                elif west3 == "ghost job":
+                    print("You ask what the ghost’s job is.")
+                    print("Ghost: 'I just scare people who sing badly. Like you.'")
+                elif west3 == "ghost bored":
+                    print("You say: You look really bored.")
+                    print("Ghost: 'I’ve been bored for 300 years. Help me.'")
+                elif west3 == "ghost friend":
+                    print("You ask: Can we be friends?")
+                    print("Ghost: 'Sure! Just don’t sing again, deal?'")
+                elif west3 == "ghost joke":
+                    print("You tell a ghost joke: 'Why don't ghosts lie?'")
+                    print("Ghost: 'Because you can see right through us!'")
+                elif west3 == "ghost favorite food":
+                    print("You ask: What's your favorite snack?")
+                    print("Ghost: 'Ice scream! It's always to die for.'")
+                elif west3 == "ghost school":
+                    print("You ask if ghosts go to school.")
+                    print("Ghost: 'Yeah, to learn how to BOO!'")
+                elif west3 == "ghost rain":
+                    print("You ask why ghosts hate rain.")
+                    print("Ghost: 'It dampens our spirits!'")
+                elif west3 == "ghost phone":
+                    print("You ask if ghosts have phones.")
+                    print("Ghost: 'Sure, we use ghostwriters for all our texts.'")
+                elif west3 == "ghost band":
+                    print("You ask if ghosts play music.")
+                    print("Ghost: 'We love the boo-m bass!'")
+                elif west3 == "ghost pet":
+                    print("You ask if ghosts have pets.")
+                    print("Ghost: 'Only scare-rows and boo-berries.'")
+                elif west3 == "ghost workout":
+                    print("You ask how ghosts exercise.")
+                    print("Ghost: 'Spectral-tors, duh!'")
+                elif west3 == "ghost holiday":
+                    print("You ask where ghosts go on vacation.")
+                    print("Ghost: 'Lake Eerie, always.'")
+                elif festival_mode:
+                    print("Ghost smiles: Happy full moon! Here's a gift!")
+                    hp += 2
+                elif west3 == "ghost fashion":
+                    print("You ask why ghosts wear sheets.")
+                    print("Ghost: 'It’s the latest haunting fashion.'")
+                elif west3 == "ghost password":
+                    print("You ask the cave’s secret password.")
+                    print("Ghost: 'NO SINGING. That’s the only password.'")
+                elif west3 == "tell scary story":
+                    print("You tell a scary story. Ghost laughs: 'That can't scare me.'")
+                elif west3 == "wave flashlight":
+                    print("You wave light around. Ghost chases the light playfully.")
+                elif west3 == "ask age":
+                    print("You ask how old it is. Ghost: 'I lost count hundreds of years ago.'")
+                elif west3 == "ask food":
+                    print("You ask what it likes to eat. Ghost: 'Ghosts don't need food, just fun!'")
+                elif west3 == "scare ghost":
+                    print("You jump out to scare it. Ghost: 'Nice try, I'm already dead.'")
+                elif west3 == "ask sleep":
+                    print("You ask if it ever sleeps. Ghost: 'Sleep is for living people!'")
+                elif west3 == "borrow clothes":
+                    print("You joke to borrow its clothes. Ghost: 'I have no real clothes at all!'")
+                elif west3 == "ask travel":
+                    print("You ask if it wants to go outside. Ghost: 'Sunshine burns me! No way!'")
+                elif west3 == "sing off key":
+                    print("You sing terribly. The ghost covers its ears and spins around.")
+                elif west3 == "play dead":
+                    print("You lie down and play dead. The ghost pokes you again and again.")
+                elif west3 == "lift hand":
+                    print("You lift your hand up. The ghost floats higher as well.")
+                elif west3 == "walk slow":
+                    print("You walk slowly. The ghost drifts beside you quietly.")
+                elif west3 == "lean close":
+                    print("You lean close to the ghost. It moves back shyly.")
+                elif west3 == "race on foot" or west3 == 'race':
+                    print("You run to compete. The ghost just floats past you in a second.")
+                elif west3 == "blow kiss to ghost":
+                    print("You blow a kiss. The ghost pretends to catch it and blushes.")
+                elif west3 == "play tag":
+                    print("You play tag. The ghost can go through walls, you never catch it.")
+                elif west3 == "complain cold" or west3 == 'complain':
+                    print("You complain about the cold. Ghost laughs: 'I am colder forever.'")
+                elif west3 == "pat ghost":
+                    print("You pat the ghost's head. It floats higher shyly.")
+                elif west3 == "wave finger":
+                    print("You shake your finger. The ghost acts naughty.")
+                elif west3 == "call" or west3 == 'call ghost':
+                    print("You call the ghost. It drifts closer slowly.")
+                elif west3 == "point around":
+                    print("You point around. The ghost looks everywhere confused.")
+                elif west3 == "hum song":
+                    print("You hum a tune. The ghost sways along with the rhythm.")
+                elif west3 == 'sing':
+                    print('You sing a silly song, Ghost: SHUT UP PLEASE!')
+                elif west3 == "selfie":
+                    print("You take a selfie with the ghost.")
+                    print("The ghost feels cool and waves hand.")
+                elif west3 == "feed":
+                    print("You try to feed the ghost.")
+                    print("Ghost: 'I don't eat snacks!!!'")
+                elif west3 == "tease ghost":
+                    print("You tease the ghost. It pouts like a kid.")
+                elif west3 == "fight ghost":
+                    if festival_mode:
+                        print("Ghost smiles: Happy full moon! Here's a gift!")
+                        hp += 2
+                    else:
+                        if play_count == 1:
+                            print("The ghost attacks!")
+                            ghost_hp = 3
+                            while ghost_hp > 0 and hp > 0:
+                                print(f"Ghost HP: {ghost_hp} | Your HP: {hp}")
+                                fight = input("attack / run: ").strip().lower()
+                                if fight == "attack":
+                                    ghost_hp -= 1
+                                    print("You hit the ghost!")
+                                    if ghost_hp > 0:
+                                        hp -= 2
+                                        print("Ghost hits you! hp -2")
+                                elif fight == "run":
+                                    print("You run away.")
+                                    break
+                            if ghost_hp <= 0:
+                                print("The ghost fades. It leaves a ghost sword.")
+                                have_list.append("ghost sword")
+                            elif hp <= 0:
+                                print("You die in battle. Game over!")
+                                game_over = True
+                                game_back = True
+                        else:
+                            print("The ghost bows. It won’t fight you.")    
+                elif west3 == 'take pick-axe':
+                    print('You shatter while you touch it.')
+                    print('Luckily, you got it.')
+                    print('Try find secret wall.')
+                    print('Hp -3')
+                    hp -= 3
+                    if hp <= 0:
+                        print("Your HP is gone!")
+                        print('Game over!')
+                        game_over = True
+                        game_back = True
+                        break
+                    print('left hp: ' + str(hp))
+                    have_list.append(p)
+                    p = 'nothing'
+                    if play_count == 2:
+                        print("A CAVE GHOST APPEARS!")
+                        print("The ghost looks straight at you. But do not harm you.")
+                        print("'You came back... to end the cycle?'")
+                    elif play_count == 1:
+                        print('A ghost appears!')
+                        if festival_mode:
+                            print("Ghost smiles: Happy full moon! Here's a gift!")
+                            hp += 2
+                        else:
+                            if amulet == True:
+                                print('Amulet protects you!')
+                            else:
+                                combat("ghost fighter", 8, 3, "ghost sword", 8)
+                                game_over = True
+                                game_back = True
+                                break
+                elif west3 == 'east':
+                    print('You go back to a room.')
+                    current_room = 'go west2'
+                    break
+                elif west3 == 'touch corpse':
+                    if 'an amulet' not in have_list:
+                        print('You found an old amulet!')
+                        amulet = True
+                        have_list.append('an amulet')
+                        player_total_score += 25
+                elif west3 == 'room':
+                    print("YOU ENTERED A DEADLY TRAP CHAMBER!")
+                    trap = random.randint(1,4)
+                    if trap != 1:
+                        print("YOU AVOIDED ALL TRAPS!")
+                        print("YOUR PICKAXE BECOMES UNBREAKABLE!")
+                        player_total_score += 30
+                    else:
+                        print("TRAPS ACTIVATED! YOU DIED!")
+                        game_over = True
+                        game_back = True
+                        break
+                elif west3 == 'thank you':
+                    if diary_read and not explorer_thank_reward:
+                        print('A warm wind brings you diamonds.')
+                        have_list.append('diamonds')
+                        explorer_thank_reward = True
+                    elif diary_read:
+                        print('No more blessings come from the explorer spirit.')
+                    else:
+                        print('No one hears you.')
+                elif west3 == 'colin woody':
+                    print('DIAMOND VAULT! You found the ultimate treasure!')
+                    print('You take diamond vault away.')
+                    player_total_score += 5
+                    have_list.append('diamond vault')
+                elif west3 == 'bag':
+                    for i in range(len(have_list)):
+                        print(have_list[i])
+                elif west3 == 'kill me':
+                    print('You give up exploring. Game over!')
+                    game_over = True
+                    game_back = True
+                    break
+                elif west3 == 'search corpse':
+                    print('You found a BELONGING of the dead explorer.')
+                    print('It is a OLD IRON COMPASS.')
+                    have_list.append('old compass')
+                    legacy_unlocked = True
+                elif west3 == 'bury corpse':
+                    if diary_read == True:
+                        print('You gently cover the corpse with stones.')
+                        print('A warm feeling protects you.')
+                        print('THE EXPLORER SOUL THANKS YOU.')
+                        amulet = True
+                    else:
+                        print('You cannot bury what you do not respect.')
+                else:
+                    print('Sorry, I do not understand that word.')
+                
+                if game_over == True:
+                    print("=== END ===")
+                    print("Type 'menu' to return main menu")
+                    while True:
+                        c = input().strip().lower()
+                        if c == 'menu':
+                            main()
+                            return
+                        else:
+                            print('Please answer the question.')
+            if game_over == True:
+                print("=== END ===")
+                print("Type 'menu' to return main menu")
+                while True:
+                    c = input().strip().lower()
+                    if c == 'menu':
+                        main()
+                        return
 
 def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evil = 0, enemy_id = None):
     global hp, good, evil, have_list, game_over, game_back
@@ -5531,6 +5464,7 @@ def gamestart():
                             print('Only enable in ng2, and try to go in the death cave!\n')
                     elif tele == 'colin':
                         mac_horror_whisper("Welcome to your tomb.", "demon")
+                        print('You suddenly fall asleep, when you wake up, you are at a cave.')
                         if play_count == 1:
                             if light == False and not torch:
                                 print('A Grue appears, it would not die forever, you can just make it turns to flee.')
