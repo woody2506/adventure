@@ -74,6 +74,7 @@ death_count = 0
 misty_end = False
 x2 = None
 sanity = 100
+bw = False
 
 # Torch Durability
 torch_durability = 20
@@ -408,27 +409,30 @@ def werewolf_encounter():
             hp -= e_dmg
             print(f"You block the strike. Take {e_dmg} damage.")
             continue
-        elif act == "skill" and skill_uses_remaining > 0 or act == '3' and skill_uses_remaining > 0:
-            skill_uses_remaining -= 1
-            if player_class == "warrior":
-                print("Shield Bash stuns the werewolf!")
-                print("It misses its next attack.")
-                boss_hp -= 5
-                continue
-            elif player_class == "rogue":
-                crit_dmg = random.randint(10, 16)
-                boss_hp -= crit_dmg
-                print(f"Shadow Strike lands! {crit_dmg} damage!")
-            elif player_class == "mage":
-                sanity -= 15
-                magic_dmg = random.randint(12, 18)
-                boss_hp -= magic_dmg
-                print(f"Mind Burst hits for {magic_dmg} damage.")
-            elif player_class == "cleric":
-                hp += 6
-                print("Holy Light heals you for 6 HP.")
-                boss_hp -= 4
-                continue
+        elif act == "skill" or act == '3':
+            if skill_uses_remaining > 0:
+                skill_uses_remaining -= 1
+                if player_class == "warrior":
+                    print("Shield Bash stuns the werewolf!")
+                    print("It misses its next attack.")
+                    boss_hp -= 5
+                    continue
+                elif player_class == "rogue":
+                    crit_dmg = random.randint(10, 16)
+                    boss_hp -= crit_dmg
+                    print(f"Shadow Strike lands! {crit_dmg} damage!")
+                elif player_class == "mage":
+                    sanity -= 15
+                    magic_dmg = random.randint(12, 18)
+                    boss_hp -= magic_dmg
+                    print(f"Mind Burst hits for {magic_dmg} damage.")
+                elif player_class == "cleric":
+                    hp += 6
+                    print("Holy Light heals you for 6 HP.")
+                    boss_hp -= 4
+                    continue
+            else:
+                print('You do not have enough to use your skill.')
         elif act == "use item" or act == '4':
             if "some food" in have_list:
                 have_list.remove("some food")
@@ -4808,7 +4812,10 @@ def combat(enemy_name, base_enemy_hp, base_enemy_dmg, loot_item = None, loot_evi
                 return
 
 def blood_warrior_encounter():
-    combat("blood cursed warrior", 15, 4, "cursed greatsword", 10)
+    global bw
+    if bw == False:
+        combat("blood cursed warrior", 15, 4, "cursed greatsword", 10)
+        bw = True
 def blood_rift_dungeon():
     global hp, evil, have_list, game_over, game_back
     global blood_dungeon_cleared, blood_rune_hatred, blood_rune_agony, blood_rune_despair
