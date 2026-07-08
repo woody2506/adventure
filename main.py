@@ -369,6 +369,7 @@ def apply_permanent_bonuses():
 def perm_upgrade_menu():
     global permanent_points, perm_hp_bonus, perm_sanity_bonus, perm_start_light, perm_start_rope, perm_start_amulet
     if permanent_points >= 1:
+        print('You feel more experienced, choose what way you want to be improved.')
         print("\n=== PERMANENT UPGRADES ===")
         print(f"Available points: {permanent_points}")
         print("1. +5 Max HP (1 point)")
@@ -400,9 +401,10 @@ def perm_upgrade_menu():
                 perm_start_amulet = True
                 print("Starting amulet unlocked.")
             elif c == "6" or c == "back":
-                break
+                print('You go back.')
+                return
             else:
-                print("Invalid choice or not enough points.")
+                print("Invalid choice or not enough points. Maybe go back?")
 
 def werewolf_encounter():
     global hp, game_over, game_back, player_total_score, have_list, good, evil, defeated_werewolf,player_class,skill_uses_remaining
