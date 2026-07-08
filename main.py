@@ -4062,7 +4062,9 @@ def underwater_ruins():
                 return
 
 def sewer():
-    global hp,old_diary_readed,old_note_readed,game_back,game_over,has_death_corpse,death_corpse_item,death_location
+    global hp,old_diary_readed,old_note_readed,game_back,game_over,has_death_corpse,death_corpse_item,death_location,current_room
+
+    current_room = 'sewer'
     print('You crawl into a DARK SEWER TUNNEL.')
     print('You see here something is shinning in the deep.')
     print('TYPE deep or go deep to go deep, and you see a water path to east and a way up.')
@@ -4072,9 +4074,7 @@ def sewer():
         consume_step_durability()
         sewer_cmd = input('sewer> ').strip().lower()
         if sewer_cmd == 'west' or sewer_cmd == 'back' or sewer_cmd == 'leave':
-            print('You climb back to the cave path.')
-            print('Some magic energy force blow you back to the house.')
-            print('You then go to the cave again.')
+            current_room = 'first go'
             cave()
             return
         elif sewer_cmd == 'up':
@@ -4169,7 +4169,6 @@ def cave():
     global meta_file_tier
     global player_total_score,orc_in,weapon_broken
 
-    current_room = 'entrance'
     game_over = False
     while True:
         if current_room == 'entrance':
@@ -4237,6 +4236,7 @@ def cave():
         if current_room == 'first go':
             print('You feel that the way back is collapsed.')
             while True:
+                print('You see a sewer, type sewer to go dive into it.')
                 if has_death_corpse and death_location == current_room:
                     print('You see here a corpse, type corpse to search it.\n')
                 consume_step_durability()
@@ -5464,6 +5464,7 @@ def gamestart():
                     elif tele == 'colin':
                         mac_horror_whisper("Welcome to your tomb.", "demon")
                         print('You suddenly fall asleep, when you wake up, you are at a cave.')
+                        current_room = 'entrance'
                         if play_count == 1:
                             if light == False and not torch:
                                 print('A Grue appears, it would not die forever, you can just make it turns to flee.')
