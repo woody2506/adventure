@@ -9,6 +9,46 @@ import subprocess
 import tempfile
 
 
+permanent_points = 0
+perm_hp_bonus = 0
+perm_sanity_bonus = 0
+perm_start_light = False
+perm_start_rope = False
+perm_start_amulet = False
+
+fort_gears_solved = False
+fort_captain_saved = False
+fort_logs_found = 0
+
+werewolf_cleansed = False
+werewolf_pelt_obtained = False
+
+swamp_witch_defeated = False
+swamp_witch_helped = False
+
+ultimate_ending_unlocked = False
+
+achievement_list = {
+    "first_death": "First Blood",
+    "clear_ng1": "First Cycle",
+    "clear_ng2": "Curse Breaker",
+    "all_runes": "Seal Scholar",
+    "full_good": "Pure Heart",
+    "full_evil": "Dark Lord",
+    "no_death_run": "Unscathed",
+    "kill_werewolf": "Moon Slayer",
+    "all_endings": "Master of Fates",
+    "meta_ending": "Beyond the Code"
+}
+achievements = {}
+
+daily_challenge_today = ""
+daily_challenge_active = False
+daily_modifier = {}
+
+mod_enabled = False
+mod_items = {}
+mod_events = {}
 skill_uses_remaining = 2
 defeated_werewolf = False
 session_start_time = time.time()
@@ -312,6 +352,58 @@ def mac_demon_whisper(text):
     except:
         mac_horror_whisper(text, "demon")
 
+def apply_permanent_bonuses():
+    global hp, sanity, light, have_list, amulet
+    hp += perm_hp_bonus
+    sanity += perm_sanity_bonus
+    if perm_start_light:
+        light = True
+    if perm_start_rope:
+        if "rope" not in have_list:
+            have_list.append("rope")
+    if perm_start_amulet:
+        amulet = True
+        if "super amulet" not in have_list:
+            have_list.append("super amulet")
+
+def perm_upgrade_menu():
+    global permanent_points, perm_hp_bonus, perm_sanity_bonus, perm_start_light, perm_start_rope, perm_start_amulet
+    if permanent_points >= 1:
+        print("\n=== PERMANENT UPGRADES ===")
+        print(f"Available points: {permanent_points}")
+        print("1. +5 Max HP (1 point)")
+        print("2. +20 Starting Sanity (1 point)")
+        print("3. Start with light source (2 points)")
+        print("4. Start with rope (2 points)")
+        print("5. Start with super amulet (3 points)")
+        print("6. Back")
+        while True:
+            c = input("Upgrade: ").strip().lower()
+            if c == "1" and permanent_points >= 1:
+                permanent_points -= 1
+                perm_hp_bonus += 5
+                print("Permanent HP +5 unlocked.")
+            elif c == "2" and permanent_points >= 1:
+                permanent_points -= 1
+                perm_sanity_bonus += 20
+                print("Permanent sanity +20 unlocked.")
+            elif c == "3" and permanent_points >= 2:
+                permanent_points -= 2
+                perm_start_light = True
+                print("Starting light unlocked.")
+            elif c == "4" and permanent_points >= 2:
+                permanent_points -= 2
+                perm_start_rope = True
+                print("Starting rope unlocked.")
+            elif c == "5" and permanent_points >= 3:
+                permanent_points -= 3
+                perm_start_amulet = True
+                print("Starting amulet unlocked.")
+            elif c == "6" or c == "back":
+                break
+            else:
+                print("Invalid choice or not enough points.")
+
 def werewolf_encounter():
     global hp, game_over, game_back, player_total_score, have_list, good, evil, defeated_werewolf,player_class,skill_uses_remaining
 
@@ -483,7 +575,7 @@ def werewolf_encounter():
     print("-------------------------\n")
 
 def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
-    global hp, defeated_enemies, player_total_score, amulet,game_back,game_over,good,evil
+    global hp, defeated_enemies, player_total_score, amulet,game_back,game_over,good,evil,weapon_broken
 
     if boss_id in defeated_enemies:
         print(f"The {boss_name} has already been defeated.")
@@ -3916,7 +4008,7 @@ def cave():
     global has_death_corpse, death_location, death_corpse_item
     global sewer_treasure_taken, explorer_thank_reward,sewer_in
     global meta_file_tier
-    global player_total_score,orc_in
+    global player_total_score,orc_in,weapon_broken
 
     game_over = False
     while True:
@@ -6562,10 +6654,11 @@ def menu():
     global meta_file_tier
     global game_over,time_period,step_count
 
-
+    apply_permanent_bonuses()
     game_over = False
     time_period = "day"
     step_count = 0
+    perm_upgrade_menu()
     if death_count == 1:
         write_creepy_desktop_file(1)
     elif death_count == 3:
@@ -6665,7 +6758,7 @@ def menu():
             print('Please answer the question.')
 # main
 def main():
-    global have_list, game_over, light, hp, l, k, n, s, f, w, p, sc, secret_unlocked, map_unlocked, amulet, turn_count, chain1, chain2, diary_read, legacy_unlocked, new_game_plus, ng_amulet, ng_compass, ng_diary, current_room, torch, no_light_run, all_collected, rune1, rune2, rune3, faith, sky, moon, trap_protect, rune, grandmother, gate_unlock, old_diary_readed, grave_diary_read, force_over, game_back, play_count, tomb_unlocked, old_note_readed,cleared_ending,time_period,step_count,death_count,good,evil,death_corpse_item,death_location,has_death_corpse,one_hole_in,two_hole_in,three_hole_in,four_hole_in,no_death_run,player_total_score,sanity
+    global have_list, game_over, light, hp, l, k, n, s, f, w, p, sc, secret_unlocked, map_unlocked, amulet, turn_count, chain1, chain2, diary_read, legacy_unlocked, new_game_plus, ng_amulet, ng_compass, ng_diary, current_room, torch, no_light_run, all_collected, rune1, rune2, rune3, faith, sky, moon, trap_protect, rune, grandmother, gate_unlock, old_diary_readed, grave_diary_read, force_over, game_back, play_count, tomb_unlocked, old_note_readed,cleared_ending,time_period,step_count,death_count,good,evil,death_corpse_item,death_location,has_death_corpse,one_hole_in,two_hole_in,three_hole_in,four_hole_in,no_death_run,player_total_score,sanity,permanent_points
 
     today = datetime.date.today()
     m = today.month
@@ -7586,6 +7679,7 @@ def main():
         menu()
     elif game_back == True:
         if cleared_ending == True:
+            permanent_points += 1
             if play_count == 2:
                 if args.godmode:
                     pass
