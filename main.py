@@ -5128,7 +5128,7 @@ def gamestart():
     global grave_looted, church_purified, church_desecrated
     global x2,blood_moon,defeated_enemies,torch_durability
     global meta_file_tier
-    global player_total_score,guari
+    global player_total_score,guardian_phases
     
     game_over = False
     altar = False
@@ -5146,6 +5146,7 @@ def gamestart():
     if map_unlocked == True:
             print('Type map to see full map.')
     while True:
+        current_room = 'road'
         if play_count >= 2 and death_count >= 1 and random.randint(1, 10) == 1:
             auto_cmd = random.choice(["go deeper", "do not leave", "stay here", "kill yourself"])
             print(auto_cmd)
@@ -5185,7 +5186,6 @@ def gamestart():
             print(f"'{player_name}... turn around...'")
             print("There is nobody behind you.")
             hp -= 1
-        # STRONGER DAY/NIGHT FEEL
         advance_time()
         # NIGHT DAMAGE (STRONGER)
         if festival_mode:
