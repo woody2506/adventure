@@ -6,6 +6,8 @@ import datetime
 import argparse
 import getpass
 import calendar
+import subprocess
+import tempfile
 
 
 session_start_time = time.time()
@@ -252,6 +254,61 @@ def print_glitch(text, duration=0.5):
         time.sleep(duration / 3)
     print(text)
 
+def mac_horror_whisper(text, tier="normal"):
+    voice_configs = {
+        "normal":   {"voice": "Bad News",  "rate": 90,  "volume": 0.6},
+        "close":    {"voice": "Whisper",   "rate": 70,  "volume": 0.8},
+        "deranged": {"voice": "Deranged",  "rate": 110, "volume": 0.5},
+        "demon":    {"voice": "Zarvox",    "rate": 60,  "volume": 0.9},
+        "chant":    {"voice": "Cellos",    "rate": 50,  "volume": 0.7}
+    }
+    cfg = voice_configs.get(tier, voice_configs["normal"])
+    try:
+        full_text = f'[[volm {cfg["volume"]}]]{text}'
+        cmd = [
+            "say",
+            "-v", cfg["voice"],
+            "-r", str(cfg["rate"]),
+            full_text
+        ]
+        subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except:
+        pass
+
+def mac_demon_whisper(text):
+    try:
+        with tempfile.NamedTemporaryFile(suffix=".aiff", delete=False) as f_raw:
+            tmp_raw = f_raw.name
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f_final:
+            tmp_final = f_final.name
+
+        subprocess.run(
+            ["say", "-v", "Zarvox", "-r", "55", "-o", tmp_raw, text],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=5
+        )
+
+        subprocess.run(
+            ["sox", tmp_raw, tmp_final,
+             "reverse",
+             "speed", "0.7",
+             "bass", "+8", "120", "0.5",
+             "flanger", "0.9", "0.7", "20", "0.5", "2", "sine"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=5
+        )
+
+        subprocess.Popen(
+            ["afplay", tmp_final],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+
+        os.unlink(tmp_raw)
+    except:
+        mac_horror_whisper(text, "demon")
 def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
     global hp, defeated_enemies, player_total_score, amulet,game_back,game_over,good,evil
 
@@ -262,7 +319,7 @@ def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
     boss_hp = max_hp
     phase_index = 0
     turn = 0
-
+    mac_demon_whisper(boss_name)
     print_colored(f"\n=== BOSS ENCOUNTER: {boss_name.upper()} ===", Colors.RED + Colors.BOLD)
     print_colored("A terrifying presence fills the room...", Colors.RED)
     time.sleep(1.2)
@@ -4714,6 +4771,7 @@ def advance_time():
             blood_moon = True
             blood_warrior_alive = True
             festival_steps = 0
+            mac_horror_whisper("The blood moon rises.", "chant")
             print("\n=====================================")
             print("A BLOODY MOON RISES")
             print("The sky turns crimson. Evil surges in the air.")
@@ -4893,6 +4951,7 @@ def gamestart():
         if go == 'in':
             current_room = 'house'
             if play_count == 2:
+                mac_horror_whisper("You return again.", "demon")
                 jump_scare_face('flash')
                 print('')
                 print('You see something is written on the wall.')
@@ -4902,6 +4961,7 @@ def gamestart():
                 print('All the diamonds are not the real treasure, you are!')
                 print('')
             elif play_count == 1:
+                mac_horror_whisper("What are you going to do here?", "demon")
                 jump_scare_face('flash')
                 print('')
                 print('You see something is written on the wall.')
@@ -7407,6 +7467,8 @@ def main():
         else:
             print('So, you died, and you will go back to the menu to choose if you want to challenge again.')
             print('And you have to come to the first turn of the cycle.')
+            print('Because of the curse, you rebirth again.')
+            mac_demon_whisper("You died.")
             player_total_score = 0
             no_death_run = False
             if len(have_list) > 0:
