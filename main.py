@@ -5,11 +5,12 @@ import time
 import datetime
 import argparse
 import getpass
-import calendar
 import subprocess
 import tempfile
 
 
+skill_uses_remaining = 3
+defeated_werewolf = False
 session_start_time = time.time()
 have_list = []
 game_over = False
@@ -309,6 +310,174 @@ def mac_demon_whisper(text):
         os.unlink(tmp_raw)
     except:
         mac_horror_whisper(text, "demon")
+
+def werewolf_encounter():
+    global hp, game_over, game_back, player_total_score, have_list, good, evil, defeated_werewolf,player_class,skill_uses_remaining
+
+    print("\n--- FULL MOON EVENT ---")
+    print("A deep, guttural howl tears through the night.")
+    print("A massive werewolf blocks the path, eyes glowing red.")
+    print("It tilts its head back and howls again, calling for its pack.")
+    mac_horror_whisper("Awooooooo...", "demon")
+    print("\nFight or run? (1.fight / 2.run)")
+
+    while True:
+        choice = input("> ").strip().lower()
+        if choice == "run" or choice == '2':
+            print("You turn and flee. The werewolf does not chase.")
+            hp -= 3
+            print("HP -3 from exhaustion.")
+            return
+        elif choice == "fight" or choice == '1':
+            break
+        else:
+            print("Invalid choice.")
+
+    print("\nThe werewolf snarls and summons its pack!")
+    print("Three feral wolves leap from the shadows.")
+
+    for wolf_num in range(1, 4):
+        if game_over:
+            break
+        print(f"\n--- WOLF {wolf_num} / 3 ---")
+        wolf_hp = 5
+        wolf_dmg = 2
+        while wolf_hp > 0 and hp > 0:
+            print(f"Wolf HP: {wolf_hp} | Your HP: {hp}")
+            print("Actions: 1.attack / 2.defend / 3.use item")
+            act = input("> ").strip().lower()
+
+            if act == "attack" or act == '1':
+                dmg = random.randint(3, 6)
+                wolf_hp -= dmg
+                print(f"You strike the wolf for {dmg} damage.")
+                if wolf_hp > 0:
+                    e_dmg = random.randint(1, wolf_dmg)
+                    hp -= e_dmg
+                    print(f"The wolf bites you for {e_dmg} damage.")
+            elif act == "defend" or act == '2':
+                e_dmg = max(0, random.randint(1, wolf_dmg) - 2)
+                hp -= e_dmg
+                print(f"You block. Take {e_dmg} reduced damage.")
+            elif act == "use item" or act == '3':
+                if "some food" in have_list:
+                    have_list.remove("some food")
+                    hp += 3
+                    print("You eat food. HP +3")
+                else:
+                    print("No usable items.")
+            else:
+                print("Unknown action.")
+
+            if hp <= 0:
+                game_over = True
+                game_back = True
+                print("You are torn apart by the wolf pack.")
+                mac_demon_whisper("Torn apart...")
+                return
+
+        print(f"Wolf {wolf_num} slain!")
+
+    print("\nAll pack wolves dead. The werewolf steps forward.")
+    print("=== PHASE 1: BEAST FORM ===")
+    mac_demon_whisper("You will join my pack.")
+    boss_hp = 40
+    boss_dmg = 5
+    phase_two_triggered = False
+
+    while boss_hp > 0 and hp > 0:
+        if boss_hp <= 22 and not phase_two_triggered:
+            phase_two_triggered = True
+            print("\n=== PHASE 2: HUMANOID FORM ===")
+            print("The beast stands upright, bones cracking and shifting.")
+            print("It takes human shape, claws still sharp, eyes burning with rage.")
+            print("It moves faster, hits harder, and knows how you fight.")
+            mac_horror_whisper("Now you die.", "deranged")
+            boss_dmg = 8
+        
+        print(f"Werewolf HP: {boss_hp} | Your HP: {hp}")
+        print("Actions: 1.attack / 2.defend / 3.skill / 4.use item")
+        act = input("> ").strip().lower()
+
+        if act == "attack" or act == '1':
+            dmg = random.randint(4, 7)
+            boss_hp -= dmg
+            print(f"You deal {dmg} damage.")
+        elif act == "defend" or act == '2':
+            e_dmg = max(0, random.randint(2, boss_dmg) - 3)
+            hp -= e_dmg
+            print(f"You block the strike. Take {e_dmg} damage.")
+            continue
+        elif act == "skill" and skill_uses_remaining > 0 or act == '3' and skill_uses_remaining > 0:
+            skill_uses_remaining -= 1
+            if player_class == "warrior":
+                print("Shield Bash stuns the werewolf!")
+                print("It misses its next attack.")
+                boss_hp -= 5
+                continue
+            elif player_class == "rogue":
+                crit_dmg = random.randint(10, 16)
+                boss_hp -= crit_dmg
+                print(f"Shadow Strike lands! {crit_dmg} damage!")
+            elif player_class == "mage":
+                sanity -= 15
+                magic_dmg = random.randint(12, 18)
+                boss_hp -= magic_dmg
+                print(f"Mind Burst hits for {magic_dmg} damage.")
+            elif player_class == "cleric":
+                hp += 6
+                print("Holy Light heals you for 6 HP.")
+                boss_hp -= 4
+                continue
+        elif act == "use item" or act == '4':
+            if "some food" in have_list:
+                have_list.remove("some food")
+                hp += 3
+                print("You eat food. HP +3")
+            else:
+                print("No usable items.")
+            continue
+        else:
+            print("Unknown action.")
+            continue
+
+        if boss_hp > 0:
+            atk_roll = random.randint(1, 3)
+            if atk_roll == 1 and not phase_two_triggered:
+                print("The werewolf lunges and bites deep!")
+                hp -= boss_dmg + 1
+            elif atk_roll == 2 and phase_two_triggered:
+                print("Its claws rake across your chest.")
+                hp -= boss_dmg
+                evil += 3
+            else:
+                print("It swipes at you.")
+                hp -= boss_dmg
+
+        if hp <= 0:
+            game_over = True
+            game_back = True
+            print("The werewolf tears you apart under the full moon.")
+            break
+    if game_over:
+        print("=== END ===")
+        print("Type 'menu' to return main menu")
+        while True:
+            c = input().strip().lower()
+            if c == "menu":
+                main()
+                return
+    print("\nThe werewolf collapses, fading back to human form.")
+    print("In its hand, you find a moon-forged blade and a pouch of gold.")
+    print('Its corpse then rots away.')
+    have_list.append("moonfang blade")
+    have_list.append("some gold coins")
+    player_total_score += 40
+    good += 5
+    defeated_werewolf = True
+    print("+40 score, obtained Moonfang Blade and gold coins.")
+    print("-------------------------\n")
+
 def boss_fight(boss_name, max_hp, base_attack, phases, loot_item, boss_id):
     global hp, defeated_enemies, player_total_score, amulet,game_back,game_over,good,evil
 
@@ -504,12 +673,14 @@ def consume_step_durability():
             sanity -= 2
         if sanity <= 0:
             if hp > 15:
+                mac_demon_whisper("Go die, Thou!")
                 print('You mind shtters.')
                 print('However, you rarely survive.')
                 print('Hp -15')
                 hp -= 15
                 sanity = 30
             else:
+                mac_demon_whisper("Break. Break forever.")
                 print("Your mind shatters into endless madness.")
                 game_over = True
                 game_back = True
@@ -1838,7 +2009,7 @@ def handle_terminal_cmd(cmd):
     elif cmd == "python" or cmd == "python3":
         print("Python 3.?? (cursed edition)")
         print(">>> ")
-        print("ImportError: no module named 'escape'")
+        print("Error: no module named 'escape'")
         return True
     elif cmd.startswith("pip "):
         print("Could not fetch packages. No internet in the cave.")
@@ -4807,6 +4978,9 @@ def advance_time():
         elif time_period == 'night':
             time_period = "day"
             print("\n=== SUNRISE | Safe again ===")
+    if (festival_mode or blood_moon) and not defeated_werewolf:
+        if random.randint(1, 3) == 1:
+            werewolf_encounter()
     if time_period == "night" and not torch and not light:
         hp -= 1
         print("Darkness burns you! Hp -1")
@@ -5214,6 +5388,7 @@ def gamestart():
                             print('You can not get this rune, because some mysterious power force pretents you from taking.')
                             print('Only enable in ng2, and try to go in the death cave!\n')
                     elif tele == 'colin':
+                        mac_horror_whisper("Welcome to your tomb.", "demon")
                         if play_count == 1:
                             if light == False and not torch:
                                 print('A Grue appears, it would not die forever, you can just make it turns to flee.')
@@ -5263,6 +5438,7 @@ def gamestart():
                         can_enter_altar()
                         if x2 == True:
                             if rune1 and rune2 and rune3:
+                                mac_demon_whisper("The guardian wakes.")
                                 guardian_phases = [
                                     {
                                         "hp_threshold": 50,
@@ -5846,6 +6022,7 @@ def gamestart():
                                 print('You: Which one is right!')
                         elif ch == 'purify':
                             if not church_purified:
+                                mac_horror_whisper("The darkness retreats.", "chant")
                                 print('The statue glows with holy light.')
                                 adjust_sanity(10)
                                 have_list.append('holy amulet')
@@ -5856,6 +6033,7 @@ def gamestart():
                                 print('The statue has already been purified.')
 
                         elif ch == 'desecrate':
+                            mac_horror_whisper("You belong to us now.", "deranged")
                             phantom_phases = [
                                 {
                                     "hp_threshold": 18,
@@ -6178,6 +6356,7 @@ def gamestart():
                         print('You find a hole for a rune, but you may have already took the rune away.')
                 elif camp_cmd == 'dig grave':
                     if grave_take == False:
+                        mac_horror_whisper("You disturb the dead.", "normal")
                         print('You dig the grave. There is some treasure and a diary. Take treasure or leave it? 1.take / 2.leave (Even you choose any choice, you will read the diary.)')
                         choice = input().strip().lower()
                         if choice == 'take' or choice == '1':
