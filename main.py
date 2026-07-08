@@ -3076,6 +3076,7 @@ def misty_swamp():
     print("\n=== MISTY SWAMP ===")
     print("Thick fog covers the marsh. Every step is dangerous.")
     print('TYPE ‘quest’ for a quest, and if you are in a quest, type talk to talk to the ghost, ask past to ask past, ask for xxxxxxxx')
+    print('You see a pass full of water, type dive to dive into,')
     if time_period == "night":
         print("Danger rises at night. Toxins grow stronger.")   
 
@@ -3101,6 +3102,9 @@ def misty_swamp():
         if scmd == "west" or scmd == "back" or scmd == "leave":
             print("You walk out of the swamp and return to the forest.")
             return
+        elif scmd == 'dive':
+            print('You dive into a sewer.')
+            sewer()
         elif scmd == 'down':
             if four_hole_in == False:
                 pendulum_mortuary()
@@ -4057,6 +4061,103 @@ def underwater_ruins():
                 main()
                 return
 
+def sewer():
+    global hp,old_diary_readed,old_note_readed,game_back,game_over
+    print('You crawl into a DARK SEWER TUNNEL.')
+    print('You see here something is shinning in the deep.')
+    print('TYPE deep or go deep to go deep, and you see a water path to east and a way up.')
+    while True:
+        if has_death_corpse and death_location == current_room:
+            print('You see here a corpse, type corpse to search it.\n')
+        consume_step_durability()
+        sewer_cmd = input('sewer> ').strip().lower()
+        if sewer_cmd == 'west' or sewer_cmd == 'back' or sewer_cmd == 'leave':
+            print('You climb back to the cave path.')
+            return
+        elif sewer_cmd == 'up':
+            misty_swamp()
+            return
+        elif sewer_cmd == 'east' or sewer_cmd == 'e' or sewer_cmd == 'go east':
+            if sewer_in == False:
+                underwater_ruins()
+                continue
+            else:
+                print('You have already gone in.')
+        elif sewer_cmd == "examine corpse" or sewer_cmd == 'corpse' or sewer_cmd == 'search corpse' or sewer_cmd == 'find corpse':
+            if has_death_corpse and death_location == current_room:
+                print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
+                if death_corpse_item:
+                    print(f"You retrieve {death_corpse_item} from its pocket.")
+                    have_list.append(death_corpse_item)
+                else:
+                    print("Nothing useful left on the body.")
+                has_death_corpse = False
+            else:
+                print("There is not any corpse..")
+        elif sewer_cmd == 'forward':
+            jump_scare_face('flash')
+            print('Water rushes! You take damage.')
+            hp -= 2
+            print('hp -2')
+            print('')
+            print('You find a old note.')
+            print('You read the note, it says:')
+            print('')
+            print('I have been waiting for 200 years.')
+            print('I have to wait, until someone broke the curse.')
+            print('My husband control me, but he is not evil. He just do not want me to destroy the world.')
+            print('')
+            old_note_readed = True
+            if old_diary_readed == True or grave_diary_read == True:
+                print('You realise that this note was written by you great-great grandmothe -- the Evil.')
+            else:
+                print('You: Who has written this note? It is so strange.')
+            if hp <= 0:
+                print('You drown. Game over!')
+                game_over = True
+                game_back = True
+                break
+        elif sewer_cmd == 'treasure':
+            if not sewer_treasure_taken:
+                print('You find gold coins.')
+                have_list.append('gold coins')
+                sewer_treasure_taken = True
+            else:
+                print('The treasure pile has already been looted.')
+        elif sewer_cmd == "deep" or sewer_cmd == 'go deep':
+            jump_scare_face('flash')
+            print("You wade through dark water, reach a hidden stone door.")
+            print("Ancient magic lingers here.")
+            while True:
+                consume_step_durability()
+                deep_cmd = input("deep> ").strip().lower()
+                if deep_cmd == "open door":
+                    if "rune stone 1" in have_list:
+                        print("Rune power unlocks the door. You enter the wizard's hidden room.")
+                        print("Old table, worn staff and a letter on the desk.")
+                        player_total_score += 5
+                    else:
+                        print("The door is sealed by rune magic.")
+                elif deep_cmd == "read letter":
+                    print("Letter from the wizard:")
+                    print("I do not regret protecting the world, but I regret leaving her alone.")
+                    print("If my descendant sees this, please be kind to her.")
+                    old_note_readed = True
+                elif deep_cmd == "take staff":
+                    print("You pick up the wizard's old staff.")
+                    have_list.append("wizard staff")
+                    print("Staff: Weakens dark creatures in the cave.")
+                elif deep_cmd == "leave":
+                    print("You head back to the sewer tunnel.")
+                    break
+                else:
+                    print("Unknown command.")
+        elif sewer_cmd == 'bag':
+            for i in have_list:
+                print(i)
+        else:
+            print('Unknown command.')
+
 #cave
 def cave():
     global game_over, hp, have_list, light, p, amulet, map_unlocked, secret_unlocked, diary_read, legacy_unlocked, current_room, torch,rune1,rune2,rune3,rune,grandmother,gate_unlock,old_diary_readed, game_back,play_count,old_note_readed,festival_mode,cleared_ending,force_in_cave,all_collected,amulet,ng_amulet,has_elf_amulet
@@ -4144,97 +4245,7 @@ def cave():
                                             else:
                                                 print('Unknown command.')
                                     elif gocave == 'sewer' or gocave == 'go into sewer' or gocave == 'go into the sewer' or gocave == 'go to sewer':
-                                        print('You crawl into a DARK SEWER TUNNEL.')
-                                        print('You see here something is shinning in the deep.')
-                                        print('TYPE deep or go deep to go deep, and you see a water path to east.')
-                                        while True:
-                                            if has_death_corpse and death_location == current_room:
-                                                print('You see here a corpse, type corpse to search it.\n')
-                                            consume_step_durability()
-                                            sewer_cmd = input('sewer> ').strip().lower()
-                                            if sewer_cmd == 'west' or sewer_cmd == 'back' or sewer_cmd == 'leave':
-                                                print('You climb back to the cave path.')
-                                                break
-                                            elif sewer_cmd == 'east' or sewer_cmd == 'e' or sewer_cmd == 'go east':
-                                                if sewer_in == False:
-                                                    underwater_ruins()
-                                                    continue
-                                                else:
-                                                    print('You have already gone in.')
-                                            elif sewer_cmd == "examine corpse" or sewer_cmd == 'corpse' or sewer_cmd == 'search corpse' or sewer_cmd == 'find corpse':
-                                                if has_death_corpse and death_location == current_room:
-                                                    print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
-                                                    if death_corpse_item:
-                                                        print(f"You retrieve {death_corpse_item} from its pocket.")
-                                                        have_list.append(death_corpse_item)
-                                                    else:
-                                                        print("Nothing useful left on the body.")
-                                                    has_death_corpse = False
-                                                else:
-                                                    print("There is not any corpse..")
-                                            elif sewer_cmd == 'forward':
-                                                jump_scare_face('flash')
-                                                print('Water rushes! You take damage.')
-                                                hp -= 2
-                                                print('hp -2')
-                                                print('')
-                                                print('You find a old note.')
-                                                print('You read the note, it says:')
-                                                print('')
-                                                print('I have been waiting for 200 years.')
-                                                print('I have to wait, until someone broke the curse.')
-                                                print('My husband control me, but he is not evil. He just do not want me to destroy the world.')
-                                                print('')
-                                                old_note_readed = True
-                                                if old_diary_readed == True or grave_diary_read == True:
-                                                    print('You realise that this note was written by you great-great grandmothe -- the Evil.')
-                                                else:
-                                                    print('You: Who has written this note? It is so strange.')
-                                                if hp <= 0:
-                                                    print('You drown. Game over!')
-                                                    game_over = True
-                                                    game_back = True
-                                                    break
-                                            elif sewer_cmd == 'treasure':
-                                                if not sewer_treasure_taken:
-                                                    print('You find gold coins.')
-                                                    have_list.append('gold coins')
-                                                    sewer_treasure_taken = True
-                                                else:
-                                                    print('The treasure pile has already been looted.')
-                                            elif sewer_cmd == "deep" or sewer_cmd == 'go deep':
-                                                jump_scare_face('flash')
-                                                print("You wade through dark water, reach a hidden stone door.")
-                                                print("Ancient magic lingers here.")
-                                                while True:
-                                                    consume_step_durability()
-                                                    deep_cmd = input("deep> ").strip().lower()
-                                                    if deep_cmd == "open door":
-                                                        if "rune stone 1" in have_list:
-                                                            print("Rune power unlocks the door. You enter the wizard's hidden room.")
-                                                            print("Old table, worn staff and a letter on the desk.")
-                                                            player_total_score += 5
-                                                        else:
-                                                            print("The door is sealed by rune magic.")
-                                                    elif deep_cmd == "read letter":
-                                                        print("Letter from the wizard:")
-                                                        print("I do not regret protecting the world, but I regret leaving her alone.")
-                                                        print("If my descendant sees this, please be kind to her.")
-                                                        old_note_readed = True
-                                                    elif deep_cmd == "take staff":
-                                                        print("You pick up the wizard's old staff.")
-                                                        have_list.append("wizard staff")
-                                                        print("Staff: Weakens dark creatures in the cave.")
-                                                    elif deep_cmd == "leave":
-                                                        print("You head back to the sewer tunnel.")
-                                                        break
-                                                    else:
-                                                        print("Unknown command.")
-                                            elif sewer_cmd == 'bag':
-                                                for i in have_list:
-                                                    print(i)
-                                            else:
-                                                print('Unknown command.')
+                                        sewer()
                                     elif gocave == 'west':
                                         print('You walk deeper into the cave. There is still a path to west.')
                                         print('You see old footprints on the ground. Someone came here before.')
