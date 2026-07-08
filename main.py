@@ -4193,6 +4193,7 @@ def cave():
                                 print('You succeed in unlock the grate. There is a path to the west.')
                                 player_total_score += 10
                                 print('You see here a small library, type library to go in.')
+                                break
                     else:
                         print('You do not have a key, you unleashed a ghost, the ghost kill you.')
                         print('If you have an amulet, you still have to be killed(laugh)')
