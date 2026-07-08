@@ -5436,11 +5436,16 @@ def gamestart():
                             altar = False
                             break
                         else:
-                            print('You jump down the high altar and break all of your bones!')
-                            print('Game over!')
-                            game_over = True
-                            game_back = True
-                            break
+                            if hp > 20:
+                                print('You jump down the high altar and break some of your bones!')
+                                print('Hp -20')
+                                hp -= 20
+                            else:
+                                print('You jump down the high altar and break all of your bones!')
+                                print('Game over!')
+                                game_over = True
+                                game_back = True
+                                break
                     elif tele == 'place runes':
                         can_enter_altar()
                         if x2 == True:
