@@ -540,7 +540,7 @@ def werewolf_encounter():
             continue
 
         if boss_hp > 0:
-            atk_roll = random.randint(1, 3)
+            atk_roll = random.randint(1, 5)
             if atk_roll == 1 and not phase_two_triggered:
                 print("The werewolf lunges and bites deep!")
                 hp -= boss_dmg + 1
@@ -548,6 +548,54 @@ def werewolf_encounter():
                 print("Its claws rake across your chest.")
                 hp -= boss_dmg
                 evil += 3
+            elif atk_roll == 5:
+                print('The werewolf summons for help!')
+                print('Four wolves then run forward the werewolf.')
+                for wolf_num in range(1, 4):
+                    if game_over:
+                        break
+                    print(f"\n--- WOLF {wolf_num} / 3 ---")
+                    wolf_hp = 5
+                    wolf_dmg = 2
+                    while wolf_hp > 0 and hp > 0:
+                        print(f"Wolf HP: {wolf_hp} | Your HP: {hp}")
+                        print("Actions: 1.attack / 2.defend / 3.use item")
+                        act = input("> ").strip().lower()
+
+                        if act == "attack" or act == '1':
+                            dmg = random.randint(3, 6)
+                            wolf_hp -= dmg
+                            print(f"You strike the wolf for {dmg} damage.")
+                            if wolf_hp > 0:
+                                e_dmg = random.randint(1, wolf_dmg)
+                                hp -= e_dmg
+                                print(f"The wolf bites you for {e_dmg} damage.")
+                        elif act == "defend" or act == '2':
+                            e_dmg = max(0, random.randint(1, wolf_dmg) - 2)
+                            hp -= e_dmg
+                            print(f"You block. Take {e_dmg} reduced damage.")
+                        elif act == "use item" or act == '3':
+                            if "some food" in have_list:
+                                have_list.remove("some food")
+                                hp += 3
+                                print("You eat food. HP +3")
+                            else:
+                                print("No usable items.")
+                        else:
+                            print("Unknown action.")
+
+                        if hp <= 0:
+                            game_over = True
+                            game_back = True
+                            print("You are torn apart by the wolf pack.")
+                            mac_demon_whisper("Torn apart...")
+                            return
+
+                    print(f"Wolf {wolf_num} slain!")
+
+                print("\nAll wolves dead. The werewolf steps forward.")
+                print('It has eat something, it look like better than before.')
+                boss_hp += 10
             else:
                 print("It swipes at you.")
                 hp -= boss_dmg
