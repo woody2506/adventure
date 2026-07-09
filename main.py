@@ -4174,6 +4174,9 @@ def cave():
     global player_total_score,orc_in,weapon_broken
 
     game_over = False
+    if play_count >= 2:
+        print("The cave closed, try to collect three runes and go to the altar")
+        return
     while True:
         if current_room == 'entrance':
             while True:
