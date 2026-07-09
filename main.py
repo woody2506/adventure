@@ -4196,7 +4196,7 @@ def cave():
                                 pass
                             else:
                                 current_room = 'first go'
-                                print('You succeed in unlock the grate. There is a path to the west.')
+                                print('You succeed in unlock the grate. There is a path to the west. And a small tunnel to south.')
                                 player_total_score += 10
                                 print('You see here a small library, type library to go in.')
                                 print('You feel that the way back is collapsed.')
@@ -4208,7 +4208,7 @@ def cave():
                         game_over = True
                         game_back = True
                 elif op == 'south':
-                    print('There is no way to go to this direction.')
+                    print('There is no way to go this direction.')
                 elif op == 'east':
                     print('There is no way to go to this direction.')
                 elif op == 'compass':
@@ -4241,8 +4241,20 @@ def cave():
                 if c == 'menu':
                     main()
                     return
+        if current_room == 'go south1':
+            while True:
+                go_south = input().strip().lower()
+                if go_south == 'north':
+                    print('You crawl back to the main tunnel.')
+                    current_room = 'first go'
+                elif go_south == 'bag':
+                    for i in range(len(have_list)):
+                        print(have_list[i])
+                elif go_south == 'west':
+                    print('Not done yetm try north and go back to the main tunnel to finish your explore ^_^')
         if current_room == 'first go':
             while True:
+                print('You see a tiny tunnel to south.')
                 print('You see a sewer, type sewer to go dive into it.')
                 if has_death_corpse and death_location == current_room:
                     print('You see here a corpse, type corpse to search it.\n')
@@ -4258,6 +4270,10 @@ def cave():
                         return
                     else:
                         print("YOU NEED A PICKAXE TO DIG!")
+                elif gocave == 'south':
+                    print('You crawl through a tiny tunnel.')
+                    current_room = 'go south1'
+                    break
                 elif gocave == "examine corpse" or gocave == 'corpse' or gocave == 'search corpse' or gocave == 'find corpse':
                     if has_death_corpse and death_location == current_room:
                         print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
