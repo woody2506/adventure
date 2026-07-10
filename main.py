@@ -4499,12 +4499,10 @@ def cave():
                                     break
                             else:
                                 print("You have treasure but can't escape... you starve.")
-                                print('But you can still go to the next play count.')
+                                print('Try take pick-axe when you play again.')
                                 print('Game over!')
-                                player_total_score += 30
                                 game_over = True
                                 game_back = True
-                                cleared_ending = True
                                 break
                         elif choice == "go bright" or choice == '1':
                             print("It's a trap! SPIKES KILL YOU!")
