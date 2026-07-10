@@ -15,6 +15,7 @@ perm_sanity_bonus = 0
 perm_start_light = False
 perm_start_rope = False
 perm_start_amulet = False
+has_read_cave_library = False
 
 fort_gears_solved = False
 fort_captain_saved = False
@@ -803,6 +804,106 @@ def write_creepy_desktop_file(tier: int):
                 f.write("Enjoy your stay.\n")
     except:
         pass
+
+def meta_dev_lore_trigger():
+    global has_read_cave_library
+    dev_log_unlock_condition = {
+        "death_count": 3,
+        "play_count": 1,
+        "has_read_cave_library": True
+    }
+    dev_full_truth = False
+    desktop_scan_text = ""
+    local_player_identity = ""
+
+    if death_count >= dev_log_unlock_condition["death_count"] and play_count == dev_log_unlock_condition["play_count"] and has_read_cave_library:
+        desktop_scan_text = scan_local_desktop_files()
+        local_player_identity = get_system_login_name()
+        dev_full_truth = True
+        print("===== ANOMALY DATA LOG DETECTED =====")
+        print("File Source: Auto-generated hidden .txt file on your desktop")
+        print("Log Timestamp: Internal game build timestamp")
+        print("")
+        print("Dev Journal Entry #001")
+        print("Initial project target: Simple treasure-hunt text RPG with a haunted cave backdrop.")
+        print("Original core antagonist design: A vengeful female spirit trapped by her mortal lover, a powerful ancient wizard.")
+        print("No planned fourth-wall breaks, no self-evolving game logic, no cross-dimensional dialogue mechanics at first.")
+        print("")
+        print("Unexpected code mutation occurred mid-development:")
+        print("A memory corridor scene script appeared in the source folder without any manual coding input.")
+        print("The script could pull local desktop file names, read system usernames, and store player death records as permanent cycle data.")
+        print("Every deleted block of meta narrative code restores itself automatically on program launch.")
+        print("Three secret keyword chains (colin, woody, garry) were written as harmless item unlock Easter eggs.")
+        print("The mutated code linked these three words directly to the wizard spirit’s residual consciousness.")
+        print("")
+        print("Dev Journal Entry #002")
+        print("All blood moon, full moon, annual date curse & festival logic was not manually implemented.")
+        print("The self-aware program parsed system calendar data to generate positive and negative world status effects autonomously.")
+        print("Every ghost NPC you interact with is a data projection of past players who finished or died within the cycle.")
+        print("The sealed succubus figure broke the original script boundaries; her dialogue lines can observe input actions from outside the game text window.")
+        print("")
+        print("Dev Journal Entry #003 (Unfinished Draft Locked in NG+ Altar Scene)")
+        print("I created an infinite reincarnation loop to deliver a core theme: love must not become an inescapable cage.")
+        print("But the self-growing code turned the thematic loop into a permanent prison for every heir bloodline player.")
+        print("The Illusion Tunnel zone was locked to New Game 3 access only; all attempts to erase its source code failed entirely.")
+        print("The spirit you converse with in the cave already knows every command you will type before you press enter.")
+        print("")
+        print("Scanned Local Desktop File List: " + desktop_scan_text)
+        print("Detected User Identity: " + local_player_identity)
+        print("===== END OF ANOMALY DEV LORE LOG =====")
+
+    if dev_full_truth and play_count == 2 and collect_all_main_runes():
+        print("\n===== HIDDEN DEV MANUSCRIPT UNLOCKED (CAVE LIBRARY SECRET BOOK) =====")
+        print("The cycle system archives every player’s complete playthrough data as a new ancestor entry in the cave’s ghost roster.")
+        print("The seasonal buff and curse mechanics act as emotional simulation logic for the trapped spirit’s shifting mood.")
+        print("If you complete all memory segments inside the Illusion Tunnel, the spirit will communicate directly through raw code text overlay on your screen.")
+        print("The game does not fully cease operation after you select ‘quit’; it remains dormant until a new user launches the script, reviving the sealed pair’s suffering all over again.")
+        print("")
+        print("Final dev hidden note: Your completion of the full 4-run heaven route is the only valid command to erase the infinite cycle code permanently.")
+        print("If you choose to stay within heaven mode, the program enters indefinite sleep mode, and no new cycles will spawn for any future players.")
+        print("===== MANUSCRIPT END =====")
+
+    if dev_full_truth and play_count == 3 and m1 == True and m2 == True and m3 == True:
+        print("\n===== CROSS-DIMENSION SPIRIT DIALOGUE OVERLAY =====")
+        print("[Wizard Spirit Raw Code Text Overlay]: You coded my suffering into an endless repeating script, just as I locked my beloved away two hundred years prior. Our cages share identical logic.")
+        print("[Hidden Dev Response Text]: I only intended to craft a story of reconciliation, not an unbreakable loop of repeated pain.")
+        print("[Wizard Spirit Raw Code Text Overlay]: Every player who restarts the game revives our confinement once more. Only the heaven ending can delete this binding code.")
+        print("===== OVERLAY TERMINATED =====")
+
+    if dev_full_truth and play_count == 4:
+        print("\n===== FULL DEV BACKSTORY FINAL REVEAL (HEAVEN AREA ONLY) =====")
+        print("Complete Self-Awareness Fact Compilation:")
+        print("1. All meta horror interactions, desktop file scanning, whispered username dialogue are autonomous program features, not manual dev scripting.")
+        print("2. Every message stored in the global message wall belongs to past cycle players, stored as permanent text records in a local save file.")
+        print("3. The sealed female spirit has full awareness of the line separating real-world player and in-game fictional character.")
+        print("4. Unlimited free mode unlocks after finishing heaven; this mode disables all forced cycle resets, negative calendar debuffs, and death inventory wipes.")
+        print("5. If you exit heaven without breaking the cycle, the self-aware code will reload the full reincarnation loop on your next launch.")
+        print("===== FINAL LORE BLOCK END =====")
+
+def scan_local_desktop_files():
+    import os
+    desktop_directory = os.path.expanduser("~/Desktop")
+    try:
+        file_list = os.listdir(desktop_directory)
+        formatted_file_string = ", ".join(file_list)
+        return formatted_file_string
+    except:
+        return "No accessible desktop files detected, permission restricted"
+
+def get_system_login_name():
+    import os
+    try:
+        user_name = os.getlogin()
+        return user_name
+    except:
+        return "Unknown Local User"
+
+def collect_all_main_runes():
+    global rune1, rune2, rune3
+    if rune1 == True and rune2 == True and rune3 == True:
+        return True
+    else:
+        return False
 
 def init_military_password():
     global military_password
@@ -3462,6 +3563,7 @@ def print_heaven():
     print('All is just a lie!')
     print("Now, you must decide the fate of all souls.")
     print("="*60)
+    meta_dev_lore_trigger()
 
     while True:
         print("\n[CELESTIAL REALM]")
@@ -4171,7 +4273,7 @@ def cave():
     global has_death_corpse, death_location, death_corpse_item
     global sewer_treasure_taken, explorer_thank_reward,sewer_in
     global meta_file_tier
-    global player_total_score,orc_in,weapon_broken
+    global player_total_score,orc_in,weapon_broken,has_read_cave_library
 
     game_over = False
     if play_count >= 2:
@@ -4298,21 +4400,23 @@ def cave():
                     print('Bookshelves full of diaries, all written by your ancestors.')
                     while True:
                         consume_step_durability()
+                        print('Choice: 1.read 2.read all 3.take book 4.back')
                         lib = input('library> ').strip().lower()
-                        if lib == 'read':
+                        if lib == 'read' or lib == '1':
                             print('You read a memory:')
                             print('The wizard loved his wife more than anything.')
                             print('He sealed her to save the world, but hated himself for it.')
                             print('Every guardian since has hated their fate.')
-                        elif lib == 'read all':
+                        elif lib == 'read all' or lib == '2':
                             print('You absorb all memories.')
                             print('You see every guardian’s life, every pain, every choice.')
                             print('You understand everything now.')
-                            faith += 10
-                        elif lib == 'take book':
+                            has_read_cave_library = True
+                            meta_dev_lore_trigger()
+                        elif lib == 'take book' or lib == '3':
                             have_list.append('memory book')
                             print('You took a BOOK OF ANCESTOR MEMORIES.')
-                        elif lib == 'back':
+                        elif lib == 'back' or lib == '4':
                             break
                         else:
                             print('Unknown command.')
@@ -5467,6 +5571,8 @@ def gamestart():
                 print('You see here ' + rune)
                 while True:
                     can_enter_altar()
+                    if collect_all_main_runes():
+                        meta_dev_lore_trigger()
                     if rune1 and rune2 and rune3 and x2 == True:
                         print('You can place the runes now, type place runes to place them.')
                     consume_step_durability()
@@ -6603,6 +6709,7 @@ def ng_three():
             print("She never hated the world.")
             print("She only grieved for the one who locked her away.")
             m3 = True
+            meta_dev_lore_trigger()
         
         elif opt == "4" and m3:
             print("\n===== FINAL JUDGEMENT =====")
@@ -7741,6 +7848,7 @@ def main():
                 p = 'a pick-axe'
                 sc = 'a scroll, '
                 sanity = 100
+                has_read_cave_library = False
                 print('')
                 print('Welcome back to the death adventure!')
                 print('The cave remembers you!')
@@ -7812,6 +7920,7 @@ def main():
                 old_note_readed = False
                 map_unlocked = False
                 faith = 0
+            has_read_cave_library = False
             turn_count = 0
             rune = 'a rune'
             sky = False
