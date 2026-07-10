@@ -4207,6 +4207,7 @@ def cave():
                         print('Game over!')
                         game_over = True
                         game_back = True
+                        break
                 elif op == 'south':
                     print('There is no way to go this direction.')
                 elif op == 'east':
@@ -4243,6 +4244,7 @@ def cave():
                     return
         if current_room == 'go south1':
             while True:
+                consume_step_durability()
                 if has_death_corpse and death_location == current_room:
                     print('You see here a corpse, type corpse to search it.\n')
                 go_south = input().strip().lower()
