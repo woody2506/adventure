@@ -4262,6 +4262,7 @@ def cave():
                 elif go_south == 'west':
                     print('Not done yet try north and go back to the main tunnel to finish your explore ^_^')
         if current_room == 'first go':
+            print('dbg')
             while True:
                 print('You see a tiny tunnel to south.')
                 print('You see a sewer, type sewer to go dive into it.')
@@ -4457,7 +4458,7 @@ def cave():
                         if choice == "go dark" or choice == '2':
                             print("You found DIAMONDS! You are rich!")
                             if 'a pick-axe' in have_list and 'diamond vault' in have_list:
-                                print('You take all of the tresures away, you are the richest person in your country!')
+                                print('You take all of the treasures away, you are the richest person in your country!')
                                 if diary_read == True and legacy_unlocked == True:
                                     print('You fulfilled the lost explorer’s last wish.')
                                     print('His soul finally rests in peace.')
