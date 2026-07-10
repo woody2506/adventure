@@ -4177,6 +4177,7 @@ def cave():
     if play_count >= 2:
         print("The cave closed, try to collect three runes and go to the altar")
         return
+    print(current_room)
     while True:
         if current_room == 'entrance':
             while True:
