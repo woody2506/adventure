@@ -4351,36 +4351,39 @@ def cave():
                         else:
                             print('Please answer the question.')
         if current_room == 'go west':
-            if has_death_corpse and death_location == current_room:
-                    print('You see here a corpse, type corpse to search it.\n')
-            consume_step_durability()
-            west = input().strip().lower()
-            if west == 'west':
-                print('There is a stone path to west.')
-                print('And there is also a sewer, type sewer to go in.')
-                current_room = 'go west2'
-            elif west == 'bag':
-                for i in range(len(have_list)):
-                    print(have_list[i])
-            elif west == 'north':
-                print('There is no way to go to this direction.')
-            elif west == 'south':
-                print('There is no way to go to this direction.')
-            elif west == 'east':
-                print('You go back to a room.')
-                current_room = 'first go'
-            else:
-                print('Sorry, I do not understand that word.')
-            if game_over == True:
-                print("=== END ===")
-                print("Type 'menu' to return main menu")
-                while True:
-                    c = input().strip().lower()
-                    if c == 'menu':
-                        main()
-                        return
-                    else:
-                        print('Please answer the question.')
+            while True:
+                if has_death_corpse and death_location == current_room:
+                        print('You see here a corpse, type corpse to search it.\n')
+                consume_step_durability()
+                west = input().strip().lower()
+                if west == 'west':
+                    print('There is a stone path to west.')
+                    print('And there is also a sewer, type sewer to go in.')
+                    current_room = 'go west2'
+                    break
+                elif west == 'bag':
+                    for i in range(len(have_list)):
+                        print(have_list[i])
+                elif west == 'north':
+                    print('There is no way to go to this direction.')
+                elif west == 'south':
+                    print('There is no way to go to this direction.')
+                elif west == 'east':
+                    print('You go back to a room.')
+                    current_room = 'first go'
+                    break
+                else:
+                    print('Sorry, I do not understand that word.')
+                if game_over == True:
+                    print("=== END ===")
+                    print("Type 'menu' to return main menu")
+                    while True:
+                        c = input().strip().lower()
+                        if c == 'menu':
+                            main()
+                            return
+                        else:
+                            print('Please answer the question.')
         if current_room == 'go west2':                       
             while True:
                 print('You see here a note. And a diary. There is still a way to west.')
