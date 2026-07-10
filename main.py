@@ -4243,6 +4243,8 @@ def cave():
                     return
         if current_room == 'go south1':
             while True:
+                if has_death_corpse and death_location == current_room:
+                    print('You see here a corpse, type corpse to search it.\n')
                 go_south = input().strip().lower()
                 if go_south == 'north':
                     print('You crawl back to the main tunnel.')
@@ -4250,6 +4252,17 @@ def cave():
                 elif go_south == 'bag':
                     for i in range(len(have_list)):
                         print(have_list[i])
+                elif go_south == "examine corpse" or go_south == 'corpse' or go_south == 'search corpse' or go_south == 'find corpse':
+                    if has_death_corpse and death_location == current_room:
+                        print("\nA corpse slumps against the dusty floor. It wears your exact clothes.")
+                        if death_corpse_item:
+                            print(f"You retrieve {death_corpse_item} from its pocket.")
+                            have_list.append(death_corpse_item)
+                        else:
+                            print("Nothing useful left on the body.")
+                        has_death_corpse = False
+                    else:
+                        print("There is not any corpse..")
                 elif go_south == 'west':
                     print('Not done yetm try north and go back to the main tunnel to finish your explore ^_^')
         if current_room == 'first go':
@@ -4528,7 +4541,7 @@ def cave():
                     if orc_in == False:
                         orc_tribe_dungeon()
                     else:
-                        print('YOu have already been to it!')
+                        print('You have already been to it!')
                 elif west3 == "hug ghost":
                     print("You hug the ghost! It panics: 'WHAT ARE YOU DOING?!'")
                     have_list.append("ghost hug")
