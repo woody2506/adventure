@@ -4184,9 +4184,11 @@ def cave():
                     print('You see here a corpse, type corpse to search it.\n')
                 consume_step_durability()
                 op = input().strip().lower()
+                print('dbg op')
                 if handle_terminal_cmd(op):
                     continue
                 if op == 'unlock':
+                    print('dbg unlock')
                     if 'a key' in have_list:
                         current_room = 'first go'
                         print('You succeed in unlock the grate. There is a path to the west. And a small tunnel to south.')
