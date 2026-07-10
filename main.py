@@ -6770,6 +6770,7 @@ def menu():
             
         else:
             print('Please answer the question.')
+
 # main
 def main():
     global have_list, game_over, light, hp, l, k, n, s, f, w, p, sc, secret_unlocked, map_unlocked, amulet, turn_count, chain1, chain2, diary_read, legacy_unlocked, new_game_plus, ng_amulet, ng_compass, ng_diary, current_room, torch, no_light_run, all_collected, rune1, rune2, rune3, faith, sky, moon, trap_protect, rune, grandmother, gate_unlock, old_diary_readed, grave_diary_read, force_over, game_back, play_count, tomb_unlocked, old_note_readed,cleared_ending,time_period,step_count,death_count,good,evil,death_corpse_item,death_location,has_death_corpse,one_hole_in,two_hole_in,three_hole_in,four_hole_in,no_death_run,player_total_score,sanity,permanent_points
@@ -7699,6 +7700,36 @@ def main():
                     pass
                 else:
                     have_list = []
+                    secret_unlocked = False
+                    map_unlocked = False
+                    amulet = False
+                    diary_read = False
+                    legacy_unlocked = False
+                    new_game_plus = False
+                    ng_amulet = False
+                    ng_compass = False
+                    ng_diary = False
+                    current_room = "road"
+                    torch = False
+                    no_light_run = False
+                    all_collected = False
+                    rune1 = False
+                    rune2 = False
+                    rune3 = False
+                    faith = 0
+                    trap_protect = False
+                    grandmother = False
+                    gate_unlock = False
+                    old_diary_readed = False
+                    grave_diary_read = False
+                    tomb_unlocked = False
+                    old_note_readed = False
+                turn_count = 0
+                sky = False
+                moon = False
+                chain1 = False
+                chain2 = False
+                rune = 'a rune'
                 light = False
                 hp += 25
                 l = 'a lamp, '
@@ -7709,36 +7740,6 @@ def main():
                 w = ' and a bottle of water '
                 p = 'a pick-axe'
                 sc = 'a scroll, '
-                secret_unlocked = False
-                map_unlocked = False
-                amulet = False
-                turn_count = 0
-                chain1 = False
-                chain2 = False
-                diary_read = False
-                legacy_unlocked = False
-                new_game_plus = False
-                ng_amulet = False
-                ng_compass = False
-                ng_diary = False
-                current_room = "road"
-                torch = False
-                no_light_run = False
-                all_collected = False
-                rune1 = False
-                rune2 = False
-                rune3 = False
-                faith = 0
-                sky = False
-                moon = False
-                trap_protect = False
-                rune = 'a rune'
-                grandmother = False
-                gate_unlock = False
-                old_diary_readed = False
-                grave_diary_read = False
-                tomb_unlocked = False
-                old_note_readed = False
                 sanity = 100
                 print('')
                 print('Welcome back to the death adventure!')
@@ -7785,6 +7786,43 @@ def main():
                 pass
             else:
                 have_list = []
+                secret_unlocked = False
+                map_unlocked = False
+                amulet = False
+                chain1 = False
+                chain2 = False
+                diary_read = False
+                legacy_unlocked = False
+                new_game_plus = False
+                ng_amulet = False
+                ng_compass = False
+                ng_diary = False
+                torch = False
+                no_light_run = False
+                all_collected = False
+                rune1 = False
+                rune2 = False
+                rune3 = False
+                trap_protect = False
+                grandmother = False
+                gate_unlock = False
+                old_diary_readed = False
+                grave_diary_read = False
+                tomb_unlocked = False
+                old_note_readed = False
+                map_unlocked = False
+                faith = 0
+            turn_count = 0
+            rune = 'a rune'
+            sky = False
+            moon = False
+            force_over = False
+            game_back = False
+            play_count = 1
+            cleared_ending = False
+            time_period = "day"
+            step_count = 0
+            current_room = "road"
             game_over = False
             light = False
             hp = 5
@@ -7796,43 +7834,6 @@ def main():
             w = ' and a bottle of water'
             p = 'a pick-axe'
             sc = 'a scroll, '
-            secret_unlocked = False
-            map_unlocked = False
-            amulet = False
-            turn_count = 0
-            chain1 = False
-            chain2 = False
-            diary_read = False
-            legacy_unlocked = False
-            new_game_plus = False
-            ng_amulet = False
-            ng_compass = False
-            ng_diary = False
-            current_room = "road"
-            torch = False
-            no_light_run = False
-            all_collected = False
-            rune1 = False
-            rune2 = False
-            rune3 = False
-            faith = 0
-            sky = False
-            moon = False
-            trap_protect = False
-            rune = 'a rune'
-            grandmother = False
-            gate_unlock = False
-            old_diary_readed = False
-            grave_diary_read = False
-            force_over = False
-            game_back = False
-            tomb_unlocked = False
-            old_note_readed = False
-            map_unlocked = False
-            cleared_ending = False
-            play_count = 1
-            time_period = "day"
-            step_count = 0
             sanity = 100
 
             # Morality System
