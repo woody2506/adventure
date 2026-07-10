@@ -4188,19 +4188,12 @@ def cave():
                     continue
                 if op == 'unlock':
                     if 'a key' in have_list:
-                        x = random.randint(1,5)
-                        if x == 9:
-                            pass
-                        else:
-                            if x == 8:
-                                pass
-                            else:
-                                current_room = 'first go'
-                                print('You succeed in unlock the grate. There is a path to the west. And a small tunnel to south.')
-                                player_total_score += 10
-                                print('You see here a small library, type library to go in.')
-                                print('You feel that the way back is collapsed.')
-                                break
+                        current_room = 'first go'
+                        print('You succeed in unlock the grate. There is a path to the west. And a small tunnel to south.')
+                        player_total_score += 5
+                        print('You see here a small library, type library to go in.')
+                        print('You feel that the way back is collapsed.')
+                        break
                     else:
                         print('You do not have a key, you unleashed a ghost, the ghost kill you.')
                         print('If you have an amulet, you still have to be killed(laugh)')
@@ -4267,7 +4260,7 @@ def cave():
                     else:
                         print("There is not any corpse..")
                 elif go_south == 'west':
-                    print('Not done yetm try north and go back to the main tunnel to finish your explore ^_^')
+                    print('Not done yet try north and go back to the main tunnel to finish your explore ^_^')
         if current_room == 'first go':
             while True:
                 print('You see a tiny tunnel to south.')
