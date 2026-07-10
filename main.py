@@ -117,7 +117,7 @@ sanity = 100
 bw = False
 
 # Torch Durability
-torch_durability = 20
+torch_durability = 10
 TORCH_MAX = 20
 
 # Weapon Durability (10 attacks before breaking)
@@ -5345,6 +5345,7 @@ def gamestart():
                     if 'a lamp' in have_list:
                         print('The light is lit. The room bright up!')
                         light = True
+                        torch_durability += 15
                     else:
                         print('You do not have a lamp!')
                 elif take == 'hp':
@@ -5476,6 +5477,7 @@ def gamestart():
                         if 'a lamp' in have_list:
                             print('The light is lit. The room bright up!')
                             light =True
+                            torch_durability += 15
                         else:
                             print('You do not have a lamp!')
                     elif tele == 'take rune':
