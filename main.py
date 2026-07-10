@@ -4177,7 +4177,6 @@ def cave():
     if play_count >= 2:
         print("The cave closed, try to collect three runes and go to the altar")
         return
-    print(current_room)
     while True:
         if current_room == 'entrance':
             while True:
@@ -4185,11 +4184,9 @@ def cave():
                     print('You see here a corpse, type corpse to search it.\n')
                 consume_step_durability()
                 op = input().strip().lower()
-                print('dbg op')
                 if handle_terminal_cmd(op):
                     continue
                 if op == 'unlock':
-                    print('dbg unlock')
                     if 'a key' in have_list:
                         current_room = 'first go'
                         print('You succeed in unlock the grate. There is a path to the west. And a small tunnel to south.')
@@ -4265,7 +4262,6 @@ def cave():
                 elif go_south == 'west':
                     print('Not done yet try north and go back to the main tunnel to finish your explore ^_^')
         if current_room == 'first go':
-            print('dbg')
             while True:
                 print('You see a tiny tunnel to south.')
                 print('You see a sewer, type sewer to go dive into it.')
@@ -5188,7 +5184,7 @@ def gamestart():
             if auto_cmd == 'go deeper':
                 if current_room != 'cave':
                     print('You go into the cave!!!')
-                current_room = "cave"
+                current_room = "entrance"
                 print("You find yourself deeper in the cave than you remember.")
                 print('You go back to the road.')
                 print('You can control you again.')
@@ -5508,7 +5504,7 @@ def gamestart():
                                 print("Your torch keeps Grue away.")
                                 print('Welcome to death cave!')
                                 print('You are in a cave, there is a grate. The grate is locked. You must open the grate to go further.')
-                                current_room = "cave"
+                                current_room = "entrance"
                                 cave()
                                 if game_over == True:
                                     print("=== END ===")
@@ -5521,7 +5517,7 @@ def gamestart():
                             elif light == True or force_in_cave:
                                 print('Welcome to death cave!')
                                 print('You are in a cave, there is a grate. The grate is locked. You must open the grate to go further.')
-                                current_room = "cave"
+                                current_room = "entrance"
                                 cave()
                                 if game_over == True:
                                     print("=== END ===")
